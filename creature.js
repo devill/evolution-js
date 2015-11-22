@@ -8,7 +8,7 @@ class Creature {
         this._hue = Math.random() * 360;
         this._direction = Math.random() * 2 * Math.PI;
         this._speed = Math.random()*2;
-        this._mouthSize = 0.1*Math.PI;
+        this._mouthSize = 0.27*Math.PI;
         this._energy = 10000;
         this._alive = true;
     }
@@ -43,24 +43,32 @@ class Creature {
     }
 
     iterate() {
-        this._energy -= 3;
-        if(this._energy < 1) {
-            this._alive = false;
-        }
-        this._energy = this._keepInRange(this._energy, 0, 10000);
+        this.looseEnergy();
+        this.updateSpeed();
+        this.updatePosition();
+    }
 
-
+    updateSpeed() {
         this._direction += (Math.random() - 0.47) / 10;
+
         this._speed += (Math.random() - 0.5) / 10;
+        this._speed = this._keepInRange(this._speed, 0, 2);
+    }
 
-        this._speed = this._keepInRange(this._speed, 0, 1);
-
+    updatePosition() {
         this._position['x'] += this._speed * Math.cos(this._direction);
         this._position['y'] += this._speed * Math.sin(this._direction);
 
         this._position['x'] = this._keepInRange(this._position['x'], 20, 1580);
         this._position['y'] = this._keepInRange(this._position['y'], 20, 880);
+    }
 
+    looseEnergy() {
+        this._energy -= this._speed*2;
+        if (this._energy < 1) {
+            this._alive = false;
+        }
+        this._energy = this._keepInRange(this._energy, 0, 10000);
     }
 
     position() {
