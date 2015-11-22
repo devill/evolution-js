@@ -40,6 +40,10 @@ $(document).ready(function() {
             });
         }
 
+        creatures.forEach(function (creature) {
+            creature.see(creatures.concat(food));
+        });
+
         creatures.forEach(function(creature) {
             creature.iterate();
             if(!creature.alive()) {
