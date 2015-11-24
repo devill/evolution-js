@@ -1,10 +1,9 @@
 "use strict";
 
 class Creature extends Thing {
-    constructor(positon, dna) {
+    constructor(positon) {
         super();
         this._position = positon;
-        this._dna = dna;
 
         this._hue = Math.random() * 360;
         this._direction = Math.random() * 2 * Math.PI;
