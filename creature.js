@@ -17,7 +17,7 @@ class Creature extends Thing {
 
         this._sight = [];
         for(let i = 0; i < this._sightResolution; i++) {
-            this._sight.unshift({ r:128, g:128, b:128, d:null });
+            this._sight.unshift({ r:128, g:128, b:128, d:10000 });
         }
     }
 
@@ -25,7 +25,7 @@ class Creature extends Thing {
         for(let i = 0; i < this._sightResolution; i++) {
             var sightDirection = this._direction + 2*(i - this._sightResolution/2) * this._eyeSize / this._sightResolution;
 
-            let result = {r: 128, g: 128, b: 128, d: null};
+            let result = {r: 128, g: 128, b: 128, d: 10000};
             let self = this;
             things.forEach(function (thing) {
                 if (thing.visible(self._position, sightDirection)) {
@@ -135,7 +135,7 @@ class Creature extends Thing {
     }
 
     _looseEnergy() {
-        this._energy -= this._speed*2;
+        this._energy -= this._speed*2+1;
         if (this._energy < 1) {
             this._alive = false;
         }

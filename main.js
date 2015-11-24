@@ -3,14 +3,11 @@
 $(document).ready(function() {
 
     let creatures = [];
-    for(let i = 0; i < 20; i++) {
+    for(let i = 0; i < 30; i++) {
         creatures.unshift(new Creature({x:Math.random()*1600,y:Math.random()*900}));
     }
 
     let food = [];
-    for(let i = 0; i < 100; i++) {
-        food.unshift(new Food({x:Math.random()*1600,y:Math.random()*900}));
-    }
 
     let ctx = document.getElementById("main-canvas").getContext("2d");
 
