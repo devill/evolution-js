@@ -3,7 +3,7 @@
 $(document).ready(function() {
 
     let creatures = [];
-    for(let i = 0; i < 100; i++) {
+    for(let i = 0; i < 20; i++) {
         creatures.unshift(new Creature({x:Math.random()*1600,y:Math.random()*900}));
     }
 

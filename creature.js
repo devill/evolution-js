@@ -1,7 +1,8 @@
 "use strict";
 
-class Creature {
+class Creature extends Thing {
     constructor(positon, dna) {
+        super();
         this._position = positon;
         this._dna = dna;
 
@@ -11,26 +12,36 @@ class Creature {
         this._eyeSize = 0.27*Math.PI;
         this._energy = 10000;
         this._alive = true;
-        this._sight = { r:128, g:128, b:128, d:null };
+
+        this._sightResolution = 20;
+
+        this._sight = [];
+        for(let i = 0; i < this._sightResolution; i++) {
+            this._sight.unshift({ r:128, g:128, b:128, d:null });
+        }
     }
 
     see(things) {
-        let result = { r:128, g:128, b:128, d:null };
-        let self = this;
-        things.forEach(function (thing) {
-            if(thing.visible(self._position, self._direction)) {
-                let distance = thing.visibilityDistance(self._position, self._direction);
+        for(let i = 0; i < this._sightResolution; i++) {
+            var sightDirection = this._direction + 2*(i - this._sightResolution/2) * this._eyeSize / this._sightResolution;
 
-                if(result.d == null || result.d > distance) {
-                    result.d = distance;
-                    let color = thing.visibilityColor(self._position, self._direction);
-                    result['r'] = color['r'];
-                    result['g'] = color['g'];
-                    result['b'] = color['b'];
+            let result = {r: 128, g: 128, b: 128, d: null};
+            let self = this;
+            things.forEach(function (thing) {
+                if (thing.visible(self._position, sightDirection)) {
+                    let distance = thing.visibilityDistance(self._position, sightDirection);
+
+                    if (result.d == null || result.d > distance) {
+                        result.d = distance;
+                        let color = thing.visibilityColor(self._position, sightDirection);
+                        result['r'] = color['r'];
+                        result['g'] = color['g'];
+                        result['b'] = color['b'];
+                    }
                 }
-            }
-        });
-        this._sight = result;
+            });
+            this._sight[i] = result;
+        }
     }
 
     visible(position, direction) {
@@ -45,16 +56,6 @@ class Creature {
 
     visibilityColor(position, direction) {
         return hsl2rgb(this._hue, 100, 50);
-    }
-
-    _visibilityData(position, direction) {
-        let rx = this._position['x'] - position['x'];
-        let ry = this._position['y'] - position['y'];
-
-        let nx = rx * Math.cos(-direction) - ry * Math.sin(-direction);
-        let ny = rx * Math.sin(-direction) + ry * Math.cos(-direction);
-
-        return {distanceFromEye: nx, distanceFromLineOfSight: Math.abs(ny) };
     }
 
     drawTo(context) {
@@ -74,11 +75,15 @@ class Creature {
     }
     
     _drawEye(context) {
-        context.beginPath();
-        let color = this._sight;
-        context.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
-        context.arc(this._position['x'], this._position['y'], 16, this._direction - this._eyeSize, this._direction + this._eyeSize);
-        context.stroke();
+        for(let i = 0; i < this._sightResolution; i++) {
+            context.beginPath();
+            let color = this._sight[i];
+            let angle = this._direction + 2*(i - this._sightResolution/2) * this._eyeSize / this._sightResolution;
+            context.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+            context.arc(this._position['x'], this._position['y'], 16, angle, angle + this._eyeSize / this._sightResolution);
+            context.stroke();
+        }
+
     }
 
     _drawEnergy(context) {

@@ -1,7 +1,8 @@
 "use strict";
 
-class Food {
+class Food extends Thing {
     constructor(position) {
+        super();
         this._position = position;
         this._exists = true;
     }
@@ -38,15 +39,4 @@ class Food {
     visibilityColor(position, direction) {
         return { r:0, g:0, b:0 };
     }
-
-    _visibilityData(position, direction) {
-        let rx = this._position['x'] - position['x'];
-        let ry = this._position['y'] - position['y'];
-
-        let nx = rx * Math.cos(-direction) - ry * Math.sin(-direction);
-        let ny = rx * Math.sin(-direction) + ry * Math.cos(-direction);
-
-        return {distanceFromEye: nx, distanceFromLineOfSight: Math.abs(ny) };
-    }
-
 }
