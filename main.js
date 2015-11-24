@@ -10,6 +10,7 @@ $(document).ready(function() {
     let food = [];
 
     let ctx = document.getElementById("main-canvas").getContext("2d");
+    ctx.lineWidth = 2;
 
     function iteration() {
 
