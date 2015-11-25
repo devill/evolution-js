@@ -4,10 +4,11 @@ class Creature extends Thing {
     constructor(positon) {
         super();
         this._position = positon;
+        this._midLayerSize = 7;
 
         this._hue = Math.random() * 360;
         this._direction = Math.random() * 2 * Math.PI;
-        this._speed = Math.random()*2;
+        this._speed = 0;
         this._eyeSize = 0.27*Math.PI;
         this._energy = 10000;
         this._alive = true;
@@ -16,8 +17,28 @@ class Creature extends Thing {
 
         this._sight = [];
         for(let i = 0; i < this._sightResolution; i++) {
-            this._sight.unshift({ r:128, g:128, b:128, d:10000 });
+            this._sight.push({ r:128, g:128, b:128, d:10000 });
         }
+    }
+
+    generateRandomDna() {
+        this._dna = {
+            first_layer: this.randomMatrix(this._midLayerSize, this._sightResolution*4+3),
+            second_layer: this.randomMatrix(2, this._midLayerSize)
+        };
+        this._brain = new Brain(this._dna);
+    }
+
+    randomMatrix(rows, cols) {
+        let result = [];
+        for(let i = 0; i < rows; ++i) {
+            let v = [];
+            for(let j = 0; j < cols; ++j) {
+                v.push(Math.random()-0.5);
+            }
+            result.push(v);
+        }
+        return result;
     }
 
     see(things) {
@@ -95,7 +116,16 @@ class Creature extends Thing {
 
     iterate() {
         this._looseEnergy();
-        this._updateSpeed();
+
+        let status = [this._energy, this._speed, Math.random()];
+        for(let i = 0; i < this._sightResolution; i++) {
+            status.push(this._sight[i]['r'],this._sight[i]['g'],this._sight[i]['b'],this._sight[i]['d']);
+        }
+
+        let thought = this._brain.think(status);
+        console.log(thought);
+
+        this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
     }
 
@@ -118,10 +148,10 @@ class Creature extends Thing {
         return this._position;
     }
 
-    _updateSpeed() {
-        this._direction += (Math.random() - 0.47) / 10;
+    _updateSpeed(accelerationAngle, accelerationRadius) {
+        this._direction += (accelerationAngle - 0.5) / 10;
 
-        this._speed += (Math.random() - 0.5) / 10;
+        this._speed += (accelerationRadius - 0.5) / 10;
         this._speed = this._keepInRange(this._speed, 0, 2);
     }
 

@@ -3,8 +3,10 @@
 $(document).ready(function() {
 
     let creatures = [];
-    for(let i = 0; i < 30; i++) {
-        creatures.unshift(new Creature({x:Math.random()*1600,y:Math.random()*900}));
+    for(let i = 0; i < 20; i++) {
+        var creature = new Creature({x: Math.random() * 1600, y: Math.random() * 900});
+        creature.generateRandomDna();
+        creatures.push(creature);
     }
 
     let food = [];
@@ -45,7 +47,7 @@ $(document).ready(function() {
         creatures.forEach(function(creature) {
             creature.iterate();
             if(!creature.alive()) {
-                food.unshift(new Food(creature.position()));
+                food.push(new Food(creature.position()));
             }
         });
 
@@ -56,11 +58,12 @@ $(document).ready(function() {
         feedCreatures();
 
         if (Math.random() < 0.01) {
-            food.unshift(new Food({x:Math.random()*1600,y:Math.random()*900}));
+            food.push(new Food({x:Math.random()*1600,y:Math.random()*900}));
         }
 
         drawWorld();
     }
 
     setInterval(iteration,1);
+    //iteration();
 });
