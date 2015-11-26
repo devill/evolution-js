@@ -5,6 +5,7 @@ class Creature extends Thing {
         super();
         this._position = positon;
         this._bornInIteration = iterationNumber;
+        //this._world = world;
         this._midLayerSize = 7;
 
         this._hue = Math.random() * 360;
@@ -25,7 +26,8 @@ class Creature extends Thing {
     generateRandomDna() {
         this._dna = {
             first_layer: this.randomMatrix(this._midLayerSize, this._sightResolution*4+3),
-            second_layer: this.randomMatrix(2, this._midLayerSize)
+            second_layer: this.randomMatrix(3, this._midLayerSize),
+            egg_color: { r:Math.floor(Math.random()*256), g:Math.floor(Math.random()*256), b:Math.floor(Math.random()*256) }
         };
         this._brain = new Brain(this._dna);
     }
@@ -128,11 +130,17 @@ class Creature extends Thing {
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
+
+        if(this._energy > 5000) {
+            var egg_position = { x:this._position - 20 * Math.sin(this._direction), y:this._position - 20 * Math.sin(this._direction) };
+
+            //this._energy -= 5000;
+        }
     }
 
     distance(other) {
         let l = this._position;
-        let r = other.position()
+        let r = other.position();
         return Math.sqrt(Math.pow(l['x'] - r['x'], 2) + Math.pow(l['y'] - r['y'], 2))
     }
 
@@ -165,7 +173,7 @@ class Creature extends Thing {
     }
 
     _looseEnergy() {
-        this._energy -= this._speed*2+1;
+        this._energy -= this._speed+1;
         if (this._energy < 1) {
             this._alive = false;
         }
