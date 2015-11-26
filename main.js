@@ -3,18 +3,23 @@
 $(document).ready(function() {
 
     let creatures = [];
-    for(let i = 0; i < 20; i++) {
-        var creature = new Creature({x: Math.random() * 1600, y: Math.random() * 900});
-        creature.generateRandomDna();
-        creatures.push(creature);
-    }
-
+    let iterationNumber = 0;
+    generateRandomCreatures(20, iterationNumber);
     let food = [];
 
     let ctx = document.getElementById("main-canvas").getContext("2d");
     ctx.lineWidth = 2;
 
+    function generateRandomCreatures(n, iterationNumber) {
+        for (let i = 0; i < n; i++) {
+            var creature = new Creature({x: Math.random() * 1600, y: Math.random() * 900}, iterationNumber);
+            creature.generateRandomDna();
+            creatures.push(creature);
+        }
+    }
+
     function iteration() {
+        ++iterationNumber;
 
         function feedCreatures() {
             creatures.forEach(function (creature) {
@@ -33,7 +38,7 @@ $(document).ready(function() {
         function drawWorld() {
             ctx.clearRect(0, 0, 1600, 900);
             creatures.forEach(function (creature) {
-                creature.drawTo(ctx);
+                creature.drawTo(ctx, iterationNumber);
             });
             food.forEach(function (f) {
                 f.drawTo(ctx);
@@ -48,6 +53,7 @@ $(document).ready(function() {
             creature.iterate();
             if(!creature.alive()) {
                 food.push(new Food(creature.position()));
+                generateRandomCreatures(1, iterationNumber);
             }
         });
 
@@ -65,5 +71,4 @@ $(document).ready(function() {
     }
 
     setInterval(iteration,1);
-    //iteration();
 });

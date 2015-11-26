@@ -1,9 +1,10 @@
 "use strict";
 
 class Creature extends Thing {
-    constructor(positon) {
+    constructor(positon, iterationNumber) {
         super();
         this._position = positon;
+        this._bornInIteration = iterationNumber;
         this._midLayerSize = 7;
 
         this._hue = Math.random() * 360;
@@ -34,7 +35,7 @@ class Creature extends Thing {
         for(let i = 0; i < rows; ++i) {
             let v = [];
             for(let j = 0; j < cols; ++j) {
-                v.push(Math.random()-0.5);
+                v.push(100*(2*Math.random()-1));
             }
             result.push(v);
         }
@@ -78,10 +79,11 @@ class Creature extends Thing {
         return hsl2rgb(this._hue, 100, 50);
     }
 
-    drawTo(context) {
+    drawTo(context, thisIteration) {
         this._drawBody(context);
         this._drawEye(context);
         this._drawEnergy(context);
+        context.fillText(Math.floor((thisIteration-this._bornInIteration)/1000),this._position['x']+20, this._position['y']+20);
     }
 
     _drawBody(context) {
@@ -123,7 +125,6 @@ class Creature extends Thing {
         }
 
         let thought = this._brain.think(status);
-        console.log(thought);
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
