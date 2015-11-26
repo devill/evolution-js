@@ -1,11 +1,11 @@
 "use strict";
 
 class Creature extends Thing {
-    constructor(positon, iterationNumber) {
+    constructor(world, positon, iterationNumber) {
         super();
         this._position = positon;
         this._bornInIteration = iterationNumber;
-        //this._world = world;
+        this._world = world;
         this._midLayerSize = 7;
 
         this._hue = Math.random() * 360;
@@ -27,7 +27,7 @@ class Creature extends Thing {
         this._dna = {
             first_layer: this.randomMatrix(this._midLayerSize, this._sightResolution*4+3),
             second_layer: this.randomMatrix(3, this._midLayerSize),
-            egg_color: { r:Math.floor(Math.random()*256), g:Math.floor(Math.random()*256), b:Math.floor(Math.random()*256) }
+            egg_color: Math.random() * 360
         };
         this._brain = new Brain(this._dna);
     }
@@ -131,10 +131,10 @@ class Creature extends Thing {
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
 
-        if(this._energy > 5000) {
-            var egg_position = { x:this._position - 20 * Math.sin(this._direction), y:this._position - 20 * Math.sin(this._direction) };
-
-            //this._energy -= 5000;
+        if(this._energy > 5000 && thought[2] < 0.3) {
+            var egg_position = { x:this._position.x - 30 * Math.cos(this._direction), y:this._position.y - 30 * Math.sin(this._direction) };
+            this._world.addEgg(egg_position, hsl2rgb(this._dna.egg_color, 100, 20));
+            this._energy -= 5000;
         }
     }
 

@@ -14,7 +14,7 @@ class World extends Thing {
 
     generateRandomCreatures(n) {
         for (let i = 0; i < n; i++) {
-            var creature = new Creature({x: Math.random() * 1600, y: Math.random() * 900}, this._iterationNumber);
+            var creature = new Creature(this, {x: Math.random() * 1600, y: Math.random() * 900}, this._iterationNumber);
             creature.generateRandomDna();
             this._creatures.push(creature);
         }
@@ -73,5 +73,13 @@ class World extends Thing {
         this._food.forEach(function (f) {
             f.drawTo(self.context);
         });
+        this._eggs.forEach(function (e) {
+            e.drawTo(self.context);
+        });
+    }
+
+    addEgg(position, color) {
+        console.log('Lay egg', position, color);
+        this._eggs.push(new Egg(position, color))
     }
 }

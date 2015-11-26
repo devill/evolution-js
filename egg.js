@@ -16,6 +16,7 @@ class Egg extends Thing {
         context.beginPath();
         context.strokeStyle = 'rgb(' + this._color.r + ',' + this._color.g + ',' + this._color.b + ')';
         context.arc(this._position['x'],this._position['y'],5,0,2*Math.PI);
+        context.arc(this._position['x'],this._position['y'],2,0,2*Math.PI);
         context.stroke();
     }
 
