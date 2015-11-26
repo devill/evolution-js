@@ -24,31 +24,6 @@ class World extends Thing {
         let self = this;
         ++this._iterationNumber;
 
-        function feedCreatures() {
-            self._creatures.forEach(function (creature) {
-                self._food.forEach(function (f) {
-                    if (creature.distance(f) < 20) {
-                        creature.feed();
-                        f.remove();
-                    }
-                });
-            });
-            self._food = self._food.filter(function (f) {
-                return f.exists();
-            });
-        }
-
-        function drawWorld() {
-            self.context.clearRect(0, 0, 1600, 900);
-            self._creatures.forEach(function (creature) {
-                creature.drawTo(self.context, self._iterationNumber);
-            });
-            self._food.forEach(function (f) {
-                f.drawTo(self.context);
-            });
-        }
-
-
         this._creatures.forEach(function (creature) {
             creature.see(self._creatures.concat(self._food));
         });
@@ -65,12 +40,38 @@ class World extends Thing {
             return creature.alive();
         });
 
-        feedCreatures();
+        this.feedCreatures();
 
         if (Math.random() < 0.01) {
             this._food.push(new Food({x:Math.random()*1600,y:Math.random()*900}));
         }
 
-        drawWorld();
+        this.drawWorld();
+    }
+
+    feedCreatures() {
+        let self = this;
+        this._creatures.forEach(function (creature) {
+            self._food.forEach(function (f) {
+                if (creature.distance(f) < 20) {
+                    creature.feed();
+                    f.remove();
+                }
+            });
+        });
+        this._food = this._food.filter(function (f) {
+            return f.exists();
+        });
+    }
+
+    drawWorld() {
+        let self = this;
+        this.context.clearRect(0, 0, 1600, 900);
+        this._creatures.forEach(function (creature) {
+            creature.drawTo(self.context, self._iterationNumber);
+        });
+        this._food.forEach(function (f) {
+            f.drawTo(self.context);
+        });
     }
 }
