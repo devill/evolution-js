@@ -1,11 +1,12 @@
 "use strict";
 
 class Egg extends Thing {
-    constructor(position, color) {
+    constructor(position, color, dna) {
         super();
         this._position = position;
         this._color = color;
         this._exists = true;
+        this._dna = dna;
     }
 
     position() {

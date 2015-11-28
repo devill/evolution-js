@@ -12,8 +12,8 @@ class World extends Thing {
         this.context.lineWidth = 2;
     }
 
-    injectCreature(dna) {
-        var creature = new Creature(this, {x: Math.random() * 1600, y: Math.random() * 900}, this._iterationNumber);
+    injectCreature(dna, position) {
+        var creature = new Creature(this, position, this._iterationNumber);
         creature.setDna(dna);
         this._creatures.push(creature);
     }
@@ -38,7 +38,6 @@ class World extends Thing {
             creature.iterate();
             if(!creature.alive()) {
                 self._food.push(new Food(creature.position()));
-                self.generateRandomCreatures(1);
             }
         });
 
@@ -47,8 +46,12 @@ class World extends Thing {
         });
 
         this.feedCreatures();
+        this.reproduce();
+        if(this._creatures.length < 20) {
+            this.generateRandomCreatures(1);
+        }
 
-        if (Math.random() < 0.01) {
+        if (this._creatures.length < 25 && Math.random() < 0.01) {
             this._food.push(new Food({x:Math.random()*1600,y:Math.random()*900}));
         }
 
@@ -70,22 +73,36 @@ class World extends Thing {
         });
     }
 
+    reproduce() {
+        let self = this;
+        this._creatures.forEach(function (creature) {
+            self._eggs.forEach(function (e) {
+                if (creature.distance(e) < 20 && creature.canReproduce()) {
+                    creature.reproduce(e);
+                    e.remove();
+                }
+            });
+        });
+        this._eggs = this._eggs.filter(function (e) {
+            return e.exists();
+        });
+    }
+
     drawWorld() {
         let self = this;
         this.context.clearRect(0, 0, 1600, 900);
-        this._creatures.forEach(function (creature) {
-            creature.drawTo(self.context, self._iterationNumber);
+        this._eggs.forEach(function (e) {
+            e.drawTo(self.context);
         });
         this._food.forEach(function (f) {
             f.drawTo(self.context);
         });
-        this._eggs.forEach(function (e) {
-            e.drawTo(self.context);
+        this._creatures.forEach(function (creature) {
+            creature.drawTo(self.context, self._iterationNumber);
         });
     }
 
-    addEgg(position, color) {
-        console.log('Lay egg', position, color);
-        this._eggs.push(new Egg(position, color))
+    addEgg(position, color, dna) {
+        this._eggs.push(new Egg(position, color, dna))
     }
 }

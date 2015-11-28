@@ -8,13 +8,13 @@ class Creature extends Thing {
         this._world = world;
         this._mid_layer_size = 7;
 
-        this._hue = Math.random() * 360;
         this._direction = Math.random() * 2 * Math.PI;
         this._speed = 0;
         this._eye_size = 0.27*Math.PI;
-        this._energy = 10000;
+        this._energy = 5000;
         this._alive = true;
         this._time_since_last_egg_layed = 0;
+        this._can_reproduce = false;
 
         this._sightResolution = 20;
 
@@ -33,7 +33,8 @@ class Creature extends Thing {
         this.setDna({
             first_layer: this.randomMatrix(this._mid_layer_size, this._sightResolution*4+3),
             second_layer: this.randomMatrix(3, this._mid_layer_size),
-            egg_color: Math.random() * 360
+            egg_color: Math.random() * 360,
+            color: Math.random() * 360
         });
     }
 
@@ -83,7 +84,7 @@ class Creature extends Thing {
     }
 
     visibilityColor(position, direction) {
-        return hsl2rgb(this._hue, 100, 50);
+        return hsl2rgb(this._dna.color, 100, 50);
     }
 
     drawTo(context, thisIteration) {
@@ -95,7 +96,7 @@ class Creature extends Thing {
 
     _drawBody(context) {
         context.beginPath();
-        let color = hsl2rgb(this._hue, 100, 50);
+        let color = hsl2rgb(this._dna.color, 100, 50);
         context.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
         context.moveTo(this._position['x'], this._position['y']);
         context.arc(this._position['x'], this._position['y'], 20, this._direction + this._eye_size, this._direction - this._eye_size);
@@ -136,11 +137,12 @@ class Creature extends Thing {
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
 
+        this._can_reproduce = thought[2] > 0.7;
         this._time_since_last_egg_layed += 1;
-        if(this._energy > 9000 && thought[2] < 0.3 && this._time_since_last_egg_layed > 1000) {
+        if(this._energy > 8000 && thought[2] < 0.3 && this._time_since_last_egg_layed > 1000) {
             var egg_position = { x:this._position.x - 30 * Math.cos(this._direction), y:this._position.y - 30 * Math.sin(this._direction) };
-            this._world.addEgg(egg_position, hsl2rgb(this._dna.egg_color, 100, 90));
-            this._energy -= 2000;
+            this._world.addEgg(egg_position, hsl2rgb(this._dna.egg_color, 100, 90), this._dna);
+            this._energy -= 2500;
             this._time_since_last_egg_layed = 0;
         }
     }
@@ -154,6 +156,40 @@ class Creature extends Thing {
     feed() {
         this._energy += 5000;
         this._energy = this._keepInRange(this._energy, 0, 10000);
+    }
+
+    reproduce(e) {
+        let dna = this.mix(e._dna);
+
+        this._world.injectCreature(dna, {x:this._position.x, y:this._position.y});
+        this._energy -= 2500;
+    }
+
+    mix(other_dna) {
+        return {
+            first_layer: this.mixMatrix(this._dna.first_layer, other_dna.first_layer),
+            second_layer: this.mixMatrix(this._dna.second_layer, other_dna.second_layer),
+            egg_color: Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color,
+            color: Math.random() < 0.5 ? this._dna.color : other_dna.color
+        };
+    }
+
+    mixMatrix(lhs, rhs) {
+        let result = [];
+        for(let i = 0; i < lhs.length; ++i) {
+            var rnd = Math.random();
+            if(rnd < 0.2) {
+                let cut = Math.floor(Math.rnd * lhs.length);
+                result.push(lhs[i].slice(0,cut).concat(rhs[i].slice(cut,rhs.length)))
+            } else {
+                result.push(rnd < 0.6 ? lhs[i] : rhs[i]);
+            }
+        }
+        return result;
+    }
+
+    canReproduce() {
+        return this._can_reproduce && this._energy > 8000 && this._time_since_last_egg_layed > 1000;
     }
 
     alive() {
