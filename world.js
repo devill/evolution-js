@@ -77,8 +77,8 @@ class World extends Thing {
         let self = this;
         this._creatures.forEach(function (creature) {
             self._eggs.forEach(function (e) {
-                if (creature.distance(e) < 20 && creature.canReproduce()) {
-                    creature.reproduce(e);
+                if (creature.distance(e) < 20) {
+                    creature.take_egg(e);
                     e.remove();
                 }
             });

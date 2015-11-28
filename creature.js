@@ -14,7 +14,6 @@ class Creature extends Thing {
         this._energy = 5000;
         this._alive = true;
         this._time_since_last_egg_layed = 0;
-        this._can_reproduce = false;
 
         this._sightResolution = 20;
 
@@ -102,6 +101,15 @@ class Creature extends Thing {
         context.arc(this._position['x'], this._position['y'], 20, this._direction + this._eye_size, this._direction - this._eye_size);
         context.lineTo(this._position['x'], this._position['y']);
         context.stroke();
+
+        if(this._external_dna) {
+            let egg_color = hsl2rgb(this._dna.egg_color, 100, 50);
+            context.strokeStyle = 'rgb(' + egg_color.r + ',' + egg_color.g + ',' + egg_color.b + ')';
+            context.beginPath();
+            context.arc(this._position['x'], this._position['y'], 5, this._direction + this._eye_size, this._direction - this._eye_size);
+            context.stroke();
+        }
+
     }
     
     _drawEye(context) {
@@ -136,15 +144,40 @@ class Creature extends Thing {
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
+        this._reproduce(thought);
+    }
 
-        this._can_reproduce = thought[2] > 0.7;
+    _reproduce(thought) {
         this._time_since_last_egg_layed += 1;
-        if(this._energy > 8000 && thought[2] < 0.3 && this._time_since_last_egg_layed > 1000) {
-            var egg_position = { x:this._position.x - 30 * Math.cos(this._direction), y:this._position.y - 30 * Math.sin(this._direction) };
-            this._world.addEgg(egg_position, hsl2rgb(this._dna.egg_color, 100, 90), this._dna);
+        if (this._energy > 8000 && this._time_since_last_egg_layed > 1000) {
+            if (thought[2] < 0.3) {
+                this._lay_egg();
+            } else if (thought[2] > 0.7) {
+                if(this._external_dna) {
+                    this._create_offspring();
+                } else {
+                    return;
+                }
+            } else {
+                return;
+            }
             this._energy -= 2500;
             this._time_since_last_egg_layed = 0;
         }
+    }
+
+    _create_offspring() {
+        this._world.injectCreature(this.mix(this._external_dna), {x: this._position.x, y: this._position.y});
+        this._external_dna = null;
+        console.log('reproduced');
+    }
+
+    _lay_egg() {
+        var egg_position = {
+            x: this._position.x - 30 * Math.cos(this._direction),
+            y: this._position.y - 30 * Math.sin(this._direction)
+        };
+        this._world.addEgg(egg_position, hsl2rgb(this._dna.egg_color, 100, 90), this._dna);
     }
 
     distance(other) {
@@ -158,11 +191,8 @@ class Creature extends Thing {
         this._energy = this._keepInRange(this._energy, 0, 10000);
     }
 
-    reproduce(e) {
-        let dna = this.mix(e._dna);
-
-        this._world.injectCreature(dna, {x:this._position.x, y:this._position.y});
-        this._energy -= 2500;
+    take_egg(e) {
+        this._external_dna = e._dna;
     }
 
     mix(other_dna) {
@@ -188,9 +218,6 @@ class Creature extends Thing {
         return result;
     }
 
-    canReproduce() {
-        return this._can_reproduce && this._energy > 8000 && this._time_since_last_egg_layed > 1000;
-    }
 
     alive() {
         return this._alive;
