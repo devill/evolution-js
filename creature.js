@@ -6,7 +6,7 @@ class Creature extends Thing {
         this._position = positon;
         this._born_in_iteration = iteration_number;
         this._world = world;
-        this._mid_layer_size = 7;
+        this._mid_layer_size = 8;
 
         this._direction = Math.random() * 2 * Math.PI;
         this._speed = 0;
@@ -14,6 +14,7 @@ class Creature extends Thing {
         this._energy = 5000;
         this._alive = true;
         this._time_since_last_egg_layed = 0;
+        this._low_frequency_random = Math.random()*100;
 
         this._sightResolution = 20;
 
@@ -30,7 +31,7 @@ class Creature extends Thing {
 
     generateRandomDna() {
         this.setDna({
-            first_layer: this.randomMatrix(this._mid_layer_size, this._sightResolution*4+4),
+            first_layer: this.randomMatrix(this._mid_layer_size, this._sightResolution*4+5),
             second_layer: this.randomMatrix(3, this._mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360
@@ -135,7 +136,11 @@ class Creature extends Thing {
     iterate() {
         this._looseEnergy();
 
-        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna.color : -180), Math.random()];
+        if(Math.random() < 0.01) {
+            this._low_frequency_random = Math.random() * 100;
+        }
+
+        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna.color : -180), Math.random()*100, this._low_frequency_random];
         for(let i = 0; i < this._sightResolution; i++) {
             status.push(this._sight[i]['r'],this._sight[i]['g'],this._sight[i]['b'],this._sight[i]['d']);
         }
