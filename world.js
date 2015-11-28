@@ -12,6 +12,12 @@ class World extends Thing {
         this.context.lineWidth = 2;
     }
 
+    injectCreature(dna) {
+        var creature = new Creature(this, {x: Math.random() * 1600, y: Math.random() * 900}, this._iterationNumber);
+        creature.setDna(dna);
+        this._creatures.push(creature);
+    }
+
     generateRandomCreatures(n) {
         for (let i = 0; i < n; i++) {
             var creature = new Creature(this, {x: Math.random() * 1600, y: Math.random() * 900}, this._iterationNumber);
