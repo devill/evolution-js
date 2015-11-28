@@ -30,7 +30,7 @@ class Creature extends Thing {
 
     generateRandomDna() {
         this.setDna({
-            first_layer: this.randomMatrix(this._mid_layer_size, this._sightResolution*4+3),
+            first_layer: this.randomMatrix(this._mid_layer_size, this._sightResolution*4+4),
             second_layer: this.randomMatrix(3, this._mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360
@@ -103,7 +103,7 @@ class Creature extends Thing {
         context.stroke();
 
         if(this._external_dna) {
-            let egg_color = hsl2rgb(this._dna.egg_color, 100, 50);
+            let egg_color = hsl2rgb(this._external_dna.egg_color, 100, 50);
             context.strokeStyle = 'rgb(' + egg_color.r + ',' + egg_color.g + ',' + egg_color.b + ')';
             context.beginPath();
             context.arc(this._position['x'], this._position['y'], 5, this._direction + this._eye_size, this._direction - this._eye_size);
@@ -135,7 +135,7 @@ class Creature extends Thing {
     iterate() {
         this._looseEnergy();
 
-        let status = [this._energy, this._speed, Math.random()];
+        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna.color : -180), Math.random()];
         for(let i = 0; i < this._sightResolution; i++) {
             status.push(this._sight[i]['r'],this._sight[i]['g'],this._sight[i]['b'],this._sight[i]['d']);
         }
@@ -169,7 +169,6 @@ class Creature extends Thing {
     _create_offspring() {
         this._world.injectCreature(this.mix(this._external_dna), {x: this._position.x, y: this._position.y});
         this._external_dna = null;
-        console.log('reproduced');
     }
 
     _lay_egg() {
