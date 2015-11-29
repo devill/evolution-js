@@ -31,7 +31,7 @@ class World extends Thing {
         ++this._iterationNumber;
 
         this._creatures.forEach(function (creature) {
-            creature.see(self._creatures.concat(self._food));
+            creature.see(self._creatures.concat(self._food).concat(self._eggs));
         });
 
         this._creatures.forEach(function(creature) {

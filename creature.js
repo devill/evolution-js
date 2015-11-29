@@ -27,6 +27,7 @@ class Creature extends Thing {
     setDna(dna) {
         this._dna = dna;
         this._brain = new Brain(this._dna);
+        this._eye_size = dna.eye_size;
     }
 
     generateRandomDna() {
@@ -34,7 +35,8 @@ class Creature extends Thing {
             first_layer: this.randomMatrix(this._mid_layer_size, this._sightResolution*4+5),
             second_layer: this.randomMatrix(3, this._mid_layer_size),
             egg_color: Math.random() * 360,
-            color: Math.random() * 360
+            color: Math.random() * 360,
+            eye_size: (0.17 + 0.1*Math.random())*Math.PI
         });
     }
 
@@ -207,7 +209,8 @@ class Creature extends Thing {
             first_layer: this.mixMatrix(this._dna.first_layer, other_dna.first_layer),
             second_layer: this.mixMatrix(this._dna.second_layer, other_dna.second_layer),
             egg_color: this.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color),
-            color: this.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color)
+            color: this.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color),
+            eye_size: this._keepInRange(this.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.01*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
         };
     }
 
@@ -230,8 +233,9 @@ class Creature extends Thing {
         return result;
     }
 
-    mutateValue(value) {
-        return value + (Math.random() < 0.01 ? 4*Math.random()-2 : 0)
+    mutateValue(value, max_mutation) {
+        max_mutation = max_mutation || 2;
+        return value + (Math.random() < 0.01 ? max_mutation*2*Math.random()-max_mutation: 0)
     }
 
     alive() {
