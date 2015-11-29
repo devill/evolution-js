@@ -54,7 +54,7 @@ class World extends Thing {
         }
 
         if (this._creatures.length < 25 && Math.random() < 0.01) {
-            this._food.push(new Food({x:Math.random()*1600,y:Math.random()*900}));
+            this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}));
         }
 
         this.drawWorld();
@@ -124,6 +124,13 @@ class World extends Thing {
         this._creatures.forEach(function (creature) {
             creature.drawTo(self.context, self._iterationNumber);
         });
+
+        if(this._creatures[0]) {
+            this.context.strokeStyle = '#ff0055';
+            let oldest_creature = this._creatures[0].position();
+            this.context.rect(oldest_creature.x - 30, oldest_creature.y - 30,60,60);
+            this.context.stroke();
+        }
     }
 
     addEgg(position, color, dna) {

@@ -6,7 +6,7 @@ class Creature extends Thing {
         this._position = positon;
         this._born_in_iteration = iteration_number;
         this._world = world;
-        this._mid_layer_size = 8;
+        this._mid_layer_size = 15;
 
         this._direction = Math.random() * 2 * Math.PI;
         this._speed = 0;
@@ -14,7 +14,8 @@ class Creature extends Thing {
         this._energy = 5000;
         this._alive = true;
         this._time_since_last_egg_layed = 0;
-        this._last_bullet_fired = 0;
+        this._time_since_last_fire = 0;
+        this._fire_power = 0;
         this._low_frequency_random = Math.random()*100;
 
         this._sightResolution = 20;
@@ -57,8 +58,9 @@ class Creature extends Thing {
         for(let i = 0; i < this._sightResolution; i++) {
             var sightDirection = this._direction + 2*(i - this._sightResolution/2) * this._eye_size / this._sightResolution;
 
-            let result = {r: 128, g: 128, b: 128, d: 10000};
+            let result = {r: 128, g: 128, b: 128, d: this.seeClosestWallDistance(sightDirection)};
             let self = this;
+
             things.forEach(function (thing) {
                 if (thing.visible(self._position, sightDirection)) {
                     let distance = thing.visibilityDistance(self._position, sightDirection);
@@ -74,6 +76,14 @@ class Creature extends Thing {
             });
             this._sight[i] = result;
         }
+    }
+
+    seeClosestWallDistance() {
+        let t0 = (-this._position['x']) / Math.cos(this._direction);
+        let t1 = (-this._position['y']) / Math.sin(this._direction);
+        let t2 = (1600-this._position['x']) / Math.cos(this._direction);
+        let t3 = (900-this._position['y']) / Math.sin(this._direction);
+        return Math.min(t0,t1,t2,t3);
     }
 
     visible(position, direction) {
@@ -132,7 +142,13 @@ class Creature extends Thing {
         context.strokeStyle = '#000000';
         context.beginPath();
         let arcAngle = Math.PI - (this._energy / 5000 + 0.1);
-        context.arc(this._position['x'], this._position['y'], 18, this._direction + arcAngle, this._direction - arcAngle);
+        context.arc(this._position['x'], this._position['y'], 16, this._direction + arcAngle, this._direction - arcAngle);
+        context.stroke();
+
+        context.strokeStyle = 'rgb(200,0,0)';
+        context.beginPath();
+        let arcAngle2 = Math.PI - (this._fire_power / 2500 + 0.1);
+        context.arc(this._position['x'], this._position['y'], 12, this._direction + arcAngle2, this._direction - arcAngle2);
         context.stroke();
     }
 
@@ -144,7 +160,8 @@ class Creature extends Thing {
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
-        this._shoot(thought[3] > 0.9);
+        console.log(thought[3] > 0.99999);
+        this._shoot(thought[3] > 0.99999);
         this._reproduce(thought[2]);
     }
 
@@ -160,16 +177,19 @@ class Creature extends Thing {
     }
     
     _shoot(trigger) {
-        ++this._last_bullet_fired;
-        if(trigger && this._last_bullet_fired > 40) {
+        ++this._fire_power;
+        ++this._time_since_last_fire;
+        if(trigger && this._fire_power > 300 && this._time_since_last_fire > 50) {
             var bullet_position = {
                 x: this._position.x + 30 * Math.cos(this._direction),
                 y: this._position.y + 30 * Math.sin(this._direction)
             };
             this._world.addBullet(bullet_position, this._direction);
-            this._last_bullet_fired = 0;
+            this._fire_power -= 300;
+            this._time_since_last_fire = 0;
             this._energy -= 500;
         }
+        this._fire_power = this._keepInRange(this._fire_power,0,5000);
     }
 
     _reproduce(sexual_desire) {
@@ -198,8 +218,8 @@ class Creature extends Thing {
 
     _layEgg() {
         var egg_position = {
-            x: this._position.x - 30 * Math.cos(this._direction),
-            y: this._position.y - 30 * Math.sin(this._direction)
+            x: this._keepInRange(this._position.x - 30 * Math.cos(this._direction), 20, 1560),
+            y: this._keepInRange(this._position.y - 30 * Math.sin(this._direction), 20, 860)
         };
         this._world.addEgg(egg_position, hsl2rgb(this._dna.egg_color, 100, 90), this._dna);
     }
