@@ -18,10 +18,10 @@ class Creature extends Thing {
         this._fire_power = 0;
         this._low_frequency_random = Math.random()*100;
 
-        this._sightResolution = 10;
+        this._sight_resolution = 10;
 
         this._sight = [];
-        for(let i = 0; i < this._sightResolution; i++) {
+        for(let i = 0; i < this._sight_resolution; i++) {
             this._sight.push({ r:128, g:128, b:128, d:10000 });
         }
     }
@@ -34,7 +34,7 @@ class Creature extends Thing {
 
     generateRandomDna() {
         this.setDna({
-            first_layer: this.randomMatrix(this._mid_layer_size, this._sightResolution*4+5),
+            first_layer: this.randomMatrix(this._mid_layer_size, this._sight_resolution*4+5),
             second_layer: this.randomMatrix(4, this._mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
@@ -55,8 +55,8 @@ class Creature extends Thing {
     }
 
     see(things) {
-        for(let i = 0; i < this._sightResolution; i++) {
-            var sightDirection = this._direction + 2*(i - this._sightResolution/2) * this._eye_size / this._sightResolution;
+        for(let i = 0; i < this._sight_resolution; i++) {
+            var sightDirection = this._direction + 2*(i - this._sight_resolution/2) * this._eye_size / this._sight_resolution;
 
             let result = {r: 128, g: 128, b: 128, d: this.seeClosestWallDistance(sightDirection)};
             let self = this;
@@ -130,12 +130,12 @@ class Creature extends Thing {
     }
     
     _drawEye(context) {
-        for(let i = 0; i < this._sightResolution; i++) {
+        for(let i = 0; i < this._sight_resolution; i++) {
             context.beginPath();
             let color = this._sight[i];
-            let angle = this._direction + 2*(i - this._sightResolution/2) * this._eye_size / this._sightResolution;
+            let angle = this._direction + 2*(i - this._sight_resolution/2) * this._eye_size / this._sight_resolution;
             context.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
-            context.arc(this._position['x'], this._position['y'], 16, angle, angle + 2*this._eye_size / this._sightResolution);
+            context.arc(this._position['x'], this._position['y'], 16, angle, angle + 2*this._eye_size / this._sight_resolution);
             context.stroke();
         }
 
@@ -172,7 +172,7 @@ class Creature extends Thing {
             this._low_frequency_random = Math.random() * 100;
         }
         let status = [this._energy, this._speed, (this._external_dna ? this._external_dna.color : -180), Math.random() * 100, this._low_frequency_random];
-        for (let i = 0; i < this._sightResolution; i++) {
+        for (let i = 0; i < this._sight_resolution; i++) {
             status.push(this._sight[i]['r'], this._sight[i]['g'], this._sight[i]['b'], this._sight[i]['d']);
         }
         return status;
@@ -247,8 +247,8 @@ class Creature extends Thing {
 
     mix(other_dna) {
         return {
-            first_layer: this.mutateMatrix(this.mixMatrix(this._dna.first_layer, other_dna.first_layer)),
-            second_layer: this.mutateMatrix(this.mixMatrix(this._dna.second_layer, other_dna.second_layer)),
+            first_layer: this.mutateEye(this.mutateMatrix(this.mixMatrix(this._dna.first_layer, other_dna.first_layer), 0.5)),
+            second_layer: this.mutateMatrix(this.mixMatrix(this._dna.second_layer, other_dna.second_layer),0.05),
             egg_color: this.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color, 2),
             color: this.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color, 2),
             eye_size: this._keepInRange(this.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.02*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
@@ -276,10 +276,26 @@ class Creature extends Thing {
         return value + (Math.random() < 0.01 ? max_mutation*2*Math.random()-max_mutation: 0)
     }
 
-    mutateMatrix(matrix) {
+    mutateMatrix(matrix, p) {
+        if (Math.random() > p) { return matrix; }
         let i = Math.floor(Math.random()*matrix.length);
         let j = Math.floor(Math.random()*matrix[i].length);
         matrix[i][j] += Math.random()*4-1;
+        return matrix;
+    }
+
+    mutateEye(matrix) {
+        if(Math.random() > 0.0001) {
+            console.log('mutate eye');
+            let i = Math.floor(matrix[0].length - 4*Math.random() * (this._sight_resolution-1));
+            let tmp = 0;
+            for(let k = 0; k < matrix.length; ++k) {
+                tmp = matrix[k][i+0]; matrix[k][i+0] = matrix[k][i+4]; matrix[k][i+4] = tmp;
+                tmp = matrix[k][i+1]; matrix[k][i+1] = matrix[k][i+5]; matrix[k][i+5] = tmp;
+                tmp = matrix[k][i+2]; matrix[k][i+2] = matrix[k][i+6]; matrix[k][i+6] = tmp;
+                tmp = matrix[k][i+3]; matrix[k][i+3] = matrix[k][i+7]; matrix[k][i+7] = tmp;
+            }
+        }
         return matrix;
     }
 
