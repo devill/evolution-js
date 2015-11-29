@@ -6,7 +6,7 @@ class Creature extends Thing {
         this._position = positon;
         this._born_in_iteration = iteration_number;
         this._world = world;
-        this._mid_layer_size = 15;
+        this._mid_layer_size = 20;
 
         this._direction = Math.random() * 2 * Math.PI;
         this._speed = 0;
@@ -18,7 +18,7 @@ class Creature extends Thing {
         this._fire_power = 0;
         this._low_frequency_random = Math.random()*100;
 
-        this._sightResolution = 20;
+        this._sightResolution = 10;
 
         this._sight = [];
         for(let i = 0; i < this._sightResolution; i++) {
@@ -79,11 +79,14 @@ class Creature extends Thing {
     }
 
     seeClosestWallDistance() {
-        let t0 = (-this._position['x']) / Math.cos(this._direction);
-        let t1 = (-this._position['y']) / Math.sin(this._direction);
-        let t2 = (1600-this._position['x']) / Math.cos(this._direction);
-        let t3 = (900-this._position['y']) / Math.sin(this._direction);
-        return Math.min(t0,t1,t2,t3);
+        let t = [
+                (-this._position['x']) / Math.cos(this._direction),
+                (-this._position['y']) / Math.sin(this._direction),
+                (1600-this._position['x']) / Math.cos(this._direction),
+                (900-this._position['y']) / Math.sin(this._direction)
+            ];
+        t = t.filter(function(v) { return v >= 0; });
+        return Math.min(t[0], t[1]);
     }
 
     visible(position, direction) {
@@ -132,7 +135,7 @@ class Creature extends Thing {
             let color = this._sight[i];
             let angle = this._direction + 2*(i - this._sightResolution/2) * this._eye_size / this._sightResolution;
             context.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
-            context.arc(this._position['x'], this._position['y'], 16, angle, angle + this._eye_size / this._sightResolution);
+            context.arc(this._position['x'], this._position['y'], 16, angle, angle + 2*this._eye_size / this._sightResolution);
             context.stroke();
         }
 
@@ -160,7 +163,6 @@ class Creature extends Thing {
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
-        console.log(thought[3] > 0.99999);
         this._shoot(thought[3] > 0.99999);
         this._reproduce(thought[2]);
     }
