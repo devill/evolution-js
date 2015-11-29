@@ -6,6 +6,7 @@ class World extends Thing {
         this._food = [];
         this._creatures = [];
         this._eggs = [];
+        this._bullets = [];
         this._iterationNumber = 0;
 
         this.context = canvas_object.getContext("2d");
@@ -31,7 +32,7 @@ class World extends Thing {
         ++this._iterationNumber;
 
         this._creatures.forEach(function (creature) {
-            creature.see(self._creatures.concat(self._food).concat(self._eggs));
+            creature.see(self._creatures.concat(self._food).concat(self._eggs).concat(self._bullets));
         });
 
         this._creatures.forEach(function(creature) {
@@ -46,6 +47,7 @@ class World extends Thing {
         });
 
         this.feedCreatures();
+        this.detectBulletHits();
         this.reproduce();
         if(this._iterationNumber % 100 == 0 && this._creatures.length < 20) {
             this.generateRandomCreatures(1);
@@ -57,6 +59,24 @@ class World extends Thing {
 
         this.drawWorld();
         setTimeout(function() { self.iteration() }, 1);
+    }
+
+    detectBulletHits() {
+        this._bullets.forEach(function(bullet) {
+            bullet.iterate();
+        });
+        let self = this;
+        this._creatures.forEach(function (creature) {
+            self._bullets.forEach(function (b) {
+                if (creature.distance(b) < 20) {
+                    creature.takeHit();
+                    b.remove();
+                }
+            });
+        });
+        this._bullets = this._bullets.filter(function (bullet) {
+            return bullet.exists();
+        });
     }
 
     feedCreatures() {
@@ -79,7 +99,7 @@ class World extends Thing {
         this._creatures.forEach(function (creature) {
             self._eggs.forEach(function (e) {
                 if (creature.distance(e) < 20) {
-                    creature.take_egg(e);
+                    creature.takeEgg(e);
                     e.remove();
                 }
             });
@@ -98,6 +118,9 @@ class World extends Thing {
         this._food.forEach(function (f) {
             f.drawTo(self.context);
         });
+        this._bullets.forEach(function (b) {
+            b.drawTo(self.context);
+        });
         this._creatures.forEach(function (creature) {
             creature.drawTo(self.context, self._iterationNumber);
         });
@@ -105,5 +128,9 @@ class World extends Thing {
 
     addEgg(position, color, dna) {
         this._eggs.push(new Egg(position, color, dna))
+    }
+
+    addBullet(position, direction) {
+        this._bullets.push(new Bullet(position, direction))
     }
 }

@@ -14,6 +14,7 @@ class Creature extends Thing {
         this._energy = 5000;
         this._alive = true;
         this._time_since_last_egg_layed = 0;
+        this._last_bullet_fired = 0;
         this._low_frequency_random = Math.random()*100;
 
         this._sightResolution = 20;
@@ -33,7 +34,7 @@ class Creature extends Thing {
     generateRandomDna() {
         this.setDna({
             first_layer: this.randomMatrix(this._mid_layer_size, this._sightResolution*4+5),
-            second_layer: this.randomMatrix(3, this._mid_layer_size),
+            second_layer: this.randomMatrix(4, this._mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
             eye_size: (0.17 + 0.1*Math.random())*Math.PI
@@ -45,7 +46,7 @@ class Creature extends Thing {
         for(let i = 0; i < rows; ++i) {
             let v = [];
             for(let j = 0; j < cols; ++j) {
-                v.push(100*(2*Math.random()-1));
+                v.push(10*(2*Math.random()-1));
             }
             result.push(v);
         }
@@ -143,7 +144,8 @@ class Creature extends Thing {
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
-        this._reproduce(thought);
+        this._shoot(thought[3] > 0.9);
+        this._reproduce(thought[2]);
     }
 
     buildStatusVector() {
@@ -156,15 +158,28 @@ class Creature extends Thing {
         }
         return status;
     }
+    
+    _shoot(trigger) {
+        ++this._last_bullet_fired;
+        if(trigger && this._last_bullet_fired > 40) {
+            var bullet_position = {
+                x: this._position.x + 30 * Math.cos(this._direction),
+                y: this._position.y + 30 * Math.sin(this._direction)
+            };
+            this._world.addBullet(bullet_position, this._direction);
+            this._last_bullet_fired = 0;
+            this._energy -= 500;
+        }
+    }
 
-    _reproduce(thought) {
+    _reproduce(sexual_desire) {
         this._time_since_last_egg_layed += 1;
         if (this._energy > 8000 && this._time_since_last_egg_layed > 1000) {
-            if (thought[2] < 0.3) {
-                this._lay_egg();
-            } else if (thought[2] > 0.7) {
+            if (sexual_desire < 0.3) {
+                this._layEgg();
+            } else if (sexual_desire > 0.7) {
                 if(this._external_dna) {
-                    this._create_offspring();
+                    this._createOffspring();
                 } else {
                     return;
                 }
@@ -176,12 +191,12 @@ class Creature extends Thing {
         }
     }
 
-    _create_offspring() {
+    _createOffspring() {
         this._world.injectCreature(this.mix(this._external_dna), {x: this._position.x, y: this._position.y});
         this._external_dna = null;
     }
 
-    _lay_egg() {
+    _layEgg() {
         var egg_position = {
             x: this._position.x - 30 * Math.cos(this._direction),
             y: this._position.y - 30 * Math.sin(this._direction)
@@ -200,7 +215,11 @@ class Creature extends Thing {
         this._energy = this._keepInRange(this._energy, 0, 10000);
     }
 
-    take_egg(e) {
+    takeHit() {
+        this._energy -= 2000;
+    }
+
+    takeEgg(e) {
         this._external_dna = e._dna;
     }
 
