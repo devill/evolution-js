@@ -206,11 +206,11 @@ class Creature extends Thing {
 
     mix(other_dna) {
         return {
-            first_layer: this.mixMatrix(this._dna.first_layer, other_dna.first_layer),
-            second_layer: this.mixMatrix(this._dna.second_layer, other_dna.second_layer),
-            egg_color: this.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color),
-            color: this.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color),
-            eye_size: this._keepInRange(this.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.01*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
+            first_layer: this.mutateMatrix(this.mixMatrix(this._dna.first_layer, other_dna.first_layer)),
+            second_layer: this.mutateMatrix(this.mixMatrix(this._dna.second_layer, other_dna.second_layer)),
+            egg_color: this.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color, 2),
+            color: this.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color, 2),
+            eye_size: this._keepInRange(this.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.02*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
         };
     }
 
@@ -226,16 +226,20 @@ class Creature extends Thing {
             } else {
                 r = (rnd < 0.6 ? lhs[i] : rhs[i]);
             }
-            result.push(r.map(function (value) {
-                return self.mutateValue(value);
-            }));
+            result.push(r);
         }
         return result;
     }
 
     mutateValue(value, max_mutation) {
-        max_mutation = max_mutation || 2;
         return value + (Math.random() < 0.01 ? max_mutation*2*Math.random()-max_mutation: 0)
+    }
+
+    mutateMatrix(matrix) {
+        let i = Math.floor(Math.random()*matrix.length);
+        let j = Math.floor(Math.random()*matrix[i].length);
+        matrix[i][j] += Math.random()*4-1;
+        return matrix;
     }
 
     alive() {

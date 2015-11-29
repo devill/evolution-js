@@ -47,7 +47,7 @@ class World extends Thing {
 
         this.feedCreatures();
         this.reproduce();
-        if(this._creatures.length < 20) {
+        if(this._iterationNumber % 100 == 0 && this._creatures.length < 20) {
             this.generateRandomCreatures(1);
         }
 
@@ -56,6 +56,7 @@ class World extends Thing {
         }
 
         this.drawWorld();
+        setTimeout(function() { self.iteration() }, 1);
     }
 
     feedCreatures() {
