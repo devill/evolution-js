@@ -285,8 +285,7 @@ class Creature extends Thing {
     }
 
     mutateEye(matrix) {
-        if(Math.random() > 0.0001) {
-            console.log('mutate eye');
+        if(Math.random() > 0.7) {
             let i = Math.floor(matrix[0].length - 4*Math.random() * (this._sight_resolution-1));
             let tmp = 0;
             for(let k = 0; k < matrix.length; ++k) {
