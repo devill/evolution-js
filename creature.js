@@ -136,20 +136,23 @@ class Creature extends Thing {
     iterate() {
         this._looseEnergy();
 
-        if(Math.random() < 0.01) {
-            this._low_frequency_random = Math.random() * 100;
-        }
-
-        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna.color : -180), Math.random()*100, this._low_frequency_random];
-        for(let i = 0; i < this._sightResolution; i++) {
-            status.push(this._sight[i]['r'],this._sight[i]['g'],this._sight[i]['b'],this._sight[i]['d']);
-        }
-
+        var status = this.buildStatusVector();
         let thought = this._brain.think(status);
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
         this._reproduce(thought);
+    }
+
+    buildStatusVector() {
+        if (Math.random() < 0.01) {
+            this._low_frequency_random = Math.random() * 100;
+        }
+        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna.color : -180), Math.random() * 100, this._low_frequency_random];
+        for (let i = 0; i < this._sightResolution; i++) {
+            status.push(this._sight[i]['r'], this._sight[i]['g'], this._sight[i]['b'], this._sight[i]['d']);
+        }
+        return status;
     }
 
     _reproduce(thought) {
@@ -203,25 +206,33 @@ class Creature extends Thing {
         return {
             first_layer: this.mixMatrix(this._dna.first_layer, other_dna.first_layer),
             second_layer: this.mixMatrix(this._dna.second_layer, other_dna.second_layer),
-            egg_color: Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color,
-            color: Math.random() < 0.5 ? this._dna.color : other_dna.color
+            egg_color: this.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color),
+            color: this.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color)
         };
     }
 
     mixMatrix(lhs, rhs) {
         let result = [];
+        let self = this;
         for(let i = 0; i < lhs.length; ++i) {
             var rnd = Math.random();
+            let r = [];
             if(rnd < 0.2) {
                 let cut = Math.floor(Math.rnd * lhs.length);
-                result.push(lhs[i].slice(0,cut).concat(rhs[i].slice(cut,rhs.length)))
+                r = lhs[i].slice(0,cut).concat(rhs[i].slice(cut,rhs.length))
             } else {
-                result.push(rnd < 0.6 ? lhs[i] : rhs[i]);
+                r = (rnd < 0.6 ? lhs[i] : rhs[i]);
             }
+            result.push(r.map(function (value) {
+                return self.mutateValue(value);
+            }));
         }
         return result;
     }
 
+    mutateValue(value) {
+        return value + (Math.random() < 0.01 ? 4*Math.random()-2 : 0)
+    }
 
     alive() {
         return this._alive;
