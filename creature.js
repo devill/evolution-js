@@ -85,8 +85,8 @@ class Creature extends Thing {
                 (1600-this._position['x']) / Math.cos(this._direction),
                 (900-this._position['y']) / Math.sin(this._direction)
             ];
-        t = t.filter(function(v) { return v >= 0; });
-        return Math.min(t[0], t[1]);
+        t = t.filter(function(v) { return v && v >= 0; });
+        return Math.min.apply(Math, t);
     }
 
     visible(position, direction) {
