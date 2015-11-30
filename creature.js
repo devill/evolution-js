@@ -257,13 +257,12 @@ class Creature extends Thing {
 
     mixMatrix(lhs, rhs) {
         let result = [];
-        let self = this;
         for(let i = 0; i < lhs.length; ++i) {
             var rnd = Math.random();
             let r = [];
             if(rnd < 0.2) {
-                let cut = Math.floor(Math.rnd * lhs.length);
-                r = lhs[i].slice(0,cut).concat(rhs[i].slice(cut,rhs.length))
+                let cut = Math.floor(Math.random() * lhs[i].length);
+                r = lhs[i].slice(0,cut).concat(rhs[i].slice(cut,rhs[i].length))
             } else {
                 r = (rnd < 0.6 ? lhs[i] : rhs[i]);
             }
