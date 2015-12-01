@@ -28,3 +28,6 @@ class Brain {
         return result;
     }
 }
+
+module.exports = Brain;
+

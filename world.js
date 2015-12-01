@@ -1,5 +1,11 @@
 "use strict";
 
+let Thing = require('./thing');
+let Creature = require('./creature');
+let Food = require('./food');
+let Bullet = require('./bullet');
+let Egg = require('./egg');
+
 class World extends Thing {
     constructor(canvas_object) {
         super();
@@ -141,3 +147,6 @@ class World extends Thing {
         this._bullets.push(new Bullet(position, direction))
     }
 }
+
+module.exports = World;
+

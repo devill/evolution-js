@@ -1,5 +1,8 @@
 "use strict";
 
+let Thing = require('./thing');
+let Brain = require('./brain');
+
 class Creature extends Thing {
     constructor(world, positon, iteration_number) {
         super();
@@ -332,3 +335,6 @@ class Creature extends Thing {
         return Math.min(max,Math.max(min, value));
     }
 }
+
+module.exports = Creature;
+
