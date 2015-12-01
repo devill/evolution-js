@@ -62,15 +62,14 @@ class Creature extends Thing {
             var sightDirection = this._direction + 2*(i - this._sight_resolution/2) * this._eye_size / this._sight_resolution;
 
             let result = {r: 128, g: 128, b: 128, d: this.seeClosestWallDistance(sightDirection)};
-            let self = this;
 
-            things.forEach(function (thing) {
-                if (thing.visible(self._position, sightDirection)) {
-                    let distance = thing.visibilityDistance(self._position, sightDirection);
+            things.forEach(thing => {
+                if (thing.visible(this._position, sightDirection)) {
+                    let distance = thing.visibilityDistance(this._position, sightDirection);
 
                     if (result.d == null || result.d > distance) {
                         result.d = distance;
-                        let color = thing.visibilityColor(self._position, sightDirection);
+                        let color = thing.visibilityColor(this._position, sightDirection);
                         result['r'] = color['r'];
                         result['g'] = color['g'];
                         result['b'] = color['b'];
@@ -88,7 +87,7 @@ class Creature extends Thing {
                 (1600-this._position['x']) / Math.cos(this._direction),
                 (900-this._position['y']) / Math.sin(this._direction)
             ];
-        t = t.filter(function(v) { return v && v >= 0; });
+        t = t.filter(v => { return v && v >= 0; });
         return Math.min.apply(Math, t);
     }
 

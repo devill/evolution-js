@@ -11,7 +11,7 @@ class Brain {
     }
 
     sigmoid_map(vector) {
-        return vector.map(function(x) {
+        return vector.map(x => {
             return 1 / (1 + Math.exp(-x));
         })
     }
