@@ -37,15 +37,15 @@ class Creature extends Thing {
 
     generateRandomDna() {
         this.setDna({
-            first_layer: this.randomMatrix(this._mid_layer_size, this._sight_resolution*4+5),
-            second_layer: this.randomMatrix(4, this._mid_layer_size),
+            first_layer: Creature.randomMatrix(this._mid_layer_size, this._sight_resolution*4+5),
+            second_layer: Creature.randomMatrix(4, this._mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
             eye_size: (0.17 + 0.1*Math.random())*Math.PI
         });
     }
 
-    randomMatrix(rows, cols) {
+    static randomMatrix(rows, cols) {
         let result = [];
         for(let i = 0; i < rows; ++i) {
             let v = [];
@@ -194,7 +194,7 @@ class Creature extends Thing {
             this._time_since_last_fire = 0;
             this._energy -= 500;
         }
-        this._fire_power = this._keepInRange(this._fire_power,0,5000);
+        this._fire_power = Creature._keepInRange(this._fire_power,0,5000);
     }
 
     _reproduce(sexual_desire) {
@@ -223,8 +223,8 @@ class Creature extends Thing {
 
     _layEgg() {
         var egg_position = {
-            x: this._keepInRange(this._position.x - 30 * Math.cos(this._direction), 20, 1560),
-            y: this._keepInRange(this._position.y - 30 * Math.sin(this._direction), 20, 860)
+            x: Creature._keepInRange(this._position.x - 30 * Math.cos(this._direction), 20, 1560),
+            y: Creature._keepInRange(this._position.y - 30 * Math.sin(this._direction), 20, 860)
         };
         this._world.addEgg(egg_position, hsl2rgb(this._dna.egg_color, 100, 90), this._dna);
     }
@@ -237,7 +237,7 @@ class Creature extends Thing {
 
     feed() {
         this._energy += 5000;
-        this._energy = this._keepInRange(this._energy, 0, 10000);
+        this._energy = Creature._keepInRange(this._energy, 0, 10000);
     }
 
     takeHit() {
@@ -250,15 +250,15 @@ class Creature extends Thing {
 
     mix(other_dna) {
         return {
-            first_layer: this.mutateEye(this.mutateMatrix(this.mixMatrix(this._dna.first_layer, other_dna.first_layer), 0.5)),
-            second_layer: this.mutateMatrix(this.mixMatrix(this._dna.second_layer, other_dna.second_layer),0.05),
-            egg_color: this.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color, 2),
-            color: this.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color, 2),
-            eye_size: this._keepInRange(this.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.02*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
+            first_layer: this.mutateEye(Creature.mutateMatrix(Creature.mixMatrix(this._dna.first_layer, other_dna.first_layer), 0.5)),
+            second_layer: Creature.mutateMatrix(Creature.mixMatrix(this._dna.second_layer, other_dna.second_layer),0.05),
+            egg_color: Creature.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color, 2),
+            color: Creature.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color, 2),
+            eye_size: Creature._keepInRange(Creature.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.02*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
         };
     }
 
-    mixMatrix(lhs, rhs) {
+    static mixMatrix(lhs, rhs) {
         let result = [];
         for(let i = 0; i < lhs.length; ++i) {
             var rnd = Math.random();
@@ -274,11 +274,11 @@ class Creature extends Thing {
         return result;
     }
 
-    mutateValue(value, max_mutation) {
+    static mutateValue(value, max_mutation) {
         return value + (Math.random() < 0.01 ? max_mutation*2*Math.random()-max_mutation: 0)
     }
 
-    mutateMatrix(matrix, p) {
+    static mutateMatrix(matrix, p) {
         if (Math.random() > p) { return matrix; }
         let i = Math.floor(Math.random()*matrix.length);
         let j = Math.floor(Math.random()*matrix[i].length);
@@ -312,15 +312,15 @@ class Creature extends Thing {
         this._direction += (accelerationAngle - 0.5) / 10;
 
         this._speed += (accelerationRadius - 0.5) / 10;
-        this._speed = this._keepInRange(this._speed, 0, 2);
+        this._speed = Creature._keepInRange(this._speed, 0, 2);
     }
 
     _updatePosition() {
         this._position['x'] += this._speed * Math.cos(this._direction);
         this._position['y'] += this._speed * Math.sin(this._direction);
 
-        this._position['x'] = this._keepInRange(this._position['x'], 20, 1580);
-        this._position['y'] = this._keepInRange(this._position['y'], 20, 880);
+        this._position['x'] = Creature._keepInRange(this._position['x'], 20, 1580);
+        this._position['y'] = Creature._keepInRange(this._position['y'], 20, 880);
     }
 
     _looseEnergy() {
@@ -328,10 +328,10 @@ class Creature extends Thing {
         if (this._energy < 1) {
             this._alive = false;
         }
-        this._energy = this._keepInRange(this._energy, 0, 10000);
+        this._energy = Creature._keepInRange(this._energy, 0, 10000);
     }
 
-    _keepInRange(value, min, max) {
+    static _keepInRange(value, min, max) {
         return Math.min(max,Math.max(min, value));
     }
 }

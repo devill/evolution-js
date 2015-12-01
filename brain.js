@@ -6,8 +6,8 @@ class Brain {
     }
 
     think(input) {
-        let hidden_neurons = this.sigmoid_map(this.multiply(input, this._dna.first_layer));
-        return this.sigmoid_map(this.multiply(hidden_neurons, this._dna.second_layer));
+        let hidden_neurons = this.sigmoid_map(Brain.multiply(input, this._dna.first_layer));
+        return this.sigmoid_map(Brain.multiply(hidden_neurons, this._dna.second_layer));
     }
 
     sigmoid_map(vector) {
@@ -16,7 +16,7 @@ class Brain {
         })
     }
 
-    multiply(vect, matrix) {
+    static multiply(vect, matrix) {
         let result = [];
         for(let i = 0; i < matrix.length; ++i) {
             let k = 0;
