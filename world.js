@@ -16,7 +16,6 @@ class World extends Thing {
         this._iterationNumber = 0;
 
         this.context = canvas_object.getContext("2d");
-        this.context.lineWidth = 2;
     }
 
     injectCreature(dna, position) {
@@ -34,21 +33,20 @@ class World extends Thing {
     }
     
     iteration() {
-        let self = this;
         ++this._iterationNumber;
 
-        this._creatures.forEach(function (creature) {
-            creature.see(self._creatures.concat(self._food).concat(self._eggs).concat(self._bullets));
+        this._creatures.forEach(creature => {
+            creature.see(this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets));
         });
 
-        this._creatures.forEach(function(creature) {
+        this._creatures.forEach(creature => {
             creature.iterate();
             if(!creature.alive()) {
-                self._food.push(new Food(creature.position()));
+                this._food.push(new Food(creature.position()));
             }
         });
 
-        this._creatures = this._creatures.filter(function (creature) {
+        this._creatures = this._creatures.filter(creature => {
             return creature.alive();
         });
 
@@ -64,71 +62,68 @@ class World extends Thing {
         }
 
         this.drawWorld();
-        setTimeout(function() { self.iteration() }, 1);
+        setTimeout(() => { this.iteration() }, 1);
     }
 
     detectBulletHits() {
-        this._bullets.forEach(function(bullet) {
+        this._bullets.forEach(bullet => {
             bullet.iterate();
         });
-        let self = this;
-        this._creatures.forEach(function (creature) {
-            self._bullets.forEach(function (b) {
+        this._creatures.forEach(creature => {
+            this._bullets.forEach(b => {
                 if (creature.distance(b) < 20) {
                     creature.takeHit();
                     b.remove();
                 }
             });
         });
-        this._bullets = this._bullets.filter(function (bullet) {
+        this._bullets = this._bullets.filter(bullet => {
             return bullet.exists();
         });
     }
 
     feedCreatures() {
-        let self = this;
-        this._creatures.forEach(function (creature) {
-            self._food.forEach(function (f) {
+        this._creatures.forEach(creature => {
+            this._food.forEach(f => {
                 if (creature.distance(f) < 20) {
                     creature.feed();
                     f.remove();
                 }
             });
         });
-        this._food = this._food.filter(function (f) {
+        this._food = this._food.filter(f => {
             return f.exists();
         });
     }
 
     reproduce() {
-        let self = this;
-        this._creatures.forEach(function (creature) {
-            self._eggs.forEach(function (e) {
+        this._creatures.forEach(creature => {
+            this._eggs.forEach(e => {
                 if (creature.distance(e) < 20) {
                     creature.takeEgg(e);
                     e.remove();
                 }
             });
         });
-        this._eggs = this._eggs.filter(function (e) {
+        this._eggs = this._eggs.filter(e => {
             return e.exists();
         });
     }
 
     drawWorld() {
-        let self = this;
+        this.context.lineWidth = 2;
         this.context.clearRect(0, 0, 1600, 900);
-        this._eggs.forEach(function (e) {
-            e.drawTo(self.context);
+        this._eggs.forEach(e => {
+            e.drawTo(this.context);
         });
-        this._food.forEach(function (f) {
-            f.drawTo(self.context);
+        this._food.forEach(f => {
+            f.drawTo(this.context);
         });
-        this._bullets.forEach(function (b) {
-            b.drawTo(self.context);
+        this._bullets.forEach(b => {
+            b.drawTo(this.context);
         });
-        this._creatures.forEach(function (creature) {
-            creature.drawTo(self.context, self._iterationNumber);
+        this._creatures.forEach(creature => {
+            creature.drawTo(this.context, this._iterationNumber);
         });
 
         if(this._creatures[0]) {
