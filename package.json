@@ -1,0 +1,32 @@
+{
+  "name": "evolution-js",
+  "version": "0.1.0",
+  "description": "Simulation of life right in your browser!",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-script": "mkdir dist && browserify main.js -d -o dist/evolution.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaborwho/evolution-js.git"
+  },
+  "keywords": [
+    "life",
+    "evolution",
+    "creature",
+    "genetic",
+    "algorithm",
+    "neural",
+    "network"
+  ],
+  "author": "devill",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gaborwho/evolution-js/issues"
+  },
+  "homepage": "https://github.com/gaborwho/evolution-js#readme",
+  "devDependencies": {
+    "browserify": "^12.0.1"
+  }
+}

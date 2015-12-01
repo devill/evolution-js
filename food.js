@@ -1,5 +1,7 @@
 "use strict";
 
+let Thing = require('./thing');
+
 class Food extends Thing {
     constructor(position) {
         super();
@@ -40,3 +42,6 @@ class Food extends Thing {
         return { r:0, g:0, b:0 };
     }
 }
+
+module.exports = Food;
+

@@ -1,5 +1,7 @@
 "use strict";
 
+let Thing = require('./thing');
+
 class Egg extends Thing {
     constructor(position, color, dna) {
         super();
@@ -43,3 +45,6 @@ class Egg extends Thing {
         return this._color;
     }
 }
+
+module.exports = Egg;
+

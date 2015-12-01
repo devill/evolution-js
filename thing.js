@@ -11,3 +11,6 @@ class Thing {
         return {distanceFromEye: nx, distanceFromLineOfSight: Math.abs(ny) };
     }
 }
+
+module.exports = Thing;
+
