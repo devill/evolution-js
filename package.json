@@ -5,8 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./node_modules/gulp/bin/gulp.js",
-    "build-script": "echo !!! deprecated, use npm start; return 1"
+    "start": "node ./node_modules/gulp/bin/gulp.js"
   },
   "repository": {
     "type": "git",
