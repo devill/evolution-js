@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gaborwho/evolution-js.git"
+    "url": "git+https://github.com/devill/evolution-js.git"
   },
   "keywords": [
     "life",
@@ -23,9 +23,9 @@
   "author": "devill",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gaborwho/evolution-js/issues"
+    "url": "https://github.com/devill/evolution-js/issues"
   },
-  "homepage": "https://github.com/gaborwho/evolution-js#readme",
+  "homepage": "https://github.com/devill/evolution-js#readme",
   "devDependencies": {
     "browserify": "^12.0.1",
     "babelify": "^7.2.0"
