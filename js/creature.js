@@ -2,6 +2,7 @@
 
 let Thing = require('./thing');
 let Brain = require('./brain');
+let Food = require('./food');
 
 class Creature extends Thing {
     constructor(world, positon, iteration_number) {
@@ -69,7 +70,7 @@ class Creature extends Thing {
 
                     if (result.d == null || result.d > distance) {
                         result.d = distance;
-                        let color = thing.visibilityColor(this._position, sightDirection);
+                        let color = Food.visibilityColor(this._position, sightDirection);
                         result['r'] = color['r'];
                         result['g'] = color['g'];
                         result['b'] = color['b'];
@@ -115,7 +116,7 @@ class Creature extends Thing {
     _drawBody(context) {
         context.beginPath();
         let color = hsl2rgb(this._dna.color, 100, 50);
-        context.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+        context.strokeStyle = `rgb(${color.r},${color.g},${color.b})`;
         context.moveTo(this._position['x'], this._position['y']);
         context.arc(this._position['x'], this._position['y'], 20, this._direction + this._eye_size, this._direction - this._eye_size);
         context.lineTo(this._position['x'], this._position['y']);
@@ -123,7 +124,7 @@ class Creature extends Thing {
 
         if(this._external_dna) {
             let egg_color = hsl2rgb(this._external_dna.egg_color, 100, 50);
-            context.strokeStyle = 'rgb(' + egg_color.r + ',' + egg_color.g + ',' + egg_color.b + ')';
+            context.strokeStyle = `rgb(${egg_color.r},${egg_color.g},${egg_color.b})`;
             context.beginPath();
             context.arc(this._position['x'], this._position['y'], 5, this._direction + this._eye_size, this._direction - this._eye_size);
             context.stroke();
@@ -136,7 +137,7 @@ class Creature extends Thing {
             context.beginPath();
             let color = this._sight[i];
             let angle = this._direction + 2*(i - this._sight_resolution/2) * this._eye_size / this._sight_resolution;
-            context.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+            context.strokeStyle = `rgb(${color.r},${color.g},${color.b})`;
             context.arc(this._position['x'], this._position['y'], 16, angle, angle + 2*this._eye_size / this._sight_resolution);
             context.stroke();
         }

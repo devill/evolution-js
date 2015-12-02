@@ -15,7 +15,8 @@ class Food extends Thing {
 
     drawTo(context) {
         context.beginPath();
-        context.strokeStyle = '#000000';
+        let color = Food.visibilityColor();
+        context.strokeStyle = `rgb(${color.r},${color.g},${color.b})`;
         context.arc(this._position['x'],this._position['y'],5,0,2*Math.PI);
         context.stroke();
     }
@@ -38,7 +39,7 @@ class Food extends Thing {
         return visibilityData['distanceFromEye'];
     }
 
-    visibilityColor(position, direction) {
+    static visibilityColor(position, direction) {
         return { r:0, g:0, b:0 };
     }
 }
