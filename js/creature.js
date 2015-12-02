@@ -51,7 +51,7 @@ class Creature extends Thing {
         for(let i = 0; i < rows; ++i) {
             let v = [];
             for(let j = 0; j < cols; ++j) {
-                v.push(10*(2*Math.random()-1));
+                v.push(2*Math.random()-1);
             }
             result.push(v);
         }
@@ -250,8 +250,8 @@ class Creature extends Thing {
 
     mix(other_dna) {
         return {
-            first_layer: this.mutateEye(Creature.mutateMatrix(Creature.mixMatrix(this._dna.first_layer, other_dna.first_layer), 0.5)),
-            second_layer: Creature.mutateMatrix(Creature.mixMatrix(this._dna.second_layer, other_dna.second_layer),0.05),
+            first_layer: this.mutateEye(Creature.mutateMatrix(Creature.mixMatrix(this._dna.first_layer, other_dna.first_layer), 0.1)),
+            second_layer: Creature.mutateMatrix(Creature.mixMatrix(this._dna.second_layer, other_dna.second_layer),0.01),
             egg_color: Creature.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color, 2),
             color: Creature.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color, 2),
             eye_size: Creature._keepInRange(Creature.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.02*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
@@ -287,7 +287,7 @@ class Creature extends Thing {
     }
 
     mutateEye(matrix) {
-        if(Math.random() > 0.7) {
+        if(Math.random() > 0.9) {
 	    let i = (matrix[0].length - 4*this._sight_resolution) + 4*Math.floor(Math.random()*(this._sight_resolution - 1));
             let tmp = 0;
             for(let k = 0; k < matrix.length; ++k) {
