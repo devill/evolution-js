@@ -70,7 +70,7 @@ class Creature extends Thing {
 
                     if (result.d == null || result.d > distance) {
                         result.d = distance;
-                        let color = Food.visibilityColor(this._position, sightDirection);
+                        let color = thing.visibilityColor(this._position, sightDirection);
                         result['r'] = color['r'];
                         result['g'] = color['g'];
                         result['b'] = color['b'];
