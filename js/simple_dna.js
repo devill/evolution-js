@@ -1,6 +1,7 @@
 "use strict";
 
 let SimpleBrain = require('./simple_brain');
+let Matrix = require('./matrix');
 
 class SimpleDna {
     constructor(dna, sight_resolution) {
