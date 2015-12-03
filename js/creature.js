@@ -273,8 +273,9 @@ class Creature extends Thing {
                 tmp = data[k][i+2]; data[k][i+2] = data[k][i+6]; data[k][i+6] = tmp;
                 tmp = data[k][i+3]; data[k][i+3] = data[k][i+7]; data[k][i+7] = tmp;
             }
+            return new Matrix(data);
         }
-        return new Matrix(data);
+        return matrix;
     }
 
     alive() {

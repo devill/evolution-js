@@ -30,15 +30,15 @@ class Matrix {
             }
             result.push(r);
         }
-        return result;
+        return new Matrix(result);
     }
 
     mutate(p) {
-        if (Math.random() > p) { return this._data; }
+        if (Math.random() > p) { return this; }
         let i = Math.floor(Math.random()*this._data.length);
         let j = Math.floor(Math.random()*this._data[i].length);
         this._data[i][j] += Math.random()*4-1;
-        return this._data;
+        return this;
     }
 
     static random(rows, cols) {
