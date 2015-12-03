@@ -1,7 +1,7 @@
 "use strict";
 
 let Thing = require('./thing');
-let SimpleBrain = require('./simple_brain');
+let SimpleDna = require('./simple_dna');
 let Matrix = require('./matrix');
 
 class Creature extends Thing {
@@ -32,18 +32,18 @@ class Creature extends Thing {
 
     setDna(dna) {
         this._dna = dna;
-        this._brain = new SimpleBrain(this._dna);
-        this._eye_size = dna.eye_size;
+        this._brain = dna.buildBrain();
+        this._eye_size = dna.eyeSize();
     }
 
     generateRandomDna() {
-        this.setDna({
+        this.setDna(new SimpleDna({
             first_layer: Creature.randomMatrix(this._mid_layer_size, this._sight_resolution*4+5),
             second_layer: Creature.randomMatrix(4, this._mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
             eye_size: (0.17 + 0.1*Math.random())*Math.PI
-        });
+        }, this._sight_resolution));
     }
 
     static randomMatrix(rows, cols) {
@@ -95,7 +95,7 @@ class Creature extends Thing {
     }
 
     visibilityColor(position, direction) {
-        return hsl2rgb(this._dna.color, 100, 50);
+        return this._dna.visibilityColor();
     }
 
     drawTo(context, thisIteration) {
@@ -107,7 +107,7 @@ class Creature extends Thing {
 
     _drawBody(context) {
         context.beginPath();
-        let color = hsl2rgb(this._dna.color, 100, 50);
+        let color = this._dna.visibilityColor();
         context.strokeStyle = `rgb(${color.r},${color.g},${color.b})`;
         context.moveTo(this._position['x'], this._position['y']);
         context.arc(this._position['x'], this._position['y'], 20, this._direction + this._eye_size, this._direction - this._eye_size);
@@ -115,7 +115,7 @@ class Creature extends Thing {
         context.stroke();
 
         if(this._external_dna) {
-            let egg_color = hsl2rgb(this._external_dna.egg_color, 100, 50);
+            let egg_color = this._external_dna.eggColor();
             context.strokeStyle = `rgb(${egg_color.r},${egg_color.g},${egg_color.b})`;
             context.beginPath();
             context.arc(this._position['x'], this._position['y'], 5, this._direction + this._eye_size, this._direction - this._eye_size);
@@ -156,6 +156,10 @@ class Creature extends Thing {
         var status = this.buildStatusVector();
         let thought = this._brain.think(status);
 
+        if(isNaN(thought[0])) {
+            throw "NaN value in thought";
+        }
+
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
         this._shoot(thought[3] > 0.99999);
@@ -166,7 +170,7 @@ class Creature extends Thing {
         if (Math.random() < 0.01) {
             this._low_frequency_random = Math.random() * 100;
         }
-        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna.color : -180), Math.random() * 100, this._low_frequency_random];
+        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna._dna._egg_color : -180), Math.random() * 100, this._low_frequency_random];
         for (let i = 0; i < this._sight_resolution; i++) {
             status.push(this._sight[i]['r'], this._sight[i]['g'], this._sight[i]['b'], this._sight[i]['d']);
         }
@@ -218,7 +222,7 @@ class Creature extends Thing {
             x: Creature._keepInRange(this._position.x - 30 * Math.cos(this._direction), 20, 1560),
             y: Creature._keepInRange(this._position.y - 30 * Math.sin(this._direction), 20, 860)
         };
-        this._world.addEgg(egg_position, hsl2rgb(this._dna.egg_color, 100, 90), this._dna);
+        this._world.addEgg(egg_position, this._dna.eggColor(), this._dna);
     }
 
     distance(other) {
@@ -241,33 +245,7 @@ class Creature extends Thing {
     }
 
     mix(other_dna) {
-        return {
-            first_layer: this.mutateEye((this._dna.first_layer.mix(other_dna.first_layer)).mutate(0.1)),
-            second_layer: (this._dna.second_layer.mix(other_dna.second_layer)).mutate(0.01),
-            egg_color: Creature.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color, 2),
-            color: Creature.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color, 2),
-            eye_size: Creature._keepInRange(Creature.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.02*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
-        };
-    }
-
-    static mutateValue(value, max_mutation) {
-        return value + (Math.random() < 0.01 ? max_mutation*2*Math.random()-max_mutation: 0)
-    }
-
-    mutateEye(matrix) {
-        if(Math.random() > 0.9) {
-            let data = matrix._data;
-	        let i = (data[0].length - 4*this._sight_resolution) + 4*Math.floor(Math.random()*(this._sight_resolution - 1));
-            let tmp = 0;
-            for(let k = 0; k < data.length; ++k) {
-                tmp = data[k][i+0]; data[k][i+0] = data[k][i+4]; data[k][i+4] = tmp;
-                tmp = data[k][i+1]; data[k][i+1] = data[k][i+5]; data[k][i+5] = tmp;
-                tmp = data[k][i+2]; data[k][i+2] = data[k][i+6]; data[k][i+6] = tmp;
-                tmp = data[k][i+3]; data[k][i+3] = data[k][i+7]; data[k][i+7] = tmp;
-            }
-            return new Matrix(data);
-        }
-        return matrix;
+        return this._dna.mix(other_dna);
     }
 
     alive() {
