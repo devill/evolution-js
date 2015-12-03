@@ -39,8 +39,9 @@ class World extends Thing {
     iteration() {
         ++this._iterationNumber;
 
+        var things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets);
         this._creatures.forEach(creature => {
-            creature.see(this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets));
+            creature.see(things);
         });
 
         this._creatures.forEach(creature => {
