@@ -4,7 +4,7 @@
   "description": "Simulation of life right in your browser!",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node ./node_modules/gulp/bin/gulp.js"
   },
   "repository": {
@@ -33,6 +33,7 @@
     "gulp": "^3.9.0",
     "gulp-batch": "^1.0.5",
     "gulp-watch": "^4.3.5",
+    "mocha": "^2.3.4",
     "webpack": "^1.12.9"
   }
 }
