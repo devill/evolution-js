@@ -1,13 +1,13 @@
 "use strict";
 
-class Brain {
+class SimpleBrain {
     constructor(dna) {
         this._dna = dna;
     }
 
     think(input) {
-        let hidden_neurons = this.sigmoid_map(Brain.multiply(input, this._dna.first_layer));
-        return this.sigmoid_map(Brain.multiply(hidden_neurons, this._dna.second_layer));
+        let hidden_neurons = this.sigmoid_map(SimpleBrain.multiply(input, this._dna.first_layer));
+        return this.sigmoid_map(SimpleBrain.multiply(hidden_neurons, this._dna.second_layer));
     }
 
     sigmoid_map(vector) {
@@ -29,5 +29,5 @@ class Brain {
     }
 }
 
-module.exports = Brain;
+module.exports = SimpleBrain;
 

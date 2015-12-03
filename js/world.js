@@ -18,6 +18,10 @@ class World extends Thing {
         this.context = canvas_object.getContext("2d");
     }
 
+    getIterationNumber() {
+        return this._iterationNumber;
+    }
+
     injectCreature(dna, position) {
         var creature = new Creature(this, position, this._iterationNumber);
         creature.setDna(dna);

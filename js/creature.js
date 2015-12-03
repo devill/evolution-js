@@ -1,8 +1,7 @@
 "use strict";
 
 let Thing = require('./thing');
-let Brain = require('./brain');
-let Food = require('./food');
+let SimpleBrain = require('./simple_brain');
 
 class Creature extends Thing {
     constructor(world, positon, iteration_number) {
@@ -32,7 +31,7 @@ class Creature extends Thing {
 
     setDna(dna) {
         this._dna = dna;
-        this._brain = new Brain(this._dna);
+        this._brain = new SimpleBrain(this._dna);
         this._eye_size = dna.eye_size;
     }
 

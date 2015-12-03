@@ -11,7 +11,7 @@ setInterval(() => {
 
 let lastIterationCount = 0;
 setInterval(() => {
-    let fps = world._iterationNumber - lastIterationCount;
-    document.getElementById('stats').innerHTML = `Reached ${world._iterationNumber} at ${fps} fps`;
-    lastIterationCount = world._iterationNumber;
+    let fps = world.getIterationNumber() - lastIterationCount;
+    document.getElementById('stats').innerHTML = `Reached ${world.getIterationNumber()} at ${fps} fps`;
+    lastIterationCount = world.getIterationNumber();
 }, 1000);
