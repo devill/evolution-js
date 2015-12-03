@@ -157,6 +157,7 @@ class Creature extends Thing {
         let thought = this._brain.think(status);
 
         if(isNaN(thought[0])) {
+            console.log(status, thought);
             throw "NaN value in thought";
         }
 
@@ -170,7 +171,7 @@ class Creature extends Thing {
         if (Math.random() < 0.01) {
             this._low_frequency_random = Math.random() * 100;
         }
-        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna._dna._egg_color : -180), Math.random() * 100, this._low_frequency_random];
+        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna._dna.egg_color : -180), Math.random() * 100, this._low_frequency_random];
         for (let i = 0; i < this._sight_resolution; i++) {
             status.push(this._sight[i]['r'], this._sight[i]['g'], this._sight[i]['b'], this._sight[i]['d']);
         }
