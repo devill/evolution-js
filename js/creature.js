@@ -2,6 +2,7 @@
 
 let Thing = require('./thing');
 let SimpleBrain = require('./simple_brain');
+let Matrix = require('./matrix');
 
 class Creature extends Thing {
     constructor(world, positon, iteration_number) {
@@ -46,15 +47,7 @@ class Creature extends Thing {
     }
 
     static randomMatrix(rows, cols) {
-        let result = [];
-        for(let i = 0; i < rows; ++i) {
-            let v = [];
-            for(let j = 0; j < cols; ++j) {
-                v.push(2*Math.random()-1);
-            }
-            result.push(v);
-        }
-        return result;
+        return Matrix.random(rows, cols);
     }
 
     see(things) {
@@ -258,19 +251,7 @@ class Creature extends Thing {
     }
 
     static mixMatrix(lhs, rhs) {
-        let result = [];
-        for(let i = 0; i < lhs.length; ++i) {
-            var rnd = Math.random();
-            let r = [];
-            if(rnd < 0.2) {
-                let cut = Math.floor(Math.random() * lhs[i].length);
-                r = lhs[i].slice(0,cut).concat(rhs[i].slice(cut,rhs[i].length))
-            } else {
-                r = (rnd < 0.6 ? lhs[i] : rhs[i]);
-            }
-            result.push(r);
-        }
-        return result;
+        return lhs.mix(rhs);
     }
 
     static mutateValue(value, max_mutation) {
@@ -278,25 +259,22 @@ class Creature extends Thing {
     }
 
     static mutateMatrix(matrix, p) {
-        if (Math.random() > p) { return matrix; }
-        let i = Math.floor(Math.random()*matrix.length);
-        let j = Math.floor(Math.random()*matrix[i].length);
-        matrix[i][j] += Math.random()*4-1;
-        return matrix;
+        return matrix.mutate(p);
     }
 
     mutateEye(matrix) {
         if(Math.random() > 0.9) {
-	    let i = (matrix[0].length - 4*this._sight_resolution) + 4*Math.floor(Math.random()*(this._sight_resolution - 1));
+            let data = matrix._data;
+	        let i = (data[0].length - 4*this._sight_resolution) + 4*Math.floor(Math.random()*(this._sight_resolution - 1));
             let tmp = 0;
-            for(let k = 0; k < matrix.length; ++k) {
-                tmp = matrix[k][i+0]; matrix[k][i+0] = matrix[k][i+4]; matrix[k][i+4] = tmp;
-                tmp = matrix[k][i+1]; matrix[k][i+1] = matrix[k][i+5]; matrix[k][i+5] = tmp;
-                tmp = matrix[k][i+2]; matrix[k][i+2] = matrix[k][i+6]; matrix[k][i+6] = tmp;
-                tmp = matrix[k][i+3]; matrix[k][i+3] = matrix[k][i+7]; matrix[k][i+7] = tmp;
+            for(let k = 0; k < data.length; ++k) {
+                tmp = data[k][i+0]; data[k][i+0] = data[k][i+4]; data[k][i+4] = tmp;
+                tmp = data[k][i+1]; data[k][i+1] = data[k][i+5]; data[k][i+5] = tmp;
+                tmp = data[k][i+2]; data[k][i+2] = data[k][i+6]; data[k][i+6] = tmp;
+                tmp = data[k][i+3]; data[k][i+3] = data[k][i+7]; data[k][i+7] = tmp;
             }
         }
-        return matrix;
+        return new Matrix(data);
     }
 
     alive() {
