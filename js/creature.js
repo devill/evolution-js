@@ -242,24 +242,16 @@ class Creature extends Thing {
 
     mix(other_dna) {
         return {
-            first_layer: this.mutateEye(Creature.mutateMatrix(Creature.mixMatrix(this._dna.first_layer, other_dna.first_layer), 0.1)),
-            second_layer: Creature.mutateMatrix(Creature.mixMatrix(this._dna.second_layer, other_dna.second_layer),0.01),
+            first_layer: this.mutateEye((this._dna.first_layer.mix(other_dna.first_layer)).mutate(0.1)),
+            second_layer: (this._dna.second_layer.mix(other_dna.second_layer)).mutate(0.01),
             egg_color: Creature.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna.egg_color, 2),
             color: Creature.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna.color, 2),
             eye_size: Creature._keepInRange(Creature.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna.eye_size, 0.02*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
         };
     }
 
-    static mixMatrix(lhs, rhs) {
-        return lhs.mix(rhs);
-    }
-
     static mutateValue(value, max_mutation) {
         return value + (Math.random() < 0.01 ? max_mutation*2*Math.random()-max_mutation: 0)
-    }
-
-    static mutateMatrix(matrix, p) {
-        return matrix.mutate(p);
     }
 
     mutateEye(matrix) {
