@@ -61,8 +61,7 @@ class World extends Thing {
             this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}));
         }
 
-        this.drawWorld();
-        setTimeout(() => { this.iteration() }, 1);
+        setTimeout(() => { this.iteration() }, 0);
     }
 
     detectBulletHits() {
