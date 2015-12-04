@@ -24,8 +24,7 @@ class World extends Thing {
     }
 
     injectCreature(dna, position) {
-        var creature = new Creature(this, position, this._iterationNumber);
-        creature.setDna(dna);
+        var creature = new Creature(this, dna, position, this._iterationNumber);
         this._creatures.push(creature);
     }
 
