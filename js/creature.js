@@ -8,6 +8,7 @@ class Creature extends Thing {
     constructor(world, dna, positon, iteration_number) {
         super();
 
+        console.log(dna);
         this._dna = dna;
         this._brain = dna.buildBrain();
         this._eye_size = dna.eyeSize();
@@ -15,7 +16,6 @@ class Creature extends Thing {
         this._position = positon;
         this._born_in_iteration = iteration_number;
         this._world = world;
-        this._mid_layer_size = 20;
 
         this._direction = Math.random() * 2 * Math.PI;
         this._speed = 0;
@@ -27,7 +27,7 @@ class Creature extends Thing {
         this._fire_power = 0;
         this._low_frequency_random = Math.random()*100;
 
-        this._sight_resolution = 10;
+        this._sight_resolution = dna.sightResolution();
 
         this._sight = [];
         for(let i = 0; i < this._sight_resolution; i++) {

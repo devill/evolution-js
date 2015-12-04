@@ -5,6 +5,7 @@ let Creature = require('./creature');
 let Food = require('./food');
 let Bullet = require('./bullet');
 let Egg = require('./egg');
+let SimpleDna = require('./simple_dna');
 
 class World extends Thing {
     constructor(canvas_object) {

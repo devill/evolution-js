@@ -17,6 +17,10 @@ class SimpleDna {
         return this._dna.eye_size;
     }
 
+    sightResolution() {
+        return this._sight_resolution;
+    }
+
     visibilityColor() {
         return hsl2rgb(this._dna.color, 100, 50);
     }
@@ -60,13 +64,15 @@ class SimpleDna {
     }
 
     static generateRandomDna() {
+        let mid_layer_size = 20;
+        let sight_resolution = 10;
         return new SimpleDna({
-            first_layer: Matrix.random(this._mid_layer_size, this._sight_resolution*4+5),
-            second_layer: Matrix.random(4, this._mid_layer_size),
+            first_layer: Matrix.random(mid_layer_size, sight_resolution*4+5),
+            second_layer: Matrix.random(4, mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
             eye_size: (0.17 + 0.1*Math.random())*Math.PI
-        }, this._sight_resolution);
+        }, sight_resolution);
     }
 }
 
