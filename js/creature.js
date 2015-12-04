@@ -1,14 +1,11 @@
 "use strict";
 
 let Thing = require('./thing');
-let SimpleDna = require('./simple_dna');
-let Matrix = require('./matrix');
 
 class Creature extends Thing {
     constructor(world, dna, positon, iteration_number) {
         super();
 
-        console.log(dna);
         this._dna = dna;
         this._brain = dna.buildBrain();
         this._eye_size = dna.eyeSize();
@@ -142,7 +139,7 @@ class Creature extends Thing {
         let thought = this._brain.think(status);
 
         if(isNaN(thought[0])) {
-            console.log(status, thought);
+            console.log(status, thought, this._dna);
             throw "NaN value in thought";
         }
 

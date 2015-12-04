@@ -36,7 +36,7 @@ class SimpleDna {
             egg_color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna._dna.egg_color, 2),
             color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna._dna.color, 2),
             eye_size: SimpleDna._keepInRange(SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna._dna.eye_size, 0.02*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
-        });
+        }, this._sight_resolution);
     }
 
     mutateEye(matrix) {

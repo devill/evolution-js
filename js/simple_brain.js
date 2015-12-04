@@ -1,7 +1,5 @@
 "use strict";
 
-let Matrix = require('./matrix');
-
 class SimpleBrain {
     constructor(dna) {
         this._dna = dna;
