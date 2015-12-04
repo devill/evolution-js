@@ -14,30 +14,34 @@ class World extends Thing {
         this._creatures = [];
         this._eggs = [];
         this._bullets = [];
-        this._iterationNumber = 0;
+        this._iteration_number = 0;
+        this._random_creatures = 0;
+        this._mated_creatures = 0;
 
         this.context = canvas_object.getContext("2d");
     }
 
     getIterationNumber() {
-        return this._iterationNumber;
+        return this._iteration_number;
     }
 
     injectCreature(dna, position) {
-        var creature = new Creature(this, dna, position, this._iterationNumber);
+        this._mated_creatures++;
+        var creature = new Creature(this, dna, position, this._iteration_number);
         this._creatures.push(creature);
     }
 
     generateRandomCreatures(n) {
+        this._random_creatures++;
         for (let i = 0; i < n; i++) {
             let dna = SimpleDna.generateRandomDna();
-            let creature = new Creature(this, dna, {x: Math.random() * 1600, y: Math.random() * 900}, this._iterationNumber);
+            let creature = new Creature(this, dna, {x: Math.random() * 1600, y: Math.random() * 900}, this._iteration_number);
             this._creatures.push(creature);
         }
     }
     
     iteration() {
-        ++this._iterationNumber;
+        ++this._iteration_number;
 
         var things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets);
         this._creatures.forEach(creature => {
@@ -58,7 +62,7 @@ class World extends Thing {
         this.feedCreatures();
         this.detectBulletHits();
         this.reproduce();
-        if(this._iterationNumber % 100 == 0 && this._creatures.length < 20) {
+        if(this._iteration_number % 100 == 0 && this._creatures.length < 20) {
             this.generateRandomCreatures(1);
         }
 
@@ -127,7 +131,7 @@ class World extends Thing {
             b.drawTo(this.context);
         });
         this._creatures.forEach(creature => {
-            creature.drawTo(this.context, this._iterationNumber);
+            creature.drawTo(this.context, this._iteration_number);
         });
 
         if(this._creatures[0]) {
