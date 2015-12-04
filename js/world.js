@@ -30,8 +30,8 @@ class World extends Thing {
 
     generateRandomCreatures(n) {
         for (let i = 0; i < n; i++) {
-            var creature = new Creature(this, {x: Math.random() * 1600, y: Math.random() * 900}, this._iterationNumber);
-            creature.generateRandomDna();
+            let dna = SimpleDna.generateRandomDna();
+            let creature = new Creature(this, dna, {x: Math.random() * 1600, y: Math.random() * 900}, this._iterationNumber);
             this._creatures.push(creature);
         }
     }

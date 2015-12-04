@@ -5,8 +5,13 @@ let SimpleDna = require('./simple_dna');
 let Matrix = require('./matrix');
 
 class Creature extends Thing {
-    constructor(world, positon, iteration_number) {
+    constructor(world, dna, positon, iteration_number) {
         super();
+
+        this._dna = dna;
+        this._brain = dna.buildBrain();
+        this._eye_size = dna.eyeSize();
+
         this._position = positon;
         this._born_in_iteration = iteration_number;
         this._world = world;
@@ -28,26 +33,6 @@ class Creature extends Thing {
         for(let i = 0; i < this._sight_resolution; i++) {
             this._sight.push({ r:128, g:128, b:128, d:10000 });
         }
-    }
-
-    setDna(dna) {
-        this._dna = dna;
-        this._brain = dna.buildBrain();
-        this._eye_size = dna.eyeSize();
-    }
-
-    generateRandomDna() {
-        this.setDna(new SimpleDna({
-            first_layer: Creature.randomMatrix(this._mid_layer_size, this._sight_resolution*4+5),
-            second_layer: Creature.randomMatrix(4, this._mid_layer_size),
-            egg_color: Math.random() * 360,
-            color: Math.random() * 360,
-            eye_size: (0.17 + 0.1*Math.random())*Math.PI
-        }, this._sight_resolution));
-    }
-
-    static randomMatrix(rows, cols) {
-        return Matrix.random(rows, cols);
     }
 
     see(things) {

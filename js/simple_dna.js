@@ -58,6 +58,16 @@ class SimpleDna {
     static _keepInRange(value, min, max) {
         return Math.min(max,Math.max(min, value));
     }
+
+    static generateRandomDna() {
+        return new SimpleDna({
+            first_layer: Matrix.random(this._mid_layer_size, this._sight_resolution*4+5),
+            second_layer: Matrix.random(4, this._mid_layer_size),
+            egg_color: Math.random() * 360,
+            color: Math.random() * 360,
+            eye_size: (0.17 + 0.1*Math.random())*Math.PI
+        }, this._sight_resolution);
+    }
 }
 
 module.exports = SimpleDna;
