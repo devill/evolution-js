@@ -12,7 +12,7 @@ class SimpleBrain {
 
     sigmoid_map(vector) {
         return vector.map(x => {
-            return 1 / (1 + Math.exp(-x));
+            return Math.sigmoid(x);
         })
     }
 }

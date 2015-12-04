@@ -24,6 +24,8 @@ gulp.task('build', function(cb) {
 gulp.task('default', function() {
   gulp.src('js/hsl2rgb.js')
     .pipe(gulp.dest('dist'));
+  gulp.src('js/math_ext.js')
+    .pipe(gulp.dest('dist'));
 
   gulp.start('build');
   watch('js/**/*', batch(function (events, done) {

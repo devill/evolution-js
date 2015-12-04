@@ -11,6 +11,7 @@ class Creature extends Thing {
         this._eye_size = dna.eyeSize();
 
         this._max_energy = 10000;
+        this._max_speed = 2;
 
         this._position = positon;
         this._born_in_iteration = iteration_number;
@@ -146,22 +147,22 @@ class Creature extends Thing {
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
-        this._shoot(thought[3] > 0.99999);
+        this._shoot(thought[3] > 0.9);
         this._reproduce(thought[2]);
     }
 
     buildStatusVector() {
         let status = [
-            this._energy,
-            this._speed,
-            (this._external_dna ? this._external_dna._dna.egg_color : -180)
+            this._energy / this._max_energy,
+            this._speed / this._max_speed,
+            (this._external_dna ? this._external_dna._dna.egg_color : -180) / 360
         ];
         for (let i = 0; i < this._sight_resolution; i++) {
-            status.push(this._sight[i]['r'], this._sight[i]['g'], this._sight[i]['b'], this._sight[i]['d']);
+            status.push(this._sight[i]['r']/256, this._sight[i]['g']/256, this._sight[i]['b']/256, Math.sigmoid(this._sight[i]['d']));
         }
         return status;
     }
-    
+
     _shoot(trigger) {
         ++this._fire_power;
         ++this._time_since_last_fire;
@@ -245,7 +246,7 @@ class Creature extends Thing {
         this._direction += (accelerationAngle - 0.5) / 10;
 
         this._speed += (accelerationRadius - 0.5) / 10;
-        this._speed = Creature._keepInRange(this._speed, 0, 2);
+        this._speed = Creature._keepInRange(this._speed, 0, this._max_speed);
     }
 
     _updatePosition() {
