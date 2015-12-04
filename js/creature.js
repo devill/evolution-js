@@ -10,6 +10,8 @@ class Creature extends Thing {
         this._brain = dna.buildBrain();
         this._eye_size = dna.eyeSize();
 
+        this._max_energy = 10000;
+
         this._position = positon;
         this._born_in_iteration = iteration_number;
         this._world = world;
@@ -22,7 +24,6 @@ class Creature extends Thing {
         this._time_since_last_egg_layed = 0;
         this._time_since_last_fire = 0;
         this._fire_power = 0;
-        this._low_frequency_random = Math.random()*100;
 
         this._sight_resolution = dna.sightResolution();
 
@@ -150,10 +151,11 @@ class Creature extends Thing {
     }
 
     buildStatusVector() {
-        if (Math.random() < 0.01) {
-            this._low_frequency_random = Math.random() * 100;
-        }
-        let status = [this._energy, this._speed, (this._external_dna ? this._external_dna._dna.egg_color : -180), Math.random() * 100, this._low_frequency_random];
+        let status = [
+            this._energy,
+            this._speed,
+            (this._external_dna ? this._external_dna._dna.egg_color : -180)
+        ];
         for (let i = 0; i < this._sight_resolution; i++) {
             status.push(this._sight[i]['r'], this._sight[i]['g'], this._sight[i]['b'], this._sight[i]['d']);
         }
@@ -216,7 +218,7 @@ class Creature extends Thing {
 
     feed() {
         this._energy += 5000;
-        this._energy = Creature._keepInRange(this._energy, 0, 10000);
+        this._energy = Creature._keepInRange(this._energy, 0, this._max_energy);
     }
 
     takeHit() {
