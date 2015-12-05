@@ -68,15 +68,11 @@ class Creature extends Thing {
         return Math.min.apply(Math, t);
     }
 
-    visible(position, direction) {
-        var visibilityData = this._visibilityData(position, direction);
-        return visibilityData['distanceFromEye'] > 0 && visibilityData['distanceFromLineOfSight'] < 20;
+
+    radius() {
+        return 20;
     }
 
-    visibilityDistance(position, direction) {
-        var visibilityData = this._visibilityData(position, direction);
-        return visibilityData['distanceFromEye'];
-    }
 
     visibilityColor(position, direction) {
         return this._dna.visibilityColor();

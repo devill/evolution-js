@@ -31,14 +31,8 @@ class Egg extends Thing {
         this._exists = false;
     }
 
-    visible(position, direction) {
-        var visibilityData = this._visibilityData(position, direction);
-        return visibilityData['distanceFromEye'] > 0 && visibilityData['distanceFromLineOfSight'] < 5;
-    }
-
-    visibilityDistance(position, direction) {
-        var visibilityData = this._visibilityData(position, direction);
-        return visibilityData['distanceFromEye'];
+    radius() {
+        return 5;
     }
 
     visibilityColor(position, direction) {

@@ -10,6 +10,17 @@ class Thing {
 
         return {distanceFromEye: nx, distanceFromLineOfSight: Math.abs(ny) };
     }
+
+
+    visible(position, direction) {
+        var visibilityData = this._visibilityData(position, direction);
+        return visibilityData['distanceFromEye'] > 0 && visibilityData['distanceFromLineOfSight'] < this.radius();
+    }
+
+    visibilityDistance(position, direction) {
+        var visibilityData = this._visibilityData(position, direction);
+        return visibilityData['distanceFromEye'];
+    }
 }
 
 module.exports = Thing;
