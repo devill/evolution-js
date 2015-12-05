@@ -9,7 +9,8 @@ describe('Bullet', function() {
     it('should return position from constructor', function() {
       let expectedPosition = 123;
       let dummyDirection = 456;
-      var bullet = new Bullet(expectedPosition, dummyDirection);
+      var dummyWalls = [];
+      var bullet = new Bullet(expectedPosition, dummyDirection, dummyWalls);
       assert.equal(expectedPosition, bullet.position());
     });
   });

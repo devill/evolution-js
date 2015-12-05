@@ -8,27 +8,27 @@ class Wall {
     visible(position, direction, angle) {
 
 
-        let visibility_data = this._corners.map(c => { return this._relativeCoordinates(position, c, direction); });
+        let visibility_data = this._corners.map(c => { return this._coordinatesRelativeToPointAndDirection(position, direction, c); });
 
         if(Math.abs(visibility_data[1]['y'] - visibility_data[0]['y']) < 0.00001) { return false; }
 
-        if(this._relativeCoordinateVisible(visibility_data[0], angle) || this._relativeCoordinateVisible(visibility_data[1], angle)) {
+        if(this._creatureRelativeCoordinateVisible(visibility_data[0], angle) || this._creatureRelativeCoordinateVisible(visibility_data[1], angle)) {
             return true;
         }
 
         let w = visibility_data[1]['y'] / (visibility_data[1]['y'] - visibility_data[0]['y']);
         let intersection_point = { x: w * visibility_data[0]['x'] + (1 - w) * visibility_data[1]['x'], y:0 };
 
-        return this._relativeCoordinateVisible(intersection_point, angle);
+        return this._creatureRelativeCoordinateVisible(intersection_point, angle);
     }
 
-    _relativeCoordinateVisible(relative_corner_coordinates, angle) {
+    _creatureRelativeCoordinateVisible(relative_corner_coordinates, angle) {
         return relative_corner_coordinates['x'] > 0 &&
             Math.abs(relative_corner_coordinates['y']) < relative_corner_coordinates['x'] * Math.tan(angle);
     }
 
     visibilityDistance(position, direction) {
-        let visibility_data = this._corners.map(c => { return this._relativeCoordinates(position, c, direction); });
+        let visibility_data = this._corners.map(c => { return this._coordinatesRelativeToPointAndDirection(position, direction, c); });
 
         let w = visibility_data[1]['y'] / (visibility_data[1]['y'] - visibility_data[0]['y']);
 
@@ -46,9 +46,9 @@ class Wall {
         return { r: 128, g: 128, b: 128 }
     }
 
-    _relativeCoordinates(creaturePosition, cornerPosition, direction) {
-        let rx = cornerPosition['x'] - creaturePosition['x'];
-        let ry = cornerPosition['y'] - creaturePosition['y'];
+    _coordinatesRelativeToPointAndDirection(origin, direction, point) {
+        let rx = point['x'] - origin['x'];
+        let ry = point['y'] - origin['y'];
 
         let nx = rx * Math.cos(-direction) - ry * Math.sin(-direction);
         let ny = rx * Math.sin(-direction) + ry * Math.cos(-direction);
@@ -59,6 +59,37 @@ class Wall {
         };
     }
 
+    wallLength() {
+        return this._distance(this._corners[0],this._corners[1]);
+    }
+
+
+    handleCollision(vectors, radius) {
+        return this.vectorColides(vectors, radius) ? vectors[0] : vectors[1];
+    }
+
+    vectorColides(vectors, radius) {
+        return this.pointCollides(vectors[1], radius) || this.crossed(vectors);
+    }
+
+    crossed(vectors) {
+        let relative_vectors = vectors.map(v => { return this._cordinatesRelativeToWall(v); });
+        return relative_vectors[0]['y'] * relative_vectors[1]['y'] < 0;
+    }
+
+    pointCollides(vector, radius) {
+        let relative_vector = this._cordinatesRelativeToWall(vector);
+        return Math.abs(relative_vector['y']) < radius && relative_vector['x'] > -radius && relative_vector['x'] < this.wallLength() + radius;
+    }
+
+    _cordinatesRelativeToWall(point) {
+        let wallAngle = Math.acos((this._corners[1]['x'] - this._corners[0]['x'])/this.wallLength());
+
+        return this._coordinatesRelativeToPointAndDirection(this._corners[0], wallAngle, point)
+    }
+
+
+    
     drawTo(context) {
         let color = this.visibilityColor();
         context.strokeStyle = `rgb(${color.r},${color.g},${color.b})`;

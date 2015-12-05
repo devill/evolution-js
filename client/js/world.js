@@ -46,9 +46,22 @@ class World extends Thing {
         this._random_creatures++;
         for (let i = 0; i < n; i++) {
             let dna = SimpleDna.generateRandomDna();
-            let creature = new Creature(this, dna, {x: Math.random() * 1600, y: Math.random() * 900}, this._iteration_number);
+            var position = {};
+            do {
+                position = {x: Math.random() * 1600, y: Math.random() * 900};
+            } while(this._collidesWithWall(position, 20));
+
+            let creature = new Creature(this, dna, position, this._iteration_number);
             this._creatures.push(creature);
         }
+    }
+
+    _collidesWithWall(point) {
+        let collides = false;
+        this._walls.forEach(w => {
+            collides = collides || w.pointCollides(point);
+        });
+        return collides
     }
     
     iteration() {
@@ -77,7 +90,7 @@ class World extends Thing {
             this.generateRandomCreatures(1);
         }
 
-        if (this._creatures.length < 40 && Math.random() < 0.025) {
+        if (this._creatures.length < 40 && this._food.length < 50 && Math.random() < 0.03) {
             this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}));
         }
 
@@ -161,7 +174,7 @@ class World extends Thing {
     }
 
     addBullet(position, direction) {
-        this._bullets.push(new Bullet(position, direction))
+        this._bullets.push(new Bullet(position, direction, this))
     }
 }
 

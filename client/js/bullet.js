@@ -3,12 +3,13 @@
 let Thing = require('./thing');
 
 class Bullet extends Thing {
-    constructor(position, direction) {
+    constructor(position, direction, world) {
         super();
         this._position = position;
         this._direction = direction;
         this._speed = 6;
         this._exists = true;
+        this._world = world;
     }
 
     position() {
@@ -23,11 +24,26 @@ class Bullet extends Thing {
     }
 
     iterate() {
-        this._position['x'] += this._speed * Math.cos(this._direction);
-        this._position['y'] += this._speed * Math.sin(this._direction);
+        let new_position = {
+            x: this._position['x'] + this._speed * Math.cos(this._direction),
+            y: this._position['y'] + this._speed * Math.sin(this._direction)
+        };
 
-        this._position['x'] = this._keepInRange(this._position['x'], 0, 1600);
-        this._position['y'] = this._keepInRange(this._position['y'], 0, 900);
+        if(this._collidesWithWall(new_position)) {
+            this.remove();
+            return;
+        }
+
+        this._position['x'] = this._keepInRange(new_position['x'], 0, 1600);
+        this._position['y'] = this._keepInRange(new_position['y'], 0, 900);
+    }
+
+    _collidesWithWall(new_position) {
+        var collides = false;
+        this._world.getWalls().forEach(wall => {
+            collides = collides || wall.vectorColides([this._position, new_position], 5);
+        });
+        return collides;
     }
 
     _keepInRange(value, min, max) {

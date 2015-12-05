@@ -74,7 +74,6 @@ class Creature extends Thing {
         return 20;
     }
 
-
     visibilityColor(position, direction) {
         return this._dna.visibilityColor();
     }
@@ -247,15 +246,17 @@ class Creature extends Thing {
     }
 
     _updatePosition() {
-        let newX = this._position['x'] + this._speed * Math.cos(this._direction);
-        let newY = this._position['y'] + this._speed * Math.sin(this._direction);
+        let new_position = {
+            x: this._position['x'] + this._speed * Math.cos(this._direction),
+            y: this._position['y'] + this._speed * Math.sin(this._direction)
+        };
 
         this._world.getWalls().forEach(wall => {
-
+            new_position = wall.handleCollision([this._position, new_position], this.radius());
         });
 
-        this._position['x'] = Creature._keepInRange(newX, 20, 1580);
-        this._position['y'] = Creature._keepInRange(newY, 20, 880);
+        this._position['x'] = Creature._keepInRange(new_position['x'], 20, 1580);
+        this._position['y'] = Creature._keepInRange(new_position['y'], 20, 880);
     }
 
     _looseEnergy() {
