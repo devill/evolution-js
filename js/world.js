@@ -66,7 +66,7 @@ class World extends Thing {
             this.generateRandomCreatures(1);
         }
 
-        if (this._creatures.length < 40 && Math.random() < 0.01) {
+        if (this._creatures.length < 40 && Math.random() < 0.025) {
             this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}));
         }
 

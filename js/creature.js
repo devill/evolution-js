@@ -143,7 +143,7 @@ class Creature extends Thing {
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
-        this._shoot(thought[3] > 0.9);
+        this._shoot(thought[3] > 0.8);
         this._reproduce(thought[2]);
     }
 
@@ -170,7 +170,7 @@ class Creature extends Thing {
             this._world.addBullet(bullet_position, this._direction);
             this._fire_power -= 300;
             this._time_since_last_fire = 0;
-            this._energy -= 500;
+            this._energy -= 100;
         }
         this._fire_power = Creature._keepInRange(this._fire_power,0,5000);
     }
@@ -219,7 +219,7 @@ class Creature extends Thing {
     }
 
     takeHit() {
-        this._energy -= 2000;
+        this._energy -= 3000;
     }
 
     takeEgg(e) {
