@@ -247,11 +247,11 @@ class Creature extends Thing {
     }
 
     _updatePosition() {
-        this._position['x'] += this._speed * Math.cos(this._direction);
-        this._position['y'] += this._speed * Math.sin(this._direction);
+        let newX = this._position['x'] + this._speed * Math.cos(this._direction);
+        let newY = this._position['y'] + this._speed * Math.sin(this._direction);
 
-        this._position['x'] = Creature._keepInRange(this._position['x'], 20, 1580);
-        this._position['y'] = Creature._keepInRange(this._position['y'], 20, 880);
+        this._position['x'] = Creature._keepInRange(newX, 20, 1580);
+        this._position['y'] = Creature._keepInRange(newY, 20, 880);
     }
 
     _looseEnergy() {

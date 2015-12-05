@@ -5,6 +5,7 @@ let Creature = require('./creature');
 let Food = require('./food');
 let Bullet = require('./bullet');
 let Egg = require('./egg');
+let Wall = require('./wall');
 let SimpleDna = require('./simple_dna');
 
 class World extends Thing {
@@ -14,6 +15,12 @@ class World extends Thing {
         this._creatures = [];
         this._eggs = [];
         this._bullets = [];
+        this._walls = [
+            new Wall([{x:800, y:200},{x:800, y:400}]),
+            new Wall([{x:800, y:600},{x:800, y:800}]),
+            new Wall([{x:0, y:450},{x:600, y:450}]),
+            new Wall([{x:1000, y:300},{x:1400, y:600}])
+        ];
         this._iteration_number = 0;
         this._random_creatures = 0;
         this._mated_creatures = 0;
@@ -43,7 +50,7 @@ class World extends Thing {
     iteration() {
         ++this._iteration_number;
 
-        var things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets);
+        var things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets).concat(this._walls);
         this._creatures.forEach(creature => {
             creature.see(things);
         });
@@ -121,6 +128,9 @@ class World extends Thing {
     drawWorld() {
         this.context.lineWidth = 2;
         this.context.clearRect(0, 0, 1600, 900);
+        this._walls.forEach(w => {
+            w.drawTo(this.context);
+        });
         this._eggs.forEach(e => {
             e.drawTo(this.context);
         });
