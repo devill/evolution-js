@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "mocha test/**/*.spec.js",
-    "start": "node ./node_modules/gulp/bin/gulp.js"
+    "start": "node index.js",
+    "build": "node ./node_modules/gulp/bin/gulp.js buildClient",
+    "watch": "node ./node_modules/gulp/bin/gulp.js"
   },
   "repository": {
     "type": "git",
