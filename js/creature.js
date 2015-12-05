@@ -35,13 +35,14 @@ class Creature extends Thing {
     }
 
     see(things) {
+        let angle = this._eye_size / this._sight_resolution;
         for(let i = 0; i < this._sight_resolution; i++) {
-            var sightDirection = this._direction + 2*(i - this._sight_resolution/2) * this._eye_size / this._sight_resolution;
+            var sightDirection = this._direction + (i - (this._sight_resolution - 1) / 2) * angle;
 
             let result = {r: 128, g: 128, b: 128, d: this.seeClosestWallDistance(sightDirection)};
 
             things.forEach(thing => {
-                if (thing.visible(this._position, sightDirection)) {
+                if (thing.visible(this._position, sightDirection, angle)) {
                     let distance = thing.visibilityDistance(this._position, sightDirection);
 
                     if (result.d == null || result.d > distance) {

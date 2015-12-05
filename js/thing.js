@@ -12,9 +12,10 @@ class Thing {
     }
 
 
-    visible(position, direction) {
-        var visibilityData = this._visibilityData(position, direction);
-        return visibilityData['distanceFromEye'] > 0 && visibilityData['distanceFromLineOfSight'] < this.radius();
+    visible(position, direction, angle) {
+        let visibilityData = this._visibilityData(position, direction);
+        let sightWidthAtDistance = visibilityData['distanceFromEye'] * Math.tan(angle);
+        return visibilityData['distanceFromEye'] > 0 && visibilityData['distanceFromLineOfSight'] < sightWidthAtDistance + this.radius()/2;
     }
 
     visibilityDistance(position, direction) {
