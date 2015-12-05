@@ -2,7 +2,7 @@
 
 let assert  = require('assert');
 
-let Bullet = require('../js/bullet');
+let Bullet = require('../../client/js/bullet');
 
 describe('Bullet', function() {
   describe('#position()', function() {
