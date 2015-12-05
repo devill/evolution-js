@@ -28,6 +28,10 @@ class World extends Thing {
         this.context = canvas_object.getContext("2d");
     }
 
+    getWalls() {
+        return this._walls;
+    }
+
     getIterationNumber() {
         return this._iteration_number;
     }

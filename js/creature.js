@@ -250,6 +250,10 @@ class Creature extends Thing {
         let newX = this._position['x'] + this._speed * Math.cos(this._direction);
         let newY = this._position['y'] + this._speed * Math.sin(this._direction);
 
+        this._world.getWalls().forEach(wall => {
+
+        });
+
         this._position['x'] = Creature._keepInRange(newX, 20, 1580);
         this._position['y'] = Creature._keepInRange(newY, 20, 880);
     }
