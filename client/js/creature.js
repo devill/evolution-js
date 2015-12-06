@@ -25,6 +25,7 @@ class Creature extends Thing {
         this._time_since_last_egg_layed = 0;
         this._time_since_last_fire = 0;
         this._fire_power = 0;
+        this._max_fire_power = 5000
 
         this._sight_resolution = dna.sightResolution();
 
@@ -150,11 +151,12 @@ class Creature extends Thing {
     buildStatusVector() {
         let status = [
             this._energy / this._max_energy,
+            this._fire_power / this._max_fire_power,
             this._speed / this._max_speed,
             (this._external_dna ? this._external_dna._dna.egg_color : -180) / 360
         ];
         for (let i = 0; i < this._sight_resolution; i++) {
-            status.push(this._sight[i]['r']/256, this._sight[i]['g']/256, this._sight[i]['b']/256, Math.sigmoid(this._sight[i]['d']));
+            status.push(this._sight[i]['r']/256, this._sight[i]['g']/256, this._sight[i]['b']/256,Creature._keepInRange(20/(this._sight[i]['d']+1),0,1));
         }
         return status;
     }
@@ -172,7 +174,7 @@ class Creature extends Thing {
             this._time_since_last_fire = 0;
             this._energy -= 100;
         }
-        this._fire_power = Creature._keepInRange(this._fire_power,0,5000);
+        this._fire_power = Creature._keepInRange(this._fire_power,0, this._max_fire_power);
     }
 
     _reproduce(sexual_desire) {

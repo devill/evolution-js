@@ -67,7 +67,7 @@ class SimpleDna {
         let mid_layer_size = 20;
         let sight_resolution = 7;
         return new SimpleDna({
-            first_layer: Matrix.random(mid_layer_size, sight_resolution*4+3),
+            first_layer: Matrix.random(mid_layer_size, sight_resolution*4+4),
             second_layer: Matrix.random(4, mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
