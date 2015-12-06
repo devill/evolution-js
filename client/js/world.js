@@ -6,6 +6,7 @@ let Food = require('./food');
 let Bullet = require('./bullet');
 let Egg = require('./egg');
 let Wall = require('./wall');
+let PossessedBrain = require('./possessed_brain');
 let SimpleDna = require('./simple_dna');
 
 class World extends Thing {
@@ -26,6 +27,15 @@ class World extends Thing {
         this._mated_creatures = 0;
 
         this.context = canvas_object.getContext("2d");
+
+        document.addEventListener("keypress", e => {
+            if(e.keyCode == 110) {
+                let dna = SimpleDna.generateRandomDna();
+                let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
+                creature._brain = new PossessedBrain(creature._brain);
+                this._creatures.push(creature);
+            }
+        });
     }
 
     getWalls() {
@@ -46,14 +56,17 @@ class World extends Thing {
         this._random_creatures++;
         for (let i = 0; i < n; i++) {
             let dna = SimpleDna.generateRandomDna();
-            var position = {};
-            do {
-                position = {x: Math.random() * 1600, y: Math.random() * 900};
-            } while(this._collidesWithWall(position, 20));
-
-            let creature = new Creature(this, dna, position, this._iteration_number);
+            let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
             this._creatures.push(creature);
         }
+    }
+
+    randomPositionForCreature() {
+        var position = {};
+        do {
+            position = {x: Math.random() * 1600, y: Math.random() * 900};
+        } while(this._collidesWithWall(position, 20));
+        return position;
     }
 
     _collidesWithWall(point) {

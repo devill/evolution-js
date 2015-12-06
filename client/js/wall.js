@@ -19,6 +19,8 @@ class Wall {
         let w = visibility_data[1]['y'] / (visibility_data[1]['y'] - visibility_data[0]['y']);
         let intersection_point = { x: w * visibility_data[0]['x'] + (1 - w) * visibility_data[1]['x'], y:0 };
 
+        if(w < 0 || w > 1) return false;
+
         return this._creatureRelativeCoordinateVisible(intersection_point, angle);
     }
 
@@ -74,12 +76,16 @@ class Wall {
 
     crossed(vectors) {
         let relative_vectors = vectors.map(v => { return this._cordinatesRelativeToWall(v); });
-        return relative_vectors[0]['y'] * relative_vectors[1]['y'] < 0;
+
+        let w = relative_vectors[1]['y'] / (relative_vectors[1]['y'] - relative_vectors[0]['y']);
+        let intersection_point = w * relative_vectors[0]['x'] + (1 - w) * relative_vectors[1]['x'];
+
+        return relative_vectors[0]['y'] * relative_vectors[1]['y'] < 0 && intersection_point > -20 && intersection_point < this.wallLength() + 20;
     }
 
     pointCollides(vector, radius) {
         let relative_vector = this._cordinatesRelativeToWall(vector);
-        return Math.abs(relative_vector['y']) < radius && relative_vector['x'] > -radius && relative_vector['x'] < this.wallLength() + radius;
+        return Math.abs(relative_vector['y']) < radius && relative_vector['x'] > -20 && relative_vector['x'] < this.wallLength() + 20;
     }
 
     _cordinatesRelativeToWall(point) {
