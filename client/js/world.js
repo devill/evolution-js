@@ -72,7 +72,7 @@ class World extends Thing {
     _collidesWithWall(point) {
         let collides = false;
         this._walls.forEach(w => {
-            collides = collides || w.pointCollides(point);
+            collides = collides || w.pointCollides(point, 20);
         });
         return collides
     }
