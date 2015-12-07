@@ -210,9 +210,15 @@ class Creature extends Thing {
     }
 
     distance(other) {
-        let l = this._position;
-        let r = other.position();
-        return Math.sqrt(Math.pow(l['x'] - r['x'], 2) + Math.pow(l['y'] - r['y'], 2))
+        return this.distanceFromPoint(other.position());
+    }
+
+    containsPoint(point) {
+        return this.distanceFromPoint(point) < this.radius();
+    }
+
+    distanceFromPoint(point) {
+        return Math.sqrt(Math.pow(this._position['x'] - point['x'], 2) + Math.pow(this._position['y'] - point['y'], 2));
     }
 
     feed() {

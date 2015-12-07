@@ -36,6 +36,12 @@ class World extends Thing {
                 this._creatures.push(creature);
             }
         });
+
+        canvas_object.addEventListener("click", event => {
+            this._creatures = this._creatures.filter(creature => {
+                return !creature.containsPoint({x:event.layerX, y:event.layerY});
+            });
+        });
     }
 
     getWalls() {
