@@ -4,6 +4,7 @@ class Wall {
     constructor(corners) {
         this._corners = corners;
     }
+    
 
     visible(position, direction, angle) {
 
@@ -67,7 +68,20 @@ class Wall {
 
 
     handleCollision(vectors, radius) {
-        return this.vectorColides(vectors, radius) ? vectors[0] : vectors[1];
+        if(!this.vectorColides(vectors, radius)) { return vectors[1]; }
+
+        let wallUnit = {
+            x:(this._corners[1]['x'] - this._corners[0]['x'])/this.wallLength(),
+            y:(this._corners[1]['y'] - this._corners[0]['y'])/this.wallLength()
+        };
+
+        let diff = { x:vectors[1]['x'] - vectors[0]['x'], y:vectors[1]['y'] - vectors[0]['y'] };
+        let s = diff['x']*wallUnit['x'] + diff['y']*wallUnit['y'];
+
+        return {
+            x: vectors[0]['x'] + wallUnit['x']*s,
+            y: vectors[0]['y'] + wallUnit['y']*s
+        };
     }
 
     vectorColides(vectors, radius) {
