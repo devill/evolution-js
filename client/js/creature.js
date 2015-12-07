@@ -221,8 +221,8 @@ class Creature extends Thing {
         return Math.sqrt(Math.pow(this._position['x'] - point['x'], 2) + Math.pow(this._position['y'] - point['y'], 2));
     }
 
-    feed() {
-        this._energy += 5000;
+    feed(food) {
+        this._energy += food.value();
         this._energy = Creature._keepInRange(this._energy, 0, this._max_energy);
     }
 

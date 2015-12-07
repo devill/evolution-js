@@ -3,10 +3,12 @@
 let Thing = require('./thing');
 
 class Food extends Thing {
-    constructor(position) {
+    constructor(position, value, radius) {
         super();
         this._position = position;
         this._exists = true;
+        this._value = value;
+        this._radius = radius;
     }
 
     position() {
@@ -17,7 +19,7 @@ class Food extends Thing {
         context.beginPath();
         let color = this.visibilityColor();
         context.strokeStyle = `rgb(${color.r},${color.g},${color.b})`;
-        context.arc(this._position['x'],this._position['y'],5,0,2*Math.PI);
+        context.arc(this._position['x'],this._position['y'],this.radius(),0,2*Math.PI);
         context.stroke();
     }
 
@@ -30,7 +32,11 @@ class Food extends Thing {
     }
 
     radius() {
-        return 5;
+        return this._radius;
+    }
+
+    value() {
+        return this._value;
     }
 
     visibilityColor(position, direction) {

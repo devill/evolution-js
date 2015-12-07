@@ -94,7 +94,7 @@ class World extends Thing {
         this._creatures.forEach(creature => {
             creature.iterate();
             if(!creature.alive()) {
-                this._food.push(new Food(creature.position()));
+                this._food.push(new Food(creature.position(), 6000, 7));
             }
         });
 
@@ -110,7 +110,7 @@ class World extends Thing {
         }
 
         if (this._creatures.length < 40 && this._food.length < 50 && Math.random() < 0.03) {
-            this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}));
+            this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}, 3500, 5));
         }
 
         setTimeout(() => { this.iteration() }, 0);
@@ -137,7 +137,7 @@ class World extends Thing {
         this._creatures.forEach(creature => {
             this._food.forEach(f => {
                 if (creature.distance(f) < 20) {
-                    creature.feed();
+                    creature.feed(f);
                     f.remove();
                 }
             });
