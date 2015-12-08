@@ -52,6 +52,22 @@ class Matrix {
         }
         return new Matrix(result);
     }
+
+    static randomDiagonal(rows, cols) {
+        let result = [];
+        for(let i = 0; i < rows; ++i) {
+            let v = [];
+            for(let j = 0; j < cols; ++j) {
+                v.push(0);
+            }
+            result.push(v);
+        }
+        for(let j = 0; j < cols; ++j) {
+            result[Math.floor(j*rows/cols)][j] = 2*Math.random()-1;
+        }
+
+        return new Matrix(result);
+    }
 }
 
 module.exports = Matrix;

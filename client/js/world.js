@@ -7,10 +7,9 @@ let Bullet = require('./bullet');
 let Egg = require('./egg');
 let Wall = require('./wall');
 let PossessedBrain = require('./possessed_brain');
-let SimpleDna = require('./simple_dna');
 
 class World extends Thing {
-    constructor(canvas_object) {
+    constructor(canvas_object, dnaFactory) {
         super();
         this._food = [];
         this._creatures = [];
@@ -25,6 +24,7 @@ class World extends Thing {
         this._iteration_number = 0;
         this._random_creatures = 0;
         this._mated_creatures = 0;
+        this._dna_factory = dnaFactory;
 
         this.context = canvas_object.getContext("2d");
 
@@ -34,7 +34,7 @@ class World extends Thing {
                     return !creature._brain.possessed();
                 });
 
-                let dna = SimpleDna.generateRandomDna();
+                let dna = this._dna_factory.build();
                 let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
                 creature._brain = new PossessedBrain(creature._brain);
                 this._creatures.push(creature);
@@ -65,7 +65,7 @@ class World extends Thing {
     generateRandomCreatures(n) {
         this._random_creatures++;
         for (let i = 0; i < n; i++) {
-            let dna = SimpleDna.generateRandomDna();
+            let dna = this._dna_factory.build();
             let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
             this._creatures.push(creature);
         }

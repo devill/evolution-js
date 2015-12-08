@@ -1,8 +1,10 @@
 "use strict";
 
 let World = require('./world');
+let DnaFactory = require('./dna_factory');
 
-let world = new World(document.getElementById("main-canvas"));
+
+let world = new World(document.getElementById("main-canvas"), new DnaFactory('simple_reduced'));
 world.iteration();
 
 setInterval(() => {

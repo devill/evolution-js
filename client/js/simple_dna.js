@@ -74,6 +74,18 @@ class SimpleDna {
             eye_size: (0.17 + 0.1*Math.random())*Math.PI
         }, sight_resolution);
     }
+
+    static generateRandomDnaWithReducedComplexity() {
+        let mid_layer_size = 20;
+        let sight_resolution = 7;
+        return new SimpleDna({
+            first_layer: Matrix.random(mid_layer_size, sight_resolution*4+4),
+            second_layer: Matrix.randomDiagonal(4, mid_layer_size),
+            egg_color: Math.random() * 360,
+            color: Math.random() * 360,
+            eye_size: (0.17 + 0.1*Math.random())*Math.PI
+        }, sight_resolution);
+    }
 }
 
 module.exports = SimpleDna;
