@@ -15,6 +15,10 @@ class SimpleBrain {
             return Math.sigmoid(x);
         })
     }
+
+    possessed() {
+        return false;
+    }
 }
 
 module.exports = SimpleBrain;

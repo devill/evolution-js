@@ -83,6 +83,15 @@ class Creature extends Thing {
         this._drawBody(context);
         this._drawEye(context);
         this._drawEnergy(context);
+
+        if(this._brain.possessed()) {
+            context.beginPath();
+            context.strokeStyle = '#5500ff';
+            let position = this.position();
+            context.rect(position.x - 32, position.y - 32,64,64);
+            context.stroke();
+        }
+
         context.fillText(Math.floor((thisIteration-this._born_in_iteration)/1000),this._position['x']+20, this._position['y']+20);
     }
 

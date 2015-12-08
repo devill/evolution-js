@@ -30,6 +30,10 @@ class World extends Thing {
 
         document.addEventListener("keypress", e => {
             if(e.keyCode == 110) {
+                this._creatures = this._creatures.filter(creature => {
+                    return !creature._brain.possessed();
+                });
+
                 let dna = SimpleDna.generateRandomDna();
                 let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
                 creature._brain = new PossessedBrain(creature._brain);

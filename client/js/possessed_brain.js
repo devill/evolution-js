@@ -53,6 +53,10 @@ class PossessedBrain {
             this._trigger
         ];
     }
+
+    possessed() {
+        return true;
+    }
 }
 
 module.exports = PossessedBrain;
