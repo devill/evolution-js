@@ -126,7 +126,7 @@ class SimpleDna {
                 case 2:
                     return (x) => { return rnd() * x * x + rnd(); };
                 case 3:
-                    return (x) => { return (rnd() * x * x * x + rnd() * x) / 2; };
+                    return (x) => { return rnd() * x * x * x; };
                 default:
                     return (x) => { return 0; };
             }
