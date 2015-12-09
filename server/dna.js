@@ -25,7 +25,20 @@ function* generate() {
   };
 }
 
+let storedDna;
+
+function* store() {
+  storedDna = this.request.body;
+  this.redirect('/');
+}
+
+function* load(id) {
+  this.body = storedDna;
+}
+
 module.exports = {
-  generator: generate
+  generator: generate,
+  store: store,
+  load: load
 };
 
