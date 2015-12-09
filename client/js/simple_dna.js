@@ -1,40 +1,25 @@
 "use strict";
 
 let SimpleBrain = require('./simple_brain');
+let BaseDna = require('./base_dna');
 let Matrix = require('./matrix');
 
-class SimpleDna {
+class SimpleDna extends BaseDna {
     constructor(dna) {
-        this._dna = dna;;
+        super(dna);
     }
 
     buildBrain() {
         return new SimpleBrain(this._dna);
     }
 
-    eyeSize() {
-        return this._dna.eye_size;
-    }
-
-    sightResolution() {
-        return this._dna.sight_resolution;
-    }
-
-    visibilityColor() {
-        return hsl2rgb(this._dna.color, 100, 50);
-    }
-
-    eggColor() {
-        return hsl2rgb(this._dna.egg_color, 100, 90);
-    }
-
     mix(other_dna) {
         return new SimpleDna({
             first_layer: this.mutateEye((this._dna.first_layer.mix(other_dna._dna.first_layer)).mutate(1)),
             second_layer: (this._dna.second_layer.mix(other_dna._dna.second_layer)).mutate(0.1),
-            egg_color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna._dna.egg_color, 10),
-            color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna._dna.color, 10),
-            eye_size: SimpleDna._keepInRange(SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna._dna.eye_size, 0.01*Math.PI), 0.17*Math.PI, 0.27*Math.PI),
+            egg_color: this._mixEggColor(other_dna),
+            color: this._mixColor(other_dna),
+            eye_size: this._mixEyeSize(other_dna),
             sight_resolution: this.sightResolution()
         });
     }
@@ -53,14 +38,6 @@ class SimpleDna {
             return new Matrix(data);
         }
         return matrix;
-    }
-
-    static mutateValue(value, max_mutation) {
-        return value + (Math.random() < 0.1 ? max_mutation*2*Math.random()-max_mutation: 0)
-    }
-
-    static _keepInRange(value, min, max) {
-        return Math.min(max,Math.max(min, value));
     }
 
     static generateRandomDna() {
@@ -117,7 +94,6 @@ class SimpleDna {
 
         return [0,0,0,0].map(nope => {
             let type = Math.floor(Math.random() * 5) - 1;
-            console.log(type);
             switch (type) {
                 case -1:
                     return (x) => { return x < 0.01 ? rnd() : 0; };
