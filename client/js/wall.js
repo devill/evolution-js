@@ -106,6 +106,8 @@ class Wall {
     _cordinatesRelativeToWall(point) {
         let wallAngle = Math.acos((this._corners[1]['x'] - this._corners[0]['x'])/this.wallLength());
 
+        if(this._corners[0]['y'] > this._corners[1]['y']) { wallAngle = Math.PI*2-wallAngle; }
+
         return this._coordinatesRelativeToPointAndDirection(this._corners[0], wallAngle, point)
     }
 
