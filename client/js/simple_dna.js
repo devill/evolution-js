@@ -79,12 +79,59 @@ class SimpleDna {
         let mid_layer_size = 20;
         let sight_resolution = 7;
         return new SimpleDna({
-            first_layer: Matrix.random(mid_layer_size, sight_resolution*4+4),
+            first_layer: SimpleDna.reducedComplexityFirstLayer(mid_layer_size, 4, sight_resolution),//Matrix.random(mid_layer_size, sight_resolution*4+4),
             second_layer: Matrix.randomDiagonal(4, mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
             eye_size: (0.17 + 0.1*Math.random())*Math.PI
         }, sight_resolution);
+    }
+
+    static reducedComplexityFirstLayer(rows, random_columns, sight_resolution) {
+        let result = [];
+        for(let i = 0; i < rows; ++i) {
+            let v = [];
+            for(let j = 0; j < random_columns; ++j) {
+                v.push(2*Math.random()-1);
+            }
+
+            let sight_functions = SimpleDna.generateSightFunctions(sight_resolution);
+            for(let j = 0; j < sight_resolution; ++j) {
+                sight_functions.forEach(func => {
+                    let x = 2*(j/sight_resolution)-1;
+                    v.push(func(x));
+                });
+            }
+
+            result.push(v);
+        }
+        return new Matrix(result);
+    }
+
+    static generateSightFunctions() {
+        let rnd = () => {
+            return 2 * Math.random() - 1
+        };
+
+        return [0,0,0,0].map(nope => {
+            let type = Math.floor(Math.random() * 5) - 1;
+            console.log(type);
+            switch (type) {
+                case -1:
+                    return (x) => { return x < 0.01 ? rnd() : 0; };
+                case 0:
+                    return (x) => { return rnd(); };
+                case 1:
+                    return (x) => { return rnd() * x; };
+                case 2:
+                    return (x) => { return rnd() * x * x + rnd(); };
+                case 3:
+                    return (x) => { return (rnd() * x * x * x + rnd() * x) / 2; };
+                default:
+                    return (x) => { return 0; };
+            }
+        });
+
     }
 }
 
