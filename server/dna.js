@@ -1,43 +1,31 @@
 "use strict";
 
-let mid_layer_size = 20;
-let sight_resolution = 7;
-
-function randomMatrix(rows, cols) {
-  let result = [];
-  for(let i = 0; i < rows; ++i) {
-    let v = [];
-    for(let j = 0; j < cols; ++j) {
-      v.push(2*Math.random()-1);
-    }
-    result.push(v);
-  }
-  return result;
-}
-
-function* generate() {
-  this.body = {
-    first_layer: randomMatrix(mid_layer_size, sight_resolution*4+3),
-    second_layer: randomMatrix(4, mid_layer_size),
-    egg_color: Math.random() * 360,
-    color: Math.random() * 360,
-    eye_size: (0.17 + 0.1*Math.random())*Math.PI
-  };
-}
+let pg = require('co-pg')(require('pg'));
 
 let storedDna;
+let connectionString = 'postgres://postgres@localhost:32768/postgres';
 
 function* store() {
+  let client = new pg.Client(connectionString);
+  yield client.connectPromise();
+  let result = yield client.queryPromise('INSERT INTO dna (dna) VALUES ($1) RETURNING id', [this.request.body]);
+  client.end();
+
+  let id = result.rows[0].id;
   storedDna = this.request.body;
-  this.redirect('/');
+  this.redirect(`/dna/${id}/`);
 }
 
 function* load(id) {
-  this.body = storedDna;
+  let client = new pg.Client(connectionString);
+  yield client.connectPromise();
+  let result = yield client.queryPromise('SELECT * FROM dna WHERE id = $1', [id]);
+  client.end();
+
+  this.body = JSON.parse(result.rows[0].dna);
 }
 
 module.exports = {
-  generator: generate,
   store: store,
   load: load
 };
