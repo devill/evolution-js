@@ -30,8 +30,8 @@ class SimpleDna {
 
     mix(other_dna) {
         return new SimpleDna({
-            first_layer: this.mutateEye((this._dna.first_layer.mix(other_dna._dna.first_layer)).mutate(0.1)),
-            second_layer: (this._dna.second_layer.mix(other_dna._dna.second_layer)).mutate(0.01),
+            first_layer: this.mutateEye((this._dna.first_layer.mix(other_dna._dna.first_layer)).mutate(1)),
+            second_layer: (this._dna.second_layer.mix(other_dna._dna.second_layer)).mutate(0.1),
             egg_color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna._dna.egg_color, 10),
             color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna._dna.color, 10),
             eye_size: SimpleDna._keepInRange(SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna._dna.eye_size, 0.01*Math.PI), 0.17*Math.PI, 0.27*Math.PI),
@@ -56,7 +56,7 @@ class SimpleDna {
     }
 
     static mutateValue(value, max_mutation) {
-        return value + (Math.random() < 0.01 ? max_mutation*2*Math.random()-max_mutation: 0)
+        return value + (Math.random() < 0.1 ? max_mutation*2*Math.random()-max_mutation: 0)
     }
 
     static _keepInRange(value, min, max) {

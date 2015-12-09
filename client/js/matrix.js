@@ -37,7 +37,7 @@ class Matrix {
         if (Math.random() > p) { return this; }
         let i = Math.floor(Math.random()*this._data.length);
         let j = Math.floor(Math.random()*this._data[i].length);
-        this._data[i][j] += Math.random()*0.01-1;
+        this._data[i][j] += (2*Math.random()-1)*0.01;
         return this;
     }
 
