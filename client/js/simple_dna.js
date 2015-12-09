@@ -4,9 +4,8 @@ let SimpleBrain = require('./simple_brain');
 let Matrix = require('./matrix');
 
 class SimpleDna {
-    constructor(dna, sight_resolution) {
-        this._dna = dna;
-        this._sight_resolution = sight_resolution;
+    constructor(dna) {
+        this._dna = dna;;
     }
 
     buildBrain() {
@@ -18,7 +17,7 @@ class SimpleDna {
     }
 
     sightResolution() {
-        return this._sight_resolution;
+        return this._dna.sight_resolution;
     }
 
     visibilityColor() {
@@ -33,16 +32,17 @@ class SimpleDna {
         return new SimpleDna({
             first_layer: this.mutateEye((this._dna.first_layer.mix(other_dna._dna.first_layer)).mutate(0.1)),
             second_layer: (this._dna.second_layer.mix(other_dna._dna.second_layer)).mutate(0.01),
-            egg_color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna._dna.egg_color, 0.01),
-            color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna._dna.color, 0.01),
-            eye_size: SimpleDna._keepInRange(SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna._dna.eye_size, 0.01*Math.PI), 0.17*Math.PI, 0.27*Math.PI)
-        }, this._sight_resolution);
+            egg_color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.egg_color : other_dna._dna.egg_color, 10),
+            color: SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna._dna.color, 10),
+            eye_size: SimpleDna._keepInRange(SimpleDna.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna._dna.eye_size, 0.01*Math.PI), 0.17*Math.PI, 0.27*Math.PI),
+            sight_resolution: this.sightResolution()
+        });
     }
 
     mutateEye(matrix) {
         if(Math.random() > 0.9) {
             let data = matrix._data;
-            let i = (data[0].length - 4*this._sight_resolution) + 4*Math.floor(Math.random()*(this._sight_resolution - 1));
+            let i = (data[0].length - 4*this.sightResolution()) + 4*Math.floor(Math.random()*(this.sightResolution() - 1));
             let tmp = 0;
             for(let k = 0; k < data.length; ++k) {
                 tmp = data[k][i+0]; data[k][i+0] = data[k][i+4]; data[k][i+4] = tmp;
@@ -71,20 +71,22 @@ class SimpleDna {
             second_layer: Matrix.random(4, mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
-            eye_size: (0.17 + 0.1*Math.random())*Math.PI
-        }, sight_resolution);
+            eye_size: (0.17 + 0.1*Math.random())*Math.PI,
+            sight_resolution: sight_resolution
+        });
     }
 
     static generateRandomDnaWithReducedComplexity() {
         let mid_layer_size = 20;
         let sight_resolution = 7;
         return new SimpleDna({
-            first_layer: SimpleDna.reducedComplexityFirstLayer(mid_layer_size, 4, sight_resolution),//Matrix.random(mid_layer_size, sight_resolution*4+4),
+            first_layer: SimpleDna.reducedComplexityFirstLayer(mid_layer_size, 4, sight_resolution),
             second_layer: Matrix.randomDiagonal(4, mid_layer_size),
             egg_color: Math.random() * 360,
             color: Math.random() * 360,
-            eye_size: (0.17 + 0.1*Math.random())*Math.PI
-        }, sight_resolution);
+            eye_size: (0.17 + 0.1*Math.random())*Math.PI,
+            sight_resolution: sight_resolution
+        });
     }
 
     static reducedComplexityFirstLayer(rows, random_columns, sight_resolution) {
