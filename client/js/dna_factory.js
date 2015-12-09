@@ -1,6 +1,7 @@
 "use strict";
 
 let SimpleDna = require('./simple_dna');
+let NeatDna = require('./neat_dna');
 
 class DnaFactory {
     constructor(mode) {
@@ -14,6 +15,9 @@ class DnaFactory {
 
             case 'simple_reduced':
                 return SimpleDna.generateRandomDnaWithReducedComplexity();
+
+            case 'neat':
+                return NeatDna.generateRandomDna();
 
             default:
                 throw "Unknown dna factory mode";

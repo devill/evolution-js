@@ -3,8 +3,14 @@
 let World = require('./world');
 let DnaFactory = require('./dna_factory');
 
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
-let world = new World(document.getElementById("main-canvas"), new DnaFactory('simple_reduced'));
+let world = new World(document.getElementById("main-canvas"), new DnaFactory(getParameterByName('type') || 'simple_reduced'));
 world.iteration();
 
 setInterval(() => {

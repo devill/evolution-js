@@ -34,7 +34,7 @@ class BaseDna {
     }
 
     static mutateValue(value, max_mutation) {
-        return value + (Math.random() < 0.1 ? max_mutation*2*Math.random()-max_mutation: 0)
+        return value + (Math.random() < 0.3 ? max_mutation*2*Math.random()-max_mutation: 0)
     }
 
     static _keepInRange(value, min, max) {
