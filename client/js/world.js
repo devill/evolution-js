@@ -19,7 +19,8 @@ class World extends Thing {
             new Wall([{x:800, y:200},{x:800, y:400}]),
             new Wall([{x:800, y:600},{x:800, y:800}]),
             new Wall([{x:0, y:450},{x:600, y:450}]),
-            new Wall([{x:1000, y:300},{x:1400, y:600}])
+            new Wall([{x:1000, y:600},{x:1400, y:300}]),
+            new Wall([{x:Math.floor(Math.random()*1600), y:Math.floor(Math.random()*900)},{x:Math.floor(Math.random()*1600), y:Math.floor(Math.random()*900)}])
         ];
         this._iteration_number = 0;
         this._random_creatures = 0;
