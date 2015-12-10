@@ -29,7 +29,7 @@ class BaseDna {
         return BaseDna.mutateValue(Math.random() < 0.5 ? this._dna.color : other_dna._dna.color, 10);
     }
 
-    _mixEyeSize() {
+    _mixEyeSize(other_dna) {
         return BaseDna._keepInRange(BaseDna.mutateValue(Math.random() < 0.5 ? this._dna.eye_size : other_dna._dna.eye_size, 0.01*Math.PI), 0.17*Math.PI, 0.27*Math.PI);
     }
 

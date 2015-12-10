@@ -24,8 +24,8 @@ class NeatDna extends BaseDna {
 
     mixConnections(other_dna) {
         let result = [];
-        for(let i = 0; i < this._dna.length; i++) {
-            result.push(Math.random() < 0.5 ? this._dna.connections[i] : other_dna.connections[i]);
+        for(let i = 0; i < this._dna.connections.length; i++) {
+            result.push(Math.random() < 0.5 ? this._dna.connections[i] : other_dna._dna.connections[i]);
         }
         return result;
     }
