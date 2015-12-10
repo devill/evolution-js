@@ -46,8 +46,8 @@ class SimpleDna extends BaseDna {
         return new SimpleDna({
             first_layer: Matrix.random(mid_layer_size, sight_resolution*4+4),
             second_layer: Matrix.random(4, mid_layer_size),
-            egg_color: Math.random() * 360,
-            color: Math.random() * 360,
+            egg_color: Math.floor(Math.random() * 360),
+            color: Math.floor(Math.random() * 360),
             eye_size: (0.17 + 0.1*Math.random())*Math.PI,
             sight_resolution: sight_resolution
         });
@@ -59,8 +59,8 @@ class SimpleDna extends BaseDna {
         return new SimpleDna({
             first_layer: SimpleDna.reducedComplexityFirstLayer(mid_layer_size, 4, sight_resolution),
             second_layer: Matrix.randomDiagonal(4, mid_layer_size),
-            egg_color: Math.random() * 360,
-            color: Math.random() * 360,
+            egg_color: Math.floor(Math.random() * 360),
+            color: Math.floor(Math.random() * 360),
             eye_size: (0.17 + 0.1*Math.random())*Math.PI,
             sight_resolution: sight_resolution
         });
