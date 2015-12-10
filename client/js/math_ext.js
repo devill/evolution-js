@@ -14,7 +14,11 @@ Math.uuid = function () {
     return uuid;
 };
 
-Math.bimodal_normal = function (di) {
+Math.normal = function (di) {
     let d = di || 5;
-    return (Math.random() < 0.5 ? 0 : 1) + (Array.apply(null, new Array(2*d)).map(function(c) { return Math.random(); }).reduce(function(s,x) { return s+x}) - d) / d;
-}
+    return (Array.apply(null, new Array(2*d)).map(function(c) { return Math.random(); }).reduce(function(s,x) { return s+x}) - d) / d;
+};
+
+Math.bimodal_normal = function (di) {
+    return (Math.random() < 0.5 ? 0 : 1) + Math.normal(di);
+};

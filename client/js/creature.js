@@ -188,17 +188,11 @@ class Creature extends Thing {
 
     _reproduce(sexual_desire) {
         this._time_since_last_egg_layed += 1;
-        if (this._energy > 8000 && this._time_since_last_egg_layed > 1000) {
-            if (sexual_desire < 0.3) {
-                this._layEgg();
-            } else if (sexual_desire > 0.7) {
-                if(this._external_dna) {
-                    this._createOffspring();
-                } else {
-                    return;
-                }
+        if (this._energy > 8000 && this._time_since_last_egg_layed > 1000 && Math.random() < 0.01 && sexual_desire > Math.random()) {
+            if(this._external_dna) {
+                this._createOffspring();
             } else {
-                return;
+                this._layEgg();
             }
             this._energy -= 2500;
             this._time_since_last_egg_layed = 0;

@@ -34,9 +34,22 @@ class NeatDna extends BaseDna {
 
         return primary.map(connection => {
             if(connection.enabled && innovation_hash[connection.innovation]) {
+                return {
+                    enabled:true,
+                    inNode: connection.inNode,
+                    outNode: connection.outNode,
+                    weight: this._bimodalValueMix(connection.weight, innovation_hash[connection.innovation].weight),
+                    innovation: connection.innovation
+                };
                 return Math.random() < 0.5 ? connection : innovation_hash[connection.innovation];
             } else {
-                return connection;
+                return {
+                    enabled: connection.enabled,
+                    inNode: connection.inNode,
+                    outNode: connection.outNode,
+                    weight: connection.weight + Math.normal()/25,
+                    innovation: connection.innovation
+                };
             }
         });
     }
