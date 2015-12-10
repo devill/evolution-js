@@ -78,7 +78,7 @@ class Wall {
         let diff = { x:vectors[1]['x'] - vectors[0]['x'], y:vectors[1]['y'] - vectors[0]['y'] };
         let s = diff['x']*wallUnit['x'] + diff['y']*wallUnit['y'];
 
-        var point = {
+        let point = {
             x: vectors[0]['x'] + wallUnit['x'] * s,
             y: vectors[0]['y'] + wallUnit['y'] * s
         };

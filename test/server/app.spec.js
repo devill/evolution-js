@@ -2,7 +2,7 @@
 
 let assert = require('assert');
 let app = require('../../server/app');
-var request = require("supertest").agent(app.listen());
+let request = require("supertest").agent(app.listen());
 
 describe('server', function () {
 

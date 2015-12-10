@@ -59,7 +59,7 @@ class World extends Thing {
 
     injectCreature(dna, position) {
         this._mated_creatures++;
-        var creature = new Creature(this, dna, position, this._iteration_number);
+        let creature = new Creature(this, dna, position, this._iteration_number);
         this._creatures.push(creature);
     }
 
@@ -73,7 +73,7 @@ class World extends Thing {
     }
 
     randomPositionForCreature() {
-        var position = {};
+        let position = {};
         do {
             position = {x: Math.random() * 1600, y: Math.random() * 900};
         } while(this._collidesWithWall(position, 20));
@@ -91,7 +91,7 @@ class World extends Thing {
     iteration() {
         ++this._iteration_number;
 
-        var things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets).concat(this._walls);
+        let things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets).concat(this._walls);
         this._creatures.forEach(creature => {
             creature.see(things);
         });

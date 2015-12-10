@@ -38,7 +38,7 @@ class Creature extends Thing {
     see(things) {
         let angle = this._eye_size / this._sight_resolution;
         for(let i = 0; i < this._sight_resolution; i++) {
-            var sightDirection = this._direction + (i - (this._sight_resolution - 1) / 2) * angle;
+            let sightDirection = this._direction + (i - (this._sight_resolution - 1) / 2) * angle;
 
             let result = {r: 128, g: 128, b: 128, d: this.seeClosestWallDistance(sightDirection)};
 
@@ -143,7 +143,7 @@ class Creature extends Thing {
     iterate() {
         this._looseEnergy();
 
-        var status = this.buildStatusVector();
+        let status = this.buildStatusVector();
         let thought = this._brain.think(status);
 
         if(isNaN(thought[0])) {
@@ -174,7 +174,7 @@ class Creature extends Thing {
         ++this._fire_power;
         ++this._time_since_last_fire;
         if(trigger && this._fire_power > 300 && this._time_since_last_fire > 50) {
-            var bullet_position = {
+            let bullet_position = {
                 x: this._position.x + 30 * Math.cos(this._direction),
                 y: this._position.y + 30 * Math.sin(this._direction)
             };
@@ -205,7 +205,7 @@ class Creature extends Thing {
     }
 
     _layEgg() {
-        var egg_position = {
+        let egg_position = {
             x: Creature._keepInRange(this._position.x - 30 * Math.cos(this._direction), 20, 1560),
             y: Creature._keepInRange(this._position.y - 30 * Math.sin(this._direction), 20, 860)
         };

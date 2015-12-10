@@ -39,7 +39,7 @@ class Bullet extends Thing {
     }
 
     _collidesWithWall(new_position) {
-        var collides = false;
+        let collides = false;
         this._world.getWalls().forEach(wall => {
             collides = collides || wall.vectorColides([this._position, new_position], 5);
         });
@@ -62,12 +62,12 @@ class Bullet extends Thing {
     }
 
     visible(position, direction) {
-        var visibilityData = this._visibilityData(position, direction);
+        let visibilityData = this._visibilityData(position, direction);
         return visibilityData['distanceFromEye'] > 0 && visibilityData['distanceFromLineOfSight'] < 5;
     }
 
     visibilityDistance(position, direction) {
-        var visibilityData = this._visibilityData(position, direction);
+        let visibilityData = this._visibilityData(position, direction);
         return visibilityData['distanceFromEye'];
     }
 

@@ -20,7 +20,7 @@ class Matrix {
     mix(other) {
         let result = [];
         for(let i = 0; i < this._data.length; ++i) {
-            var rnd = Math.random();
+            let rnd = Math.random();
             let r = [];
             if(rnd < 0.2) {
                 let cut = Math.floor(Math.random() * this._data[i].length);

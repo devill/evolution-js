@@ -19,7 +19,7 @@ class Thing {
     }
 
     visibilityDistance(position, direction) {
-        var visibilityData = this._visibilityData(position, direction);
+        let visibilityData = this._visibilityData(position, direction);
         return visibilityData['distanceFromEye'];
     }
 }
