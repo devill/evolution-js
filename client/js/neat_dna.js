@@ -16,7 +16,7 @@ class NeatDna extends BaseDna {
 
     mix(other_dna) {
         return new NeatDna({
-            connections: this.mixConnections(other_dna),
+            connections: this.evolveConnections(other_dna),
             egg_color: this._mixEggColor(other_dna),
             color: this._mixColor(other_dna),
             eye_size: this._mixEyeSize(other_dna),
@@ -71,8 +71,11 @@ class NeatDna extends BaseDna {
     }
 
     evolveTopologyWithNewConnection(connections) {
+
         let outNode = this.findOutCandidate(connections);
         let inNode = this.findInCandidate(connections, outNode);
+
+        if(connections.filter(c => { return c.inNode == inNode && c.outNode == outNode; }).length > 0) { return connections; }
 
         connections.push({
             enabled: true,
@@ -86,11 +89,17 @@ class NeatDna extends BaseDna {
     }
 
     findOutCandidate(connections) {
-        return this.outNodes(connections).concat(this.hiddenNodes());
+        let nodes = this.outNodes(connections).concat(this.hiddenNodes(connections));
+        let outIndex = 0;
+        do {
+            outIndex = nodes[Math.floor(Math.random()*nodes.length)];
+        } while(!this.connected(outIndex,outIndex, this.connectionsAsHash(connections)));
+
+        return outIndex;
     }
 
     findInCandidate(connections, outIndex) {
-        let nodes = this.inNodes(connections).concat(this.hiddenNodes());
+        let nodes = this.inNodes(connections).concat(this.hiddenNodes(connections));
         let inIndex = 0;
         do {
             inIndex = nodes[Math.floor(Math.random()*nodes.length)];
@@ -110,6 +119,7 @@ class NeatDna extends BaseDna {
 
     connected(inIndex,outIndex,connectionsHash) {
         if(inIndex == outIndex) { return true; }
+        if(!connectionsHash[inIndex]) { return false; }
         for(let i = 0; i < connectionsHash[inIndex].length; ++i) {
             if(this.connected(connectionsHash[inIndex][i].outNode, outIndex, connectionsHash)) {
                 return true;
@@ -121,19 +131,19 @@ class NeatDna extends BaseDna {
     inNodes(connections) {
         return connections.filter(c => {
             return !isInt(c.inNode);
-        });
+        }).map(c => { return c.inNode; });
     }
 
     hiddenNodes(connections) {
         return connections.filter(c => {
             return isInt(c.inNode);
-        });
+        }).map(c => { return c.inNode; });
     }
 
     outNodes(connections) {
         return connections.filter(c => {
             return !isInt(c.outNode);
-        });
+        }).map(c => { return c.outNode; });
     }
 
     topologicalSortConnections(connections) {
@@ -211,7 +221,7 @@ class NeatDna extends BaseDna {
             for(let j = 0; j < 4; j++) {
                 connections.push({
                     enabled:true,
-                    inNode: `in_${j}`,
+                    inNode: `in_${i}`,
                     outNode: `out_${j}`,
                     weight: Math.normal()*2,
                     innovation: Math.uuid()
