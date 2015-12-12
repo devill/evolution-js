@@ -5,9 +5,9 @@ Math.sigmoid = function(x) {
 };
 
 Math.uuid = function () {
-    let d = new Date().getTime();
-    let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        let r = (d + Math.random()*16)%16 | 0;
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
         d = Math.floor(d/16);
         return (c=='x' ? r : (r&0x3|0x8)).toString(16);
     });
@@ -15,7 +15,7 @@ Math.uuid = function () {
 };
 
 Math.normal = function (di) {
-    let d = di || 5;
+    var d = di || 5;
     return (Array.apply(null, new Array(2*d)).map(function(c) { return Math.random(); }).reduce(function(s,x) { return s+x}) - d) / d;
 };
 
@@ -24,10 +24,19 @@ Math.bimodal_normal = function (di) {
 };
 
 function isInt(value) {
-    let x;
+    var x;
     if (isNaN(value)) {
         return false;
     }
     x = parseFloat(value);
     return (x | 0) === x;
 }
+
+Array.prototype.unique = function() {
+    var seen = {};
+    return this.filter(function(item) {
+        var shouldKeep = !seen[item];
+        seen[item] = true;
+        return shouldKeep;
+    });
+};

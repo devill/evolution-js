@@ -19,6 +19,9 @@ class SimpleBrain {
     possessed() {
         return false;
     }
+
+    draw() {
+    }
 }
 
 module.exports = SimpleBrain;

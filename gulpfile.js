@@ -20,6 +20,7 @@ let webpackConfig = {
 gulp.task('buildClient', function(cb) {
   gulp.src('client/js/hsl2rgb.js').pipe(gulp.dest('dist/js'));
   gulp.src('client/js/math_ext.js').pipe(gulp.dest('dist/js'));
+  gulp.src('node_modules/vis/dist/*').pipe(gulp.dest('dist/js/vis'));
   gulp.src('client/index.html').pipe(gulp.dest('dist'));
   webpack(webpackConfig, function(err, stats) {
     if(err) throw new gutil.PluginError("webpack", err);

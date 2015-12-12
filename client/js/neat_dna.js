@@ -11,7 +11,7 @@ class NeatDna extends BaseDna {
     }
 
     buildBrain() {
-        return new NeatBrain(this._dna);
+        return new NeatBrain(this);
     }
 
     mix(other_dna) {
@@ -99,6 +99,11 @@ class NeatDna extends BaseDna {
         return nodes[Math.floor(Math.random()*nodes.length)];
     }
 
+
+    connections() {
+        return this._dna.connections;
+    }
+
     connectionsAsHash(connections) {
         let hash = {};
         connections.forEach(c => {
@@ -121,21 +126,24 @@ class NeatDna extends BaseDna {
     }
 
     inNodes(connections) {
+        connections = connections || this.connections();
         return connections.filter(c => {
             return !isInt(c.inNode);
-        }).map(c => { return c.inNode; });
+        }).map(c => { return c.inNode; }).unique();
     }
 
     hiddenNodes(connections) {
+        connections = connections || this.connections();
         return connections.filter(c => {
             return isInt(c.inNode);
-        }).map(c => { return c.inNode; });
+        }).map(c => { return c.inNode; }).unique();
     }
 
     outNodes(connections) {
+        connections = connections || this.connections();
         return connections.filter(c => {
             return !isInt(c.outNode);
-        }).map(c => { return c.outNode; });
+        }).map(c => { return c.outNode; }).unique();
     }
 
     topologicalSortConnections(connections) {

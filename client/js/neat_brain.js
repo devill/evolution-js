@@ -1,5 +1,7 @@
 "use strict";
 
+let NeatBrainPlotter = require('./neat_brain_plotter');
+
 class NeatBrain {
     constructor(dna) {
         this._dna = dna;
@@ -10,7 +12,7 @@ class NeatBrain {
         input.forEach((neuron,index) => {
             nodes[`in_${index}`] = neuron;
         });
-        this._dna.connections.forEach(connection => {
+        this._dna.connections().forEach(connection => {
             if(connection.enabled) {
                 let inValue = Math.sigmoid(nodes[connection.inNode]) || 0;
                 let outValue = nodes[connection.outNode] || 0;
@@ -27,6 +29,20 @@ class NeatBrain {
     possessed() {
         return false;
     }
+
+    nodes() { return this._dna.nodes(); }
+    inNodes() { return this._dna.inNodes(); }
+    hiddenNodes() { return this._dna.hiddenNodes(); }
+    outNodes() { return this._dna.outNodes(); }
+
+    connections() {
+        return this._dna.connections();
+    }
+
+    draw() {
+        (new NeatBrainPlotter(document.getElementById('brain-viewer'), this)).draw();
+    }
+
 }
 
 module.exports = NeatBrain;

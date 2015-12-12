@@ -43,9 +43,18 @@ class World extends Thing {
         });
 
         canvas_object.addEventListener("click", event => {
-            this._creatures = this._creatures.filter(creature => {
-                return !creature.containsPoint({x:event.layerX, y:event.layerY});
-            });
+            if(event.ctrlKey) {
+                this._creatures = this._creatures.filter(creature => {
+                    return !creature.containsPoint({x:event.layerX, y:event.layerY});
+                });
+            } else {
+                let selected_creatures = this._creatures.filter(creature => {
+                    return creature.containsPoint({x:event.layerX, y:event.layerY});
+                });
+                if(selected_creatures[0]) {
+                    selected_creatures[0]._brain.draw();
+                }
+            }
         });
     }
 
