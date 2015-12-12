@@ -26,6 +26,7 @@ class World extends Thing {
         this._random_creatures = 0;
         this._mated_creatures = 0;
         this._dna_factory = dnaFactory;
+        this._selected_creature = null;
 
         this.context = canvas_object.getContext("2d");
 
@@ -48,11 +49,18 @@ class World extends Thing {
                     return !creature.containsPoint({x:event.layerX, y:event.layerY});
                 });
             } else {
-                let selected_creatures = this._creatures.filter(creature => {
-                    return creature.containsPoint({x:event.layerX, y:event.layerY});
+                this._selected_creature = this._creatures[0];
+                let distance = this._selected_creature.distanceFromPoint({x:event.layerX, y:event.layerY});
+
+                this._creatures.forEach(creature => {
+                    if( creature.distanceFromPoint({x:event.layerX, y:event.layerY}) < distance) {
+                        this._selected_creature = creature;
+                        distance = creature.distanceFromPoint({x:event.layerX, y:event.layerY});
+                    }
                 });
-                if(selected_creatures[0]) {
-                    selected_creatures[0]._brain.draw();
+
+                if(this._selected_creature) {
+                    this._selected_creature._brain.draw();
                 }
             }
         });
@@ -195,9 +203,18 @@ class World extends Thing {
         });
 
         if(this._creatures[0]) {
+            this.context.beginPath();
             this.context.strokeStyle = '#ff0055';
             let oldest_creature = this._creatures[0].position();
             this.context.rect(oldest_creature.x - 30, oldest_creature.y - 30,60,60);
+            this.context.stroke();
+        }
+
+        if(this._selected_creature) {
+            this.context.beginPath();
+            this.context.strokeStyle = '#55ff00';
+            let creature_position = this._selected_creature.position();
+            this.context.rect(creature_position.x - 28, creature_position.y - 28,56,56);
             this.context.stroke();
         }
     }
