@@ -155,7 +155,7 @@ class World extends Thing {
     reproduce() {
         this._creatures.forEach(creature => {
             this._eggs.forEach(e => {
-                if (creature.distance(e) < 20) {
+                if (creature.distance(e) < 20 && creature.canTakeEgg(e)) {
                     creature.takeEgg(e);
                     e.remove();
                 }
@@ -193,8 +193,8 @@ class World extends Thing {
         }
     }
 
-    addEgg(position, color, dna) {
-        this._eggs.push(new Egg(position, color, dna))
+    addEgg(position, color, dna, parent_id) {
+        this._eggs.push(new Egg(position, color, dna, parent_id))
     }
 
     addBullet(position, direction) {
