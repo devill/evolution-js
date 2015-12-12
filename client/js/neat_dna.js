@@ -75,6 +75,7 @@ class NeatDna extends BaseDna {
         let outNode = this.findOutCandidate(connections);
         let inNode = this.findInCandidate(connections, outNode);
 
+        if(this.connected(outNode,inNode, this.connectionsAsHash(connections))) { return connections; }
         if(connections.filter(c => { return c.inNode == inNode && c.outNode == outNode; }).length > 0) { return connections; }
 
         connections.push({
@@ -90,22 +91,12 @@ class NeatDna extends BaseDna {
 
     findOutCandidate(connections) {
         let nodes = this.outNodes(connections).concat(this.hiddenNodes(connections));
-        let outIndex = 0;
-        do {
-            outIndex = nodes[Math.floor(Math.random()*nodes.length)];
-        } while(!this.connected(outIndex,outIndex, this.connectionsAsHash(connections)));
-
-        return outIndex;
+        return nodes[Math.floor(Math.random()*nodes.length)];
     }
 
-    findInCandidate(connections, outIndex) {
+    findInCandidate(connections) {
         let nodes = this.inNodes(connections).concat(this.hiddenNodes(connections));
-        let inIndex = 0;
-        do {
-            inIndex = nodes[Math.floor(Math.random()*nodes.length)];
-        } while(!this.connected(outIndex,inIndex, this.connectionsAsHash(connections)));
-
-        return inIndex;
+        return nodes[Math.floor(Math.random()*nodes.length)];
     }
 
     connectionsAsHash(connections) {
@@ -120,6 +111,7 @@ class NeatDna extends BaseDna {
     connected(inIndex,outIndex,connectionsHash) {
         if(inIndex == outIndex) { return true; }
         if(!connectionsHash[inIndex]) { return false; }
+
         for(let i = 0; i < connectionsHash[inIndex].length; ++i) {
             if(this.connected(connectionsHash[inIndex][i].outNode, outIndex, connectionsHash)) {
                 return true;
@@ -147,14 +139,14 @@ class NeatDna extends BaseDna {
     }
 
     topologicalSortConnections(connections) {
-        let hash = connectionsAsHash(connections);
+        let hash = this.connectionsAsHash(connections);
         let inNodes = this.inNodes(connections);
         let visitedNodes = {};
         let sortedConnections = [];
 
         function exploreNode(nodeId)
         {
-            if(visitedNodes[nodeId]) { return; }
+            if(!hash[nodeId] || visitedNodes[nodeId]) { return; }
             hash[nodeId].forEach(c => {
                 exploreNode(c.outNode);
                 sortedConnections.push(c);
