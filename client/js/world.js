@@ -107,24 +107,9 @@ class World extends Thing {
     
     iteration() {
         ++this._iteration_number;
-
-        let things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets).concat(this._walls);
-        this._creatures.forEach(creature => {
-            creature.see(things);
-        });
-
-        this._creatures.forEach(creature => {
-            creature.iterate();
-            if(!creature.alive()) {
-                this._food.push(new Food(creature.position(), 6000, 7));
-            }
-        });
-
-        this._creatures = this._creatures.filter(creature => {
-            return creature.alive();
-        });
-        if(this._selected_creature != null && !this._selected_creature.alive()) { this._selected_creature = null; }
-
+        this.calculateCreatureVision();
+        this.iterateCreatures();
+        this.removeTheDead();
         this.feedCreatures();
         this.detectBulletHits();
         this.reproduce();
@@ -137,6 +122,31 @@ class World extends Thing {
         }
 
         setTimeout(() => { this.iteration() }, 0);
+    }
+
+    function calculateCreatureVision() {
+        let things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets).concat(this._walls);
+        this._creatures.forEach(creature => {
+            creature.see(things);
+        });
+    }
+
+    iterateCreatures() {
+        this._creatures.forEach(creature => {
+            creature.iterate();
+            if (!creature.alive()) {
+                this._food.push(new Food(creature.position(), 6000, 7));
+            }
+        });
+    }
+
+    removeTheDead() {
+        this._creatures = this._creatures.filter(creature => {
+            return creature.alive();
+        });
+        if (this._selected_creature != null && !this._selected_creature.alive()) {
+            this._selected_creature = null;
+        }
     }
 
     detectBulletHits() {
