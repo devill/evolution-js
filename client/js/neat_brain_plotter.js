@@ -10,19 +10,19 @@ class NeatBrainPlotter {
     draw() {
 
         let nodes = this._brain.inNodes().map(n => {
-            return { id: n, label: n, level: 0};
+            return { id: n, label: n, level: 0, group: 0};
         });
 
         nodes = nodes.concat(this._brain.hiddenNodes().map(n => {
-            return { id: n, label: n, level: 1};
+            return { id: n, label: n, level: 1, group: 1};
         }));
 
         nodes = nodes.concat(this._brain.outNodes().map(n => {
-            return { id: n, label: n, level: 2};
+            return { id: n, label: n, level: 2, group: 2};
         }));
 
         let edges = this._brain.connections().map(c => {
-            return {from: c.inNode, to: c.outNode};
+            return {from: c.inNode, to: c.outNode, value: c.weight };
         });
 
         let data = {

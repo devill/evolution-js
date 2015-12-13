@@ -124,7 +124,7 @@ class World extends Thing {
         setTimeout(() => { this.iteration() }, 0);
     }
 
-    function calculateCreatureVision() {
+    calculateCreatureVision() {
         let things = this._creatures.concat(this._food).concat(this._eggs).concat(this._bullets).concat(this._walls);
         this._creatures.forEach(creature => {
             creature.see(things);

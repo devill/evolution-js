@@ -225,7 +225,7 @@ class NeatDna extends BaseDna {
                     enabled:true,
                     inNode: `in_${i}`,
                     outNode: `out_${j}`,
-                    weight: Math.normal()*2,
+                    weight: Math.normal(),
                     innovation: `initial_${i}_${j}`
                 });
             }
