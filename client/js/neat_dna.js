@@ -6,8 +6,8 @@ let BaseDna = require('./base_dna');
 class NeatDna extends BaseDna {
     constructor(dna) {
         super(dna);
-        this.node_addition_probability = 1/50;
-        this.edge_addition_probability = 1/10;
+        this.node_addition_probability = 1/5;
+        this.edge_addition_probability = 1/3;
     }
 
     buildBrain() {
@@ -222,10 +222,10 @@ class NeatDna extends BaseDna {
         for(let i = 0; i < 4+sightResolution*4; i++) {
             for(let j = 0; j < 4; j++) {
                 connections.push({
-                    enabled:true,
+                    enabled: true,
                     inNode: `in_${i}`,
                     outNode: `out_${j}`,
-                    weight: Math.normal(),
+                    weight: (Math.random() < 1/3) ? Math.normal() : 0,
                     innovation: `initial_${i}_${j}`
                 });
             }

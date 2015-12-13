@@ -22,7 +22,8 @@ class NeatBrainPlotter {
         }));
 
         let edges = this._brain.connections().map(c => {
-            return {from: c.inNode, to: c.outNode, value: c.weight };
+            let color = (c.weight < 0) ? '#ff0000' : '#0000ff';
+            return {from: c.inNode, to: c.outNode, value: Math.abs(c.weight), color: { highlight: color } };
         });
 
         let data = {
@@ -40,11 +41,17 @@ class NeatBrainPlotter {
                 borderWidth: 2
             },
             edges: {
-                width: 2
+                color: {
+                    color: '#aaaaaa',
+                    highlight: '#0000ff'
+                }
+            },
+            interaction: {
+                selectConnectedEdges: true
             },
             layout: {
                 hierarchical: {
-                    direction: 'UD'
+                    direction: 'LR'
                 }
             }
         };
