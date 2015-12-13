@@ -123,6 +123,7 @@ class World extends Thing {
         this._creatures = this._creatures.filter(creature => {
             return creature.alive();
         });
+        if(this._selected_creature != null && !this._selected_creature.alive()) { this._selected_creature = null; }
 
         this.feedCreatures();
         this.detectBulletHits();
