@@ -11,12 +11,17 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-let world = new World(document.getElementById("main-canvas"), new DnaFactory(getParameterByName('type') || 'simple_reduced'), new OfflineStorage());
+let offlineStorage = new OfflineStorage();
+let world = new World(document.getElementById("main-canvas"), new DnaFactory(getParameterByName('type') || 'simple_reduced'), offlineStorage);
 world.iteration();
 
 setInterval(() => {
     world.drawWorld();
 }, 50);
+
+setInterval(() => {
+    offlineStorage.reduce();
+}, 60000);
 
 let lastIterationCount = 0;
 setInterval(() => {

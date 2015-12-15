@@ -133,8 +133,6 @@ class World extends Thing {
             this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}, 3500, 5));
         }
 
-        this._storage.reduce();
-
         setTimeout(() => { this.iteration() }, 0);
     }
 
