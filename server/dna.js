@@ -3,7 +3,7 @@
 let pg = require('co-pg')(require('pg'));
 
 let storedDna;
-let connectionString = 'postgres://postgres@localhost:32768/postgres';
+let connectionString = 'postgres://postgres_user:postgres_pw@localhost:9932/postgres_db';
 
 function* store() {
   let client = new pg.Client(connectionString);

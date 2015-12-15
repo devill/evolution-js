@@ -1,0 +1,4 @@
+{
+  "dev": "postgres://postgres_user:postgres_pw@localhost:9932/postgres_db",
+  "sql-file": true
+}
