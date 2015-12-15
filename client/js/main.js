@@ -2,6 +2,7 @@
 
 let World = require('./world');
 let DnaFactory = require('./dna_factory');
+let OfflineStorage = require('./offline_storage');
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -10,7 +11,7 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-let world = new World(document.getElementById("main-canvas"), new DnaFactory(getParameterByName('type') || 'simple_reduced'));
+let world = new World(document.getElementById("main-canvas"), new DnaFactory(getParameterByName('type') || 'simple_reduced'), new OfflineStorage());
 world.iteration();
 
 setInterval(() => {

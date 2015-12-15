@@ -16,6 +16,7 @@ class NeatDna extends BaseDna {
 
     mix(other_dna) {
         return new NeatDna({
+            id: Math.uuid(),
             connections: this.evolveConnections(other_dna),
             egg_color: this._mixEggColor(other_dna),
             color: this._mixColor(other_dna),
@@ -209,6 +210,7 @@ class NeatDna extends BaseDna {
     static generateRandomDna() {
         let sightResolution = 3;
         return new NeatDna({
+            id: Math.uuid(),
             connections: NeatDna.randomInitialConnections(sightResolution),
             egg_color: Math.floor(Math.random() * 360),
             color: Math.floor(Math.random() * 360),

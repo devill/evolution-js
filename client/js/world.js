@@ -9,7 +9,7 @@ let Wall = require('./wall');
 let PossessedBrain = require('./possessed_brain');
 
 class World extends Thing {
-    constructor(canvas_object, dnaFactory) {
+    constructor(canvas_object, dnaFactory, storage) {
         super();
         this._food = [];
         this._creatures = [];
@@ -26,6 +26,7 @@ class World extends Thing {
         this._random_creatures = 0;
         this._mated_creatures = 0;
         this._dna_factory = dnaFactory;
+        this._storage = storage;
         this._selected_creature = null;
 
         this.context = canvas_object.getContext("2d");
@@ -74,9 +75,13 @@ class World extends Thing {
         return this._iteration_number;
     }
 
-    injectCreature(dna, position) {
+    injectCreature(dna, position, parents) {
         this._mated_creatures++;
         let creature = new Creature(this, dna, position, this._iteration_number);
+        this._storage.addDna(dna);
+        parents.forEach(parent => {
+            this._storage.addChild(parent, dna);
+        });
         this._creatures.push(creature);
     }
 
@@ -85,6 +90,7 @@ class World extends Thing {
         for (let i = 0; i < n; i++) {
             let dna = this._dna_factory.build();
             let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
+            this._storage.addDna(dna);
             this._creatures.push(creature);
         }
     }
@@ -113,13 +119,21 @@ class World extends Thing {
         this.feedCreatures();
         this.detectBulletHits();
         this.reproduce();
+
         if(this._iteration_number % 100 == 0 && this._creatures.length < 20) {
-            this.generateRandomCreatures(1);
+            if(this._storage.size() < 20 || Math.random() < 0.1) {
+                this.generateRandomCreatures(1);
+            } else {
+                let creature = new Creature(this, this._storage.getDna(), this.randomPositionForCreature(), this._iteration_number);
+                this._creatures.push(creature);
+            }
         }
 
         if (this._creatures.length < 40 && this._food.length < 50 && Math.random() < 0.03) {
             this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}, 3500, 5));
         }
+
+        this._storage.reduce();
 
         setTimeout(() => { this.iteration() }, 0);
     }
@@ -230,8 +244,8 @@ class World extends Thing {
         }
     }
 
-    addEgg(position, color, dna, parent_id) {
-        this._eggs.push(new Egg(position, color, dna, parent_id))
+    addEgg(position, color, dna) {
+        this._eggs.push(new Egg(position, color, dna))
     }
 
     addBullet(position, direction) {

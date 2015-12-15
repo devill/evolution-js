@@ -40,3 +40,7 @@ Array.prototype.unique = function() {
         return shouldKeep;
     });
 };
+
+Object.values = function(self) {
+    return Object.keys(self).map(function(key) { return self[key]; });
+};

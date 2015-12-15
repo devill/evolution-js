@@ -3,21 +3,16 @@
 let Thing = require('./thing');
 
 class Egg extends Thing {
-    constructor(position, color, dna, parent_id) {
+    constructor(position, color, dna) {
         super();
         this._position = position;
         this._color = color;
         this._exists = true;
         this._dna = dna;
-        this._parent_id = parent_id;
     }
 
     position() {
         return this._position;
-    }
-
-    parent() {
-        return this._parent_id;
     }
 
     drawTo(context) {

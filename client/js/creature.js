@@ -27,8 +27,6 @@ class Creature extends Thing {
         this._fire_power = 0;
         this._max_fire_power = 5000;
 
-        this._id = Math.uuid();
-
         this._sight_resolution = dna.sightResolution();
 
         this._sight = [];
@@ -202,7 +200,7 @@ class Creature extends Thing {
     }
 
     _createOffspring() {
-        this._world.injectCreature(this.mix(this._external_dna), {x: this._position.x, y: this._position.y});
+        this._world.injectCreature(this.mix(this._external_dna), {x: this._position.x, y: this._position.y}, [this._dna, this._external_dna]);
         this._external_dna = null;
     }
 
@@ -211,7 +209,7 @@ class Creature extends Thing {
             x: Creature._keepInRange(this._position.x - 30 * Math.cos(this._direction), 20, 1560),
             y: Creature._keepInRange(this._position.y - 30 * Math.sin(this._direction), 20, 860)
         };
-        this._world.addEgg(egg_position, this._dna.eggColor(), this._dna, this._id);
+        this._world.addEgg(egg_position, this._dna.eggColor(), this._dna);
     }
 
     distance(other) {
@@ -236,7 +234,7 @@ class Creature extends Thing {
     }
 
     canTakeEgg(e) {
-        return e.parent() != this._id;
+        return e._dna._dna.id != this._dna._dna.id;
     }
 
     takeEgg(e) {
