@@ -89,10 +89,15 @@ class World extends Thing {
         this._random_creatures++;
         for (let i = 0; i < n; i++) {
             let dna = this._dna_factory.build();
-            let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
             this._storage.addDna(dna);
-            this._creatures.push(creature);
+            this.addCreature(dna);
         }
+    }
+
+    addCreature(dna) {
+        let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
+        this._storage.addDna(dna);
+        this._creatures.push(creature);
     }
 
     randomPositionForCreature() {
@@ -121,11 +126,15 @@ class World extends Thing {
         this.reproduce();
 
         if(this._iteration_number % 100 == 0 && this._creatures.length < 20) {
-            if(this._storage.size() < 20 || Math.random() < 0.1) {
+            if(Math.random() < 0.1) {
                 this.generateRandomCreatures(1);
             } else {
-                let creature = new Creature(this, this._storage.getDna(), this.randomPositionForCreature(), this._iteration_number);
-                this._creatures.push(creature);
+                let dna = this._storage.getDna();
+                if (!dna) {
+                    this.generateRandomCreatures(1);
+                } else {
+                    this.addCreature(dna);
+                }
             }
         }
 

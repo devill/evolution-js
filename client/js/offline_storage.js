@@ -11,6 +11,9 @@ class OfflineStorage {
     }
 
     getDna() {
+        if (this._size() < 20) {
+            return null;
+        }
         let item = this._randomItem();
         item.lives += 1;
         return item.dna;
@@ -20,7 +23,7 @@ class OfflineStorage {
         this.dnas[parent._dna.id].children.push(child._dna.id);
     }
 
-    size() {
+    _size() {
         return Object.keys(this.dnas).length;
     }
 
