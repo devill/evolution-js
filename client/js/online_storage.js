@@ -4,25 +4,25 @@ let request = require('superagent');
 
 class OnlineStorage {
 
-    addDna(dna) {
-        request.post('/dna/').send(dna);
-    }
+  addDna(dna) {
+    request.post('/dna/').send(dna).end();
+  }
 
-    addChild(parent, child) {
-        this.dnas[parent._dna.id].children.push(child._dna.id);
-    }
+  addChild(parent, child) {
+  }
 
-    getDna() {
-        let dna = this._cachedDna;
-        this._load();
-        return dna;
-    }
+  getDna() {
+    let dna = this._cachedDna;
+    this._load();
+    if (!dna) return null;
+    return dna;
+  }
 
-    _load() {
-        request.get('/dna/1/').end((err, res) => {
-            this._cachedDna = res;
-        });
-    }
+  _load() {
+    request.get('/dna/random/').end((err, res) => {
+        this._cachedDna = res.body;
+    });
+  }
 
 }
 

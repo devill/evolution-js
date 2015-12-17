@@ -1,6 +1,6 @@
 'use strict';
 
-let assert  = require('assert');
+let assert = require('chai').assert;
 
 let Bullet = require('../../client/js/bullet');
 

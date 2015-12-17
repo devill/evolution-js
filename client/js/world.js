@@ -35,6 +35,8 @@ class World extends Thing {
         this._iteration_number = 0;
         this._random_creatures = 0;
         this._mated_creatures = 0;
+        this._uploaded_creatures = 0;
+        this._downloaded_creatures = 0;
         this._dna_factory = dnaFactory;
         this._storage = storage;
         this._selected_creature = null;
@@ -89,6 +91,7 @@ class World extends Thing {
         this._mated_creatures++;
         let creature = new Creature(this, dna, position, this._iteration_number);
         this._storage.addDna(dna);
+        this._uploaded_creatures++;
         parents.forEach(parent => {
             this._storage.addChild(parent, dna);
         });
@@ -99,7 +102,6 @@ class World extends Thing {
         this._random_creatures++;
         for (let i = 0; i < n; i++) {
             let dna = this._dna_factory.build();
-            this._storage.addDna(dna);
             this.addCreature(dna);
         }
     }
@@ -107,6 +109,7 @@ class World extends Thing {
     addCreature(dna) {
         let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
         this._storage.addDna(dna);
+        this._uploaded_creatures++;
         this._creatures.push(creature);
     }
 
@@ -143,6 +146,7 @@ class World extends Thing {
                 if (!dna) {
                     this.generateRandomCreatures(1);
                 } else {
+                    this._downloaded_creatures++;
                     this.addCreature(dna);
                 }
             }

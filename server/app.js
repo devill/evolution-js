@@ -11,7 +11,8 @@ let app = koa();
 app.use(logger());
 app.use(serve('dist'));
 
-app.use(route.get('/dna/:id', dna.load));
+app.use(route.get('/dna/random/', dna.random));
+app.use(route.get('/dna/:id/', dna.load));
 
 app.use(bodyparser());
 app.use(route.post('/dna/', dna.store));
