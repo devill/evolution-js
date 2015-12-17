@@ -8,16 +8,25 @@ let env = Object.assign({ PORT: 3000 }, process.env);
 let config = { cwd: './', env: env };
 let server;
 
+let webpackLoaders = [ {
+  test: /\.js$/,
+  exclude: /node_modules/,
+  loader: 'babel',
+  query: {
+    presets: ['es2015']
+  }
+} ];
 let webpackConfig = {
+  cache: true,
   entry: { app: './client/js/main.js' },
   module: {
-    loaders: [ { test: /\.js$/, exclude: /node_modules/, loader: 'babel' } ]
+    loaders: webpackLoaders
   },
   devtool: 'inline-source-map',
   output: { filename: 'dist/js/evolution.js' }
 };
 
-gulp.task('buildClient', function(cb) {
+gulp.task('build-client', function(cb) {
   gulp.src('client/js/hsl2rgb.js').pipe(gulp.dest('dist/js'));
   gulp.src('client/js/js_ext.js').pipe(gulp.dest('dist/js'));
   gulp.src('node_modules/vis/dist/*').pipe(gulp.dest('dist/js/vis'));
@@ -28,7 +37,17 @@ gulp.task('buildClient', function(cb) {
   });
 });
 
-gulp.task('startServer', function(done) {
+gulp.task('test-client', function(done) {
+  var KarmaServer = require('karma').Server;
+
+  var server = new KarmaServer({
+    configFile: process.cwd() + '/karma.conf.js',
+    singleRun: true
+  }, done);
+  server.start();
+}),
+
+gulp.task('start-server', function(done) {
   if (server && server.kill) {
     server.kill();
   }
@@ -43,8 +62,8 @@ gulp.task('startServer', function(done) {
 });
 
 gulp.task('default', function() {
-  gulp.start('startServer');
-  gulp.start('buildClient');
-  gulp.watch(['client/**/*', 'server/**/*'], ['startServer', 'buildClient']);
+  gulp.start('start-server');
+  gulp.start('build-client');
+  gulp.watch(['client/**/*', 'server/**/*'], ['start-server', 'build-client']);
 });
 
