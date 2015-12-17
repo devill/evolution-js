@@ -3,6 +3,9 @@
 let World = require('./world');
 let DnaFactory = require('./dna_factory');
 let OfflineStorage = require('./offline_storage');
+let Config = require('./config');
+
+window.config = Config.instance();
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");

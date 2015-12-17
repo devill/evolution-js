@@ -14,13 +14,8 @@ Math.uuid = function () {
     return uuid;
 };
 
-Math.normal = function (di) {
-    var d = di || 5;
-    return (Array.apply(null, new Array(2*d)).map(function(c) { return Math.random(); }).reduce(function(s,x) { return s+x}) - d) / d;
-};
-
-Math.bimodal_normal = function (di) {
-    return (Math.random() < 0.5 ? 0 : 1) + Math.normal(di);
+Math.bimodal_normal = function () {
+    return (Math.random() < 0.5 ? 0 : 1) + chance.normal();
 };
 
 function isInt(value) {

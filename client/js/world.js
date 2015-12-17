@@ -1,5 +1,6 @@
 "use strict";
 
+let Config = require('./config');
 let Thing = require('./thing');
 let Creature = require('./creature');
 let Food = require('./food');
@@ -11,6 +12,15 @@ let PossessedBrain = require('./possessed_brain');
 class World extends Thing {
     constructor(canvas_object, dnaFactory, storage) {
         super();
+        Config.instance()
+            .set('overpopulation_limit', 40)
+            .set('maximum_amount_of_food', 40)
+            .set('food_generation_probability', 0.01)
+            .set('dead_creature_nutrition', 6000)
+            .set('default_food_nutrition', 3500)
+            .set('minimum_population_size', 20)
+            .set('creature_creation_probability',0.01);
+
         this._food = [];
         this._creatures = [];
         this._eggs = [];
@@ -125,7 +135,7 @@ class World extends Thing {
         this.detectBulletHits();
         this.reproduce();
 
-        if(this._iteration_number % 100 == 0 && this._creatures.length < 20) {
+        if(Math.random() < Config.instance().get('creature_creation_probability') && this._creatures.length < Config.instance().get('minimum_population_size')) {
             if(Math.random() < 0.1) {
                 this.generateRandomCreatures(1);
             } else {
@@ -138,8 +148,8 @@ class World extends Thing {
             }
         }
 
-        if (this._creatures.length < 40 && this._food.length < 50 && Math.random() < 0.03) {
-            this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}, 3500, 5));
+        if (this._creatures.length < Config.instance().get('overpopulation_limit') && this._food.length < Config.instance().get('maximum_amount_of_food') && Math.random() < Config.instance().get('food_generation_probability')) {
+            this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}, Config.instance().get('default_food_nutrition'), 5));
         }
 
         setTimeout(() => { this.iteration() }, 0);
@@ -156,7 +166,7 @@ class World extends Thing {
         this._creatures.forEach(creature => {
             creature.iterate();
             if (!creature.alive()) {
-                this._food.push(new Food(creature.position(), 6000, 7));
+                this._food.push(new Food(creature.position(), Config.instance().get('dead_creature_nutrition'), 7));
             }
         });
     }

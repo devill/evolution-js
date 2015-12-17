@@ -153,7 +153,7 @@ class Creature extends Thing {
 
         this._updateSpeed(thought[0], thought[1]);
         this._updatePosition();
-        this._shoot(thought[3] > 0.8);
+        this._shoot(thought[3] > 0.5);
         this._reproduce(thought[2]);
     }
 

@@ -2,12 +2,14 @@
 
 let NeatBrain = require('./neat_brain');
 let BaseDna = require('./base_dna');
+let Config = require('./config');
 
 class NeatDna extends BaseDna {
     constructor(dna) {
         super(dna);
-        this.node_addition_probability = 1/5;
-        this.edge_addition_probability = 1/3;
+        Config.instance()
+            .setIfNull('node_addition_probability', 0.4)
+            .setIfNull('edge_addition_probability', 0.5);
     }
 
     buildBrain() {
@@ -45,7 +47,7 @@ class NeatDna extends BaseDna {
                     enabled:true,
                     inNode: connection.inNode,
                     outNode: connection.outNode,
-                    weight: this._bimodalValueMix(connection.weight, innovation_hash[connection.innovation].weight) + Math.normal()/25,
+                    weight: this._bimodalValueMix(connection.weight, innovation_hash[connection.innovation].weight) + chance.normal(),
                     innovation: connection.innovation
                 };
             } else {
@@ -53,7 +55,7 @@ class NeatDna extends BaseDna {
                     enabled: connection.enabled,
                     inNode: connection.inNode,
                     outNode: connection.outNode,
-                    weight: connection.weight + Math.normal()/25,
+                    weight: connection.weight + chance.normal(),
                     innovation: Math.uuid()
                 };
             }
@@ -62,9 +64,9 @@ class NeatDna extends BaseDna {
 
     evolveTopology(connections) {
         let p = Math.random();
-        if(p < this.node_addition_probability) {
+        if(p < Config.instance().get('node_addition_probability')) {
             return this.evolveTopologyWithNewNode(connections)
-        } else if (p < this.node_addition_probability + this.edge_addition_probability) {
+        } else if (p < Config.instance().get('node_addition_probability') + Config.instance().get('edge_addition_probability')) {
             return this.evolveTopologyWithNewConnection(connections)
         } else {
             return connections;
@@ -83,7 +85,7 @@ class NeatDna extends BaseDna {
             enabled: true,
             inNode: inNode,
             outNode: outNode,
-            weight: Math.normal()*2,
+            weight: chance.normal(),
             innovation: Math.uuid()
         });
 
@@ -227,7 +229,7 @@ class NeatDna extends BaseDna {
                     enabled: true,
                     inNode: `in_${i}`,
                     outNode: `out_${j}`,
-                    weight: Math.normal(),
+                    weight: chance.normal(),
                     innovation: `initial_${i}_${j}`
                 });
             }
