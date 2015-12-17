@@ -3,11 +3,11 @@
 class OfflineStorage {
     constructor() {
         this.dnas = {};
-        this.maxPopulation = 200;
+        this.maxPopulation = 50;
     }
 
     addDna(dna) {
-        this.dnas[dna._dna.id] = { dna:dna, children: [], lives: 1 };
+        this.dnas[dna._dna.id] = { dna:dna, children: [], parents:[], grand_child_count: 0, lives: 1 };
     }
 
     getDna() {
@@ -20,7 +20,17 @@ class OfflineStorage {
     }
 
     addChild(parent, child) {
-        this.dnas[parent._dna.id].children.push(child._dna.id);
+        if(this.dnas[child._dna.id]) {
+            this.dnas[child._dna.id].parents.push(parent._dna.id);
+        }
+        if(this.dnas[parent._dna.id]) {
+            this.dnas[parent._dna.id].children.push(child._dna.id);
+            this.dnas[parent._dna.id].parents.forEach(parent => {
+                if (this.dnas[parent]) {
+                    this.dnas[parent].grand_child_count += 1;
+                }
+            });
+        }
     }
 
     _size() {
@@ -33,20 +43,22 @@ class OfflineStorage {
     }
 
     _fittness(item) {
-        return this._grandChildrenCount(item) / item.lives;
-    }
-
-    _grandChildrenCount(item) {
-        return item.children.reduce((sum, child) => { return sum + this.dnas[child].children.length }, 0);
+        return (item.grand_child_count + item.children.length) / item.lives;
     }
 
     reduce() {
+
         if(Object.keys(this.dnas).length > this.maxPopulation) {
+            console.log('Reducing');
             let dnas_list = Object.values(this.dnas).sort((lhs, rhs) => {
                 return this._fittness(lhs) - this._fittness(rhs);
             });
             dnas_list.slice(0, Math.floor(this.maxPopulation/2)).forEach(item => {
-                delete this.dnas[item.id];
+                console.log(`Deleted: ${item.dna._dna.id} (fittnes: ${this._fittness(item)})`);
+                delete this.dnas[item.dna._dna.id];
+            });
+            dnas_list.slice(Math.floor(this.maxPopulation/2)).forEach(item => {
+                console.log(`Kept: ${item.dna._dna.id} (fittnes: ${this._fittness(item)})`);
             });
         }
     }
