@@ -103,13 +103,13 @@ class World extends Thing {
         this._random_creatures++;
         for (let i = 0; i < n; i++) {
             let dna = this._dna_factory.build();
+            this._storage.addDna(dna);
             this.addCreature(dna);
         }
     }
 
     addCreature(dna) {
         let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
-        this._storage.addDna(dna);
         this._uploaded_creatures++;
         this._creatures.push(creature);
     }
