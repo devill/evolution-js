@@ -5,9 +5,10 @@ let Serializer = require('./dna_serializer');
 
 class OnlineStorage {
 
-  addDna(dna) {
+  addDna(dna, mother, father) {
     let serializer = new Serializer();
-    request.post('/dna/').send(serializer.serialize(dna)).end();
+    let serialized = serializer.serialize(dna, mother, father);
+    request.post('/dna/').send(serialized).end();
   }
 
   addChild(parent, child) {

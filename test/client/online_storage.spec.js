@@ -11,6 +11,8 @@ describe('OnlineStorage', () => {
   let server;
   let factory = new DnaFactory('simple_reduced');
   let dummyDna = factory.build();
+  let dummyMother = factory.build();
+  let dummyFather = factory.build();
 
   beforeEach(() => {
     server = sinon.fakeServer.create();
@@ -52,6 +54,20 @@ describe('OnlineStorage', () => {
 
       let storage = new OnlineStorage();
       storage.addDna(dummyDna);
+      server.respond();
+    });
+
+    it('should post data with parents through http', (done) => {
+      let shouldSent = JSON.parse(JSON.stringify(dummyDna._dna));
+      shouldSent.mother = dummyMother._dna.id;
+      shouldSent.father = dummyFather._dna.id;
+      server.respondWith('POST', '/dna/', (request) => {
+        expect(JSON.parse(request.requestBody)).to.deep.equal(shouldSent);
+        done();
+      });
+
+      let storage = new OnlineStorage();
+      storage.addDna(dummyDna, dummyMother, dummyFather);
       server.respond();
     });
 
