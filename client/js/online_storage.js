@@ -14,6 +14,7 @@ class OnlineStorage {
 
   getDna() {
     let dna = this._cachedDna;
+    this._cachedDna = null;
     this._load();
     if (!dna) return null;
     let serializer = new Serializer();
