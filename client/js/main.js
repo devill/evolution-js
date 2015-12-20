@@ -24,6 +24,6 @@ setInterval(() => {
     let fps = world.getIterationNumber() - lastIterationCount;
     document.getElementById('stats').innerHTML =
         `Reached ${world.getIterationNumber()} at ${fps} fps<br/>` +
-        `Random creatures: ${world._random_creatures}, Mated creatures: ${world._mated_creatures}, Resurected creatures: ${world._resurected_creatures}, Currently alive: ${world._creatures.length}`;
+        `Random creatures: ${world._random_creatures}, Mated creatures: ${world._mated_creatures}, Resurrected creatures: ${world._resurrected_creatures}, Currently alive: ${world._creatures.length}`;
     lastIterationCount = world.getIterationNumber();
 }, 1000);

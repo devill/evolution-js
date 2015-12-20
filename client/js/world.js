@@ -34,7 +34,7 @@ class World extends Thing {
         ];
         this._iteration_number = 0;
         this._random_creatures = 0;
-        this._resurected_creatures = 0;
+        this._resurrected_creatures = 0;
         this._mated_creatures = 0;
         this._uploaded_creatures = 0;
         this._downloaded_creatures = 0;
@@ -149,7 +149,7 @@ class World extends Thing {
                 } else {
                     this._downloaded_creatures++;
                     this.addCreature(dna);
-                    this._resurected_creatures++;
+                    this._resurrected_creatures++;
                 }
             }
         }
