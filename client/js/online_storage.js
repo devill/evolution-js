@@ -6,7 +6,8 @@ let Serializer = require('./dna_serializer');
 class OnlineStorage {
 
   addDna(dna) {
-    request.post('/dna/').send(dna).end();
+    let serializer = new Serializer();
+    request.post('/dna/').send(serializer.serialize(dna)).end();
   }
 
   addChild(parent, child) {
@@ -18,7 +19,7 @@ class OnlineStorage {
     this._load();
     if (!dna) return null;
     let serializer = new Serializer();
-    return serializer.deserialize(JSON.stringify(dna));
+    return serializer.deserialize(dna);
   }
 
   _load() {

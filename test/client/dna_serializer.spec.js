@@ -4,7 +4,6 @@ let expect = require('chai').expect;
 
 let DnaSerializer = require('../../client/js/dna_serializer');
 let DnaFactory = require('../../client/js/dna_factory');
-require('../../client/js/js_ext.js');
 let deepSameProto = require('./deep_proto');
 
 describe('DnaSerializer', function() {
@@ -17,7 +16,7 @@ describe('DnaSerializer', function() {
       let serializer = new DnaSerializer();
       let serialized = serializer.serialize(dna);
 
-      let deserialized = serializer.deserialize(serialized);
+      let deserialized = serializer.deserialize(JSON.parse(JSON.stringify(serialized)));
 
       expect(deserialized).to.deep.equal(dna);
       deepSameProto(deserialized, dna);
@@ -30,7 +29,7 @@ describe('DnaSerializer', function() {
       let serializer = new DnaSerializer();
       let serialized = serializer.serialize(dna);
 
-      let deserialized = serializer.deserialize(serialized);
+      let deserialized = serializer.deserialize(JSON.parse(JSON.stringify(serialized)));
 
       expect(deserialized).to.deep.equal(dna);
       deepSameProto(deserialized, dna);

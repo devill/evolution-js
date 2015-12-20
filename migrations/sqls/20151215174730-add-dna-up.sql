@@ -1,5 +1,7 @@
 CREATE TABLE dna (
-	id SERIAL,
+	id uuid PRIMARY KEY,
+	father uuid,
+	mother uuid,
 	dna varchar
 );
 

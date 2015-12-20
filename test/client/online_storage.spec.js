@@ -9,26 +9,26 @@ let deepSameProto = require('./deep_proto');
 describe('OnlineStorage', () => {
 
   let server;
+  let factory = new DnaFactory('simple_reduced');
+  let dummyDna = factory.build();
 
-  beforeEach(function () {
+  beforeEach(() => {
     server = sinon.fakeServer.create();
   });
 
-  afterEach(function () {
+  afterEach(() => {
     server.restore();
   });
 
-  describe('#getDna()', function() {
+  describe('#getDna()', () => {
 
     it('should return null if uninitialized', () => {
       let storage = new OnlineStorage();
       expect(storage.getDna()).to.be.null;
     });
 
-    it('should refresh cache through http', function() {
-      let factory = new DnaFactory('simple_reduced');
-      let dummyDna = factory.build();
-      let okResponse = [ 200, { 'Content-type': 'application/json' }, JSON.stringify(dummyDna) ];
+    it('should refresh cache through http', () => {
+      let okResponse = [ 200, { 'Content-type': 'application/json' }, JSON.stringify(dummyDna._dna) ];
       server.respondWith('GET', '/dna/random/', okResponse);
       let storage = new OnlineStorage();
       storage.getDna();
@@ -42,12 +42,11 @@ describe('OnlineStorage', () => {
 
   });
 
-  describe('#addDna()', function() {
+  describe('#addDna()', () => {
 
-    it('should post data through http', function(done) {
-      let dummyDna = { dummy: 'dna' };
+    it('should post data through http', (done) => {
       server.respondWith('POST', '/dna/', (request) => {
-        expect(JSON.parse(request.requestBody)).to.deep.equal(dummyDna);
+        expect(JSON.parse(request.requestBody)).to.deep.equal(dummyDna._dna);
         done();
       });
 

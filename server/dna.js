@@ -7,13 +7,23 @@ let connectionString = process.env.DATABASE_URL || 'postgres://postgres_user:pos
 let db = pgp(connectionString);
 
 function* store() {
-  yield db.one('INSERT INTO dna (dna) VALUES ($1) RETURNING id', [this.request.body])
+  let data = this.request.body;
+  let store = (data.mother && data.father) ? withParents : withoutParents;
+  yield store(data)
     .then((data) => {
       this.redirect(`/dna/${data.id}/`);
     })
     .catch(error => {
       console.log(error);
     });
+}
+
+function withoutParents(data) {
+  return db.one('INSERT INTO dna (id, dna) VALUES ($1, $2) RETURNING id', [data.id, data]);
+}
+
+function withParents(data) {
+  return db.one('INSERT INTO dna (id, father, mother, dna) VALUES ($1, $2, $3, $4) RETURNING id', [data.id, data.father, data.mother, data]);
 }
 
 function* load(id) {

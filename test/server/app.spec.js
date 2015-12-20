@@ -4,6 +4,9 @@ let assert = require('chai').assert;
 var expect = require('chai').expect
 let app = require('../../server/app');
 let request = require("supertest").agent(app.listen());
+let uuid = require('uuid');
+let randomUrlMatch = /\/dna\/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}\//;
+
 
 describe('server', function () {
 
@@ -30,7 +33,23 @@ describe('server', function () {
   describe('/dna/', function() {
 
     it('should return stored data on get', function (done) {
-      let dummy = {empty:'object', arrayProperty:[1, 2, 3]};
+      let dummy = {id: uuid.v4(), empty:'object', arrayProperty:[1, 2, 3]};
+      request.post('/dna/')
+        .send(dummy)
+        .expect(302)
+        .end(function(err, res) {
+          if (err) return done(err);
+          request.get(res.headers.location)
+            .expect(200)
+            .expect(function(res) {
+              expect(res.body).to.deep.equal(res.body, dummy);
+            })
+            .end(done);
+        });
+    });
+
+    it('should be able to store parents', function (done) {
+      let dummy = {id: uuid.v4(), father: uuid.v4(), mother: uuid.v4(), empty:'object', arrayProperty:[1, 2, 3]};
       request.post('/dna/')
         .send(dummy)
         .expect(302)
@@ -50,7 +69,7 @@ describe('server', function () {
   describe('/dna/random/', function() {
 
     it('should return link to random dna', function (done) {
-      let dummy = {empty:'object', arrayProperty:[1, 2, 3]};
+      let dummy = {id: uuid.v4(), empty:'object', arrayProperty:[1, 2, 3]};
       request.post('/dna/')
         .send(dummy)
         .expect(302)
@@ -60,7 +79,7 @@ describe('server', function () {
           request.get('/dna/random/')
             .expect(302)
             .expect(function(res) {
-              expect(res.headers.location).to.match(/\/dna\/\d{1,10}\//);
+              expect(res.headers.location).to.match(randomUrlMatch);
             })
             .end(done);
         });

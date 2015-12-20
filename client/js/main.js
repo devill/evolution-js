@@ -2,7 +2,7 @@
 
 let World = require('./world');
 let DnaFactory = require('./dna_factory');
-let OfflineStorage = require('./offline_storage');
+let OfflineStorage = require('./online_storage');
 let Config = require('./config');
 
 window.config = Config.instance();
@@ -15,9 +15,9 @@ setInterval(() => {
     world.drawWorld();
 }, 50);
 
-setInterval(() => {
-    offlineStorage.reduce();
-}, 100);
+//setInterval(() => {
+//    offlineStorage.reduce();
+//}, 100);
 
 let lastIterationCount = 0;
 setInterval(() => {
