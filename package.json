@@ -48,6 +48,7 @@
     "sinon": "^1.17.2",
     "superagent": "^1.6.1",
     "supertest": "^1.1.0",
+    "uuid": "^2.0.1",
     "webpack": "^1.12.9"
   },
   "dependencies": {

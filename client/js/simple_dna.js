@@ -3,6 +3,7 @@
 let SimpleBrain = require('./simple_brain');
 let BaseDna = require('./base_dna');
 let Matrix = require('./matrix');
+let uuid = require('uuid');
 
 class SimpleDna extends BaseDna {
     constructor(dna) {
@@ -15,7 +16,7 @@ class SimpleDna extends BaseDna {
 
     mix(other_dna) {
         return new SimpleDna({
-            id: Math.uuid(),
+            id: uuid.v4(),
             first_layer: this.mutateEye((this._dna.first_layer.mix(other_dna._dna.first_layer)).mutate(1)),
             second_layer: (this._dna.second_layer.mix(other_dna._dna.second_layer)).mutate(0.1),
             egg_color: this._mixEggColor(other_dna),
@@ -45,7 +46,7 @@ class SimpleDna extends BaseDna {
         let mid_layer_size = 20;
         let sight_resolution = 7;
         return new SimpleDna({
-            id: Math.uuid(),
+            id: uuid.v4(),
             first_layer: Matrix.random(mid_layer_size, sight_resolution*4+4),
             second_layer: Matrix.random(4, mid_layer_size),
             egg_color: Math.floor(Math.random() * 360),
@@ -59,7 +60,7 @@ class SimpleDna extends BaseDna {
         let mid_layer_size = 20;
         let sight_resolution = 7;
         return new SimpleDna({
-            id: Math.uuid(),
+            id: uuid.v4(),
             first_layer: SimpleDna.reducedComplexityFirstLayer(mid_layer_size, 4, sight_resolution),
             second_layer: Matrix.randomDiagonal(4, mid_layer_size),
             egg_color: Math.floor(Math.random() * 360),
