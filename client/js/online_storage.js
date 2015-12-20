@@ -1,6 +1,7 @@
 "use strict";
 
 let request = require('superagent');
+let Serializer = require('./dna_serializer');
 
 class OnlineStorage {
 
@@ -15,7 +16,8 @@ class OnlineStorage {
     let dna = this._cachedDna;
     this._load();
     if (!dna) return null;
-    return dna;
+    let serializer = new Serializer();
+    return serializer.deserialize(JSON.stringify(dna));
   }
 
   _load() {
