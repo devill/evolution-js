@@ -91,11 +91,8 @@ class World extends Thing {
     injectCreature(dna, position, parents) {
         this._mated_creatures++;
         let creature = new Creature(this, dna, position, this._iteration_number);
-        this._storage.addDna(dna);
+        this._storage.addDna(dna, parents[0], parents[1]);
         this._uploaded_creatures++;
-        parents.forEach(parent => {
-            this._storage.addChild(parent, dna);
-        });
         this._creatures.push(creature);
     }
 

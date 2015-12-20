@@ -6,8 +6,10 @@ class OfflineStorage {
         this.maxPopulation = 50;
     }
 
-    addDna(dna) {
+    addDna(dna, father, mother) {
         this.dnas[dna._dna.id] = { dna:dna, children: [], parents:[], grand_child_count: 0, lives: 1 };
+        if (father) { this._addChild(father, dna); }
+        if (mother) { this._addChild(mother, dna); }
     }
 
     getDna() {
@@ -19,7 +21,7 @@ class OfflineStorage {
         return item.dna;
     }
 
-    addChild(parent, child) {
+    _addChild(parent, child) {
         if(this.dnas[child._dna.id]) {
             this.dnas[child._dna.id].parents.push(parent._dna.id);
         }
