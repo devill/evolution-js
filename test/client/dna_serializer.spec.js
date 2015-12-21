@@ -21,12 +21,26 @@ describe('DnaSerializer', () => {
   });
 
   describe('#deserialize()', () => {
-    it('should return same object as before', () => {
+    it('should return same simple dna as before', () => {
       let factory = new DnaFactory('simple_reduced');
       let dna = factory.build();
 
       let serializer = new DnaSerializer();
       let serialized = serializer.serialize(dna);
+
+      let deserialized = serializer.deserialize(JSON.parse(JSON.stringify(serialized)));
+
+      expect(deserialized).to.deep.equal(dna);
+      deepSameProto(deserialized, dna);
+    });
+
+    it('should return same simple as before even if type is not specified', () => {
+      let factory = new DnaFactory('simple_reduced');
+      let dna = factory.build();
+
+      let serializer = new DnaSerializer();
+      let serialized = serializer.serialize(dna);
+      delete serialized.type;
 
       let deserialized = serializer.deserialize(JSON.parse(JSON.stringify(serialized)));
 

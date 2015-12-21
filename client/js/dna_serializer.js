@@ -27,13 +27,11 @@ class DnaSerializer {
     delete clone.mother;
     delete clone.father;
 
-    if (type == 'simple') {
-      return this._simpleDna(clone);
-    } else if (type == 'neat') {
+    if (type == 'neat') {
       return this._neatDna(clone);
-    } else {
-      throw 'unknown dna type';
     }
+
+    return this._simpleDna(clone);
   }
 
   _simpleDna(dna) {
