@@ -2,8 +2,6 @@
 
 DATABASE_URL="$(heroku config | sed -n 's/^DATABASE_URL: \(postgres.*\)/\1/p')?ssl=true" $(npm bin)/db-migrate -e prod up
 
-exit
-
 npm run build
 
 git add -f dist
