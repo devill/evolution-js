@@ -42,7 +42,7 @@ describe('OnlineStorage', () => {
       deepSameProto(dna, dummyDna);
     });
 
-    it('should increment lives of dna through http', (done) => {
+    it('should increment lives of dna through http when downloading', (done) => {
       let okResponse = [ 200, { 'Content-type': 'application/json' }, JSON.stringify(dummyDna._dna) ];
       server.respondWith('GET', '/dna/random/', okResponse);
       server.respondWith('PATCH', `/dna/${dummyDna._dna.id}/`, (request) => {

@@ -49,8 +49,18 @@ function* load(id) {
     });
 }
 
+let fitSql = `
+SELECT id, (children + grandchildren) / lives as fitness
+FROM (
+SELECT parent.id, parent.lives, COUNT(DISTINCT child.id) as children, COUNT(DISTINCT grandchild.id) as grandchildren FROM dna parent
+LEFT JOIN dna child ON child.mother = parent.id OR child.father = parent.id
+LEFT JOIN dna grandchild ON grandchild.mother = child.id OR grandchild.father = child.id
+GROUP BY parent.id
+) parent ORDER BY fitness desc LIMIT 1 OFFSET floor(random() * 50)
+`;
+
 function* random() {
-  yield db.one('SELECT id, random() as r FROM dna ORDER BY r LIMIT 1')
+  yield db.one(fitSql)
     .then((data) => {
       this.redirect(`/dna/${data.id}/`);
     })
