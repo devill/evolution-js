@@ -8,7 +8,7 @@ let Config = require('./config');
 window.config = Config.instance();
 
 let offlineStorage = new OfflineStorage();
-let world = new World(document.getElementById("main-canvas"), new DnaFactory(getParameterByName('type') || 'simple_reduced'), offlineStorage);
+let world = new World(document.getElementById("main-canvas"), new DnaFactory(getParameterByName('type') || 'neat'), offlineStorage);
 world.iteration();
 
 setInterval(() => {
