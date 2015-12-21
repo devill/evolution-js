@@ -50,7 +50,7 @@ function* load(id) {
 }
 
 let fitSql = `
-SELECT id, cast((children + grandchildren) as float) / lives as fitness
+SELECT id, cast((children + grandchildren) as float) / lives as fitness, random() as r
 FROM (
   SELECT parent.id, parent.lives,
     COUNT(DISTINCT child.id) as children, COUNT(DISTINCT grandchild.id) as grandchildren
@@ -59,7 +59,7 @@ FROM (
   LEFT JOIN dna grandchild ON grandchild.mother = child.id OR grandchild.father = child.id
   GROUP BY parent.id
 ) parent
-ORDER BY fitness desc
+ORDER BY fitness desc, r
 LIMIT 1
 OFFSET floor(random() * LEAST(50, (SELECT COUNT(*) FROM dna)))
 `;
