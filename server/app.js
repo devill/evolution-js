@@ -15,7 +15,8 @@ app.use(route.get('/dna/random/', dna.random));
 app.use(route.get('/dna/:id/', dna.load));
 
 app.use(bodyparser());
-app.use(route.post('/dna/', dna.store));
+app.use(route.put('/dna/:id/', dna.store));
+app.use(route.patch('/dna/:id/', dna.update));
 
 module.exports = app;
 

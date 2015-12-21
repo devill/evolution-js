@@ -32,11 +32,22 @@ describe('server', function () {
 
   describe('/dna/', function() {
 
-    it('should return stored data on get', function (done) {
-      let dummy = {id: uuid.v4(), empty:'object', arrayProperty:[1, 2, 3]};
-      request.post('/dna/')
+    it('should return 400 on mismatching ids', function (done) {
+      let id = uuid.v4();
+      let badId = uuid.v4();
+      let dummy = {id: id, empty:'object', arrayProperty:[1, 2, 3]};
+      request.put(`/dna/${badId}/`)
         .send(dummy)
-        .expect(302)
+        .expect(400)
+        .end(done);
+    });
+
+    it('should return stored data on get', function (done) {
+      let id = uuid.v4();
+      let dummy = {id: id, empty:'object', arrayProperty:[1, 2, 3]};
+      request.put(`/dna/${id}/`)
+        .send(dummy)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           request.get(res.headers.location)
@@ -50,9 +61,9 @@ describe('server', function () {
 
     it('should be able to store parents', function (done) {
       let dummy = {id: uuid.v4(), father: uuid.v4(), mother: uuid.v4(), empty:'object', arrayProperty:[1, 2, 3]};
-      request.post('/dna/')
+      request.put(`/dna/${dummy.id}/`)
         .send(dummy)
-        .expect(302)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           request.get(res.headers.location)
@@ -70,9 +81,9 @@ describe('server', function () {
 
     it('should return link to random dna', function (done) {
       let dummy = {id: uuid.v4(), empty:'object', arrayProperty:[1, 2, 3]};
-      request.post('/dna/')
+      request.put(`/dna/${dummy.id}/`)
         .send(dummy)
-        .expect(302)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           
@@ -81,6 +92,25 @@ describe('server', function () {
             .expect(function(res) {
               expect(res.headers.location).to.match(randomUrlMatch);
             })
+            .end(done);
+        });
+    });
+
+  });
+
+  describe('/dna/<uuid>/', function() {
+
+    it('should be able to increment lives with patch', function (done) {
+      let dummy = {id: uuid.v4(), empty:'object', lives: 1, arrayProperty:[1, 2, 3]};
+      let operation = {field: 'lives', operator: '+', operand: 1};
+      request.put(`/dna/${dummy.id}/`)
+        .send(dummy)
+        .expect(201)
+        .end(function(err, res) {
+          if (err) return done(err);
+          request.patch(res.headers.location)
+            .send(operation)
+            .expect(200)
             .end(done);
         });
     });

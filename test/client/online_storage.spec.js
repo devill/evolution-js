@@ -42,12 +42,30 @@ describe('OnlineStorage', () => {
       deepSameProto(dna, dummyDna);
     });
 
+    it('should increment lives of dna through http', (done) => {
+      let okResponse = [ 200, { 'Content-type': 'application/json' }, JSON.stringify(dummyDna._dna) ];
+      server.respondWith('GET', '/dna/random/', okResponse);
+      server.respondWith('PATCH', `/dna/${dummyDna._dna.id}/`, (request) => {
+        expect(JSON.parse(request.requestBody)).to.deep.equal({
+          operator: '+',
+          field: 'lives',
+          operand: 1
+        });
+        done();
+      });
+      let storage = new OnlineStorage();
+      storage.getDna();
+      server.respond();
+      storage.getDna();
+      server.respond();
+    });
+
   });
 
   describe('#addDna()', () => {
 
     it('should post data through http', (done) => {
-      server.respondWith('POST', '/dna/', (request) => {
+      server.respondWith('PUT', `/dna/${dummyDna._dna.id}/`, (request) => {
         expect(JSON.parse(request.requestBody)).to.deep.equal(dummyDna._dna);
         done();
       });
@@ -61,7 +79,7 @@ describe('OnlineStorage', () => {
       let shouldSent = JSON.parse(JSON.stringify(dummyDna._dna));
       shouldSent.mother = dummyMother._dna.id;
       shouldSent.father = dummyFather._dna.id;
-      server.respondWith('POST', '/dna/', (request) => {
+      server.respondWith('PUT', `/dna/${dummyDna._dna.id}/`, (request) => {
         expect(JSON.parse(request.requestBody)).to.deep.equal(shouldSent);
         done();
       });

@@ -1,0 +1,2 @@
+ALTER TABLE dna DROP COLUMN lives;
+
