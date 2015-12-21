@@ -67,3 +67,5 @@ gulp.task('default', function() {
   gulp.watch(['client/**/*', 'server/**/*'], ['start-server', 'build-client']);
 });
 
+gulp.task('build', ['build-client']);
+

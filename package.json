@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node server/index.js",
-    "build": "gulp build-client",
+    "build": "gulp build",
     "watch": "gulp",
     "test": "npm run test-server; npm run test-client",
     "test-server": "DATABASE_URL=\"postgres://postgres_user:postgres_pw@localhost:9832/postgres_db\" mocha test/server/app.spec.js",
