@@ -21,6 +21,13 @@ class Egg extends Thing {
         context.arc(this._position['x'],this._position['y'],5,0,2*Math.PI);
         context.arc(this._position['x'],this._position['y'],2,0,2*Math.PI);
         context.stroke();
+
+        if (this._dna.constructor.name == 'NeatDna') {
+            context.beginPath();
+            context.strokeStyle = `rgb(0,0,0)`;
+            context.arc(this._position['x'],this._position['y'],1,0,1*Math.PI);
+            context.stroke();
+        }
     }
 
     exists() {
