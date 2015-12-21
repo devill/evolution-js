@@ -233,8 +233,10 @@ class Creature extends Thing {
         this._energy -= 3000;
     }
 
-    canTakeEgg(e) {
-        return e._dna._dna.id != this._dna._dna.id;
+    canTakeEgg(egg) {
+        let myEgg = egg._dna._dna.id == this._dna._dna.id;
+        let sameDnaType = Object.getPrototypeOf(egg._dna) == Object.getPrototypeOf(this._dna);
+        return !myEgg && sameDnaType;
     }
 
     takeEgg(e) {
