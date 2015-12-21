@@ -50,7 +50,7 @@ function* load(id) {
 }
 
 let fitSql = `
-SELECT id, (children + grandchildren) * 1000 / lives as fitness
+SELECT id, cast((children + grandchildren) as float)/ lives as fitness
 FROM (
 SELECT parent.id, parent.lives, COUNT(DISTINCT child.id) as children, COUNT(DISTINCT grandchild.id) as grandchildren FROM dna parent
 LEFT JOIN dna child ON child.mother = parent.id OR child.father = parent.id
