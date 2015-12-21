@@ -1,5 +1,7 @@
 "use strict";
 
+let uuid = require('uuid');
+
 let NeatBrain = require('./neat_brain');
 let BaseDna = require('./base_dna');
 let Config = require('./config');
@@ -18,7 +20,7 @@ class NeatDna extends BaseDna {
 
     mix(other_dna) {
         return new NeatDna({
-            id: Math.uuid(),
+            id: uuid.v4(),
             connections: this.evolveConnections(other_dna),
             egg_color: this._mixEggColor(other_dna),
             color: this._mixColor(other_dna),
@@ -56,7 +58,7 @@ class NeatDna extends BaseDna {
                     inNode: connection.inNode,
                     outNode: connection.outNode,
                     weight: connection.weight + chance.normal(),
-                    innovation: Math.uuid()
+                    innovation: uuid.v4()
                 };
             }
         });
@@ -86,7 +88,7 @@ class NeatDna extends BaseDna {
             inNode: inNode,
             outNode: outNode,
             weight: chance.normal(),
-            innovation: Math.uuid()
+            innovation: uuid.v4()
         });
 
         return this.topologicalSortConnections(connections);
@@ -185,7 +187,7 @@ class NeatDna extends BaseDna {
             inNode: connections[i].inNode,
             outNode: new_node_index,
             weight: 1,
-            innovation: Math.uuid()
+            innovation: uuid.v4()
         });
 
         connections.push({
@@ -193,7 +195,7 @@ class NeatDna extends BaseDna {
             inNode: new_node_index,
             outNode: connections[i].outNode,
             weight: connections[i].weight,
-            innovation: Math.uuid()
+            innovation: uuid.v4()
         });
 
         return connections;
@@ -212,7 +214,7 @@ class NeatDna extends BaseDna {
     static generateRandomDna() {
         let sightResolution = 3;
         return new NeatDna({
-            id: Math.uuid(),
+            id: uuid.v4(),
             connections: NeatDna.randomInitialConnections(sightResolution),
             egg_color: Math.floor(Math.random() * 360),
             color: Math.floor(Math.random() * 360),
