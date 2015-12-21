@@ -11,7 +11,7 @@ class DnaSerializer {
 
     if (dna instanceof SimpleDna) { serialized.type = 'simple'; }
     else if (dna instanceof NeatDna) { serialized.type = 'neat'; }
-    else { throw new 'unknown dna type'; }
+    else { throw 'unknown dna type'; }
 
     if (mother) { serialized.mother = mother._dna.id; }
     if (father) { serialized.father = father._dna.id; }
@@ -20,13 +20,30 @@ class DnaSerializer {
   }
 
   deserialize(dna) {
-    let deserialized = JSON.parse(JSON.stringify(dna));
-    delete deserialized.type;
-    delete deserialized.mother;
-    delete deserialized.father;
-    deserialized.first_layer.__proto__ = Matrix.prototype;
-    deserialized.second_layer.__proto__ = Matrix.prototype;
-    return new SimpleDna(deserialized);
+    let clone = JSON.parse(JSON.stringify(dna));
+    let type = clone.type;
+
+    delete clone.type;
+    delete clone.mother;
+    delete clone.father;
+
+    if (type == 'simple') {
+      return this._simpleDna(clone);
+    } else if (type == 'neat') {
+      return this._neatDna(clone);
+    } else {
+      throw 'unknown dna type';
+    }
+  }
+
+  _simpleDna(dna) {
+    dna.first_layer.__proto__ = Matrix.prototype;
+    dna.second_layer.__proto__ = Matrix.prototype;
+    return new SimpleDna(dna);
+  }
+
+  _neatDna(dna) {
+    return new NeatDna(dna);
   }
 
 }

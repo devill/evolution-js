@@ -11,13 +11,18 @@ let webpackLoaders = [ {
 
 let testPattern = 'test/client/**/*.spec.js';
 
+let files = [
+  testPattern,
+  'https://cdnjs.cloudflare.com/ajax/libs/chance/0.5.6/chance.min.js'
+];
+
 let preprocessors = {};
 preprocessors[testPattern] = ['webpack'];
 
 module.exports = function(config) {
   config.set({
     captureConsole: true,
-    files: [testPattern],
+    files: files,
     port: 9876,
     browsers: ['PhantomJS'],
     frameworks: ['mocha','sinon'],

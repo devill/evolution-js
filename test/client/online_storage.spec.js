@@ -10,13 +10,14 @@ describe('OnlineStorage', () => {
 
   let server;
   let factory = new DnaFactory('simple_reduced');
-  let dummyDna = factory.build();
-  let dummyMother = factory.build();
-  let dummyFather = factory.build();
+  let dummyDna, dummyMother, dummyFather;
 
   beforeEach(() => {
     server = sinon.fakeServer.create();
     server.respondImmediately = true;
+    dummyDna = factory.build();
+    dummyMother = factory.build();
+    dummyFather = factory.build();
   });
 
   afterEach(() => {
@@ -31,7 +32,9 @@ describe('OnlineStorage', () => {
     });
 
     it('should refresh cache through http', () => {
-      let okResponse = [ 200, { 'Content-type': 'application/json' }, JSON.stringify(dummyDna._dna) ];
+      let response = JSON.parse(JSON.stringify(dummyDna._dna));
+      response.type = 'simple';
+      let okResponse = [ 200, { 'Content-type': 'application/json' }, JSON.stringify(response)];
       server.respondWith('GET', '/dna/random/', okResponse);
       let storage = new OnlineStorage();
       storage.getDna();
@@ -72,6 +75,20 @@ describe('OnlineStorage', () => {
 
       let storage = new OnlineStorage();
       storage.addDna(dummyDna);
+    });
+
+    it('should post data through http for neat dna', (done) => {
+      let factory = new DnaFactory('neat');
+      let dummyNeatDna = factory.build();
+      let shouldSent = JSON.parse(JSON.stringify(dummyNeatDna._dna));
+      shouldSent.type = 'neat';
+      server.respondWith('PUT', `/dna/${dummyNeatDna._dna.id}/`, (request) => {
+        expect(JSON.parse(request.requestBody)).to.deep.equal(shouldSent);
+        done();
+      });
+
+      let storage = new OnlineStorage();
+      storage.addDna(dummyNeatDna);
     });
 
     it('should post data with parents through http', (done) => {
