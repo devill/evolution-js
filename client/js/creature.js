@@ -104,6 +104,13 @@ class Creature extends Thing {
         context.lineTo(this._position['x'], this._position['y']);
         context.stroke();
 
+        if (this._dna.constructor.name == 'NeatDna') {
+            context.beginPath();
+            context.strokeStyle = 'rgb(0,0,0)';
+            context.arc(this._position['x'], this._position['y'], 2, this._direction + this._eye_size, this._direction - this._eye_size);
+            context.stroke();
+        }
+
         if(this._external_dna) {
             let egg_color = this._external_dna.eggColor();
             context.strokeStyle = `rgb(${egg_color.r},${egg_color.g},${egg_color.b})`;
