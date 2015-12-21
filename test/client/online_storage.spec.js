@@ -16,6 +16,7 @@ describe('OnlineStorage', () => {
 
   beforeEach(() => {
     server = sinon.fakeServer.create();
+    server.respondImmediately = true;
   });
 
   afterEach(() => {
@@ -34,7 +35,6 @@ describe('OnlineStorage', () => {
       server.respondWith('GET', '/dna/random/', okResponse);
       let storage = new OnlineStorage();
       storage.getDna();
-      server.respond();
 
       let dna = storage.getDna();
 
@@ -55,9 +55,7 @@ describe('OnlineStorage', () => {
       });
       let storage = new OnlineStorage();
       storage.getDna();
-      server.respond();
       storage.getDna();
-      server.respond();
     });
 
   });
@@ -65,20 +63,22 @@ describe('OnlineStorage', () => {
   describe('#addDna()', () => {
 
     it('should post data through http', (done) => {
+      let shouldSent = JSON.parse(JSON.stringify(dummyDna._dna));
+      shouldSent.type = 'simple';
       server.respondWith('PUT', `/dna/${dummyDna._dna.id}/`, (request) => {
-        expect(JSON.parse(request.requestBody)).to.deep.equal(dummyDna._dna);
+        expect(JSON.parse(request.requestBody)).to.deep.equal(shouldSent);
         done();
       });
 
       let storage = new OnlineStorage();
       storage.addDna(dummyDna);
-      server.respond();
     });
 
     it('should post data with parents through http', (done) => {
       let shouldSent = JSON.parse(JSON.stringify(dummyDna._dna));
       shouldSent.mother = dummyMother._dna.id;
       shouldSent.father = dummyFather._dna.id;
+      shouldSent.type = 'simple';
       server.respondWith('PUT', `/dna/${dummyDna._dna.id}/`, (request) => {
         expect(JSON.parse(request.requestBody)).to.deep.equal(shouldSent);
         done();
@@ -86,7 +86,6 @@ describe('OnlineStorage', () => {
 
       let storage = new OnlineStorage();
       storage.addDna(dummyDna, dummyMother, dummyFather);
-      server.respond();
     });
 
   });
