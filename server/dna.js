@@ -21,18 +21,18 @@ function* store(id) {
 }
 
 function withoutParents(data) {
-  return db.one('INSERT INTO dna (id, dna) VALUES ($1, $2) RETURNING id', [data.id, data]);
+  return db.one('INSERT INTO dna (id, dna) VALUES (${id}, ${this}) RETURNING id', data);
 }
 
 function withParents(data) {
-  return db.one('INSERT INTO dna (id, father, mother, dna) VALUES ($1, $2, $3, $4) RETURNING id', [data.id, data.father, data.mother, data]);
+  return db.one('INSERT INTO dna (id, father, mother, dna) VALUES (${id}, ${father}, ${mother}, ${this}) RETURNING id', data);
 }
 
 function* update(id) {
   let data = this.request.body;
   if (data.operator != '+' || data.field != 'lives') { this.status = 501; return; }
 
-  yield db.none('UPDATE dna SET lives = lives + 1 WHERE id = $1', [id])
+  yield db.none('UPDATE dna SET lives = lives + 1 WHERE id = ${id}', { id: id })
     .then(() => {
       this.body = {};
     })
@@ -40,7 +40,7 @@ function* update(id) {
 }
 
 function* load(id) {
-  yield db.one('SELECT * FROM dna WHERE id = $1', [id])
+  yield db.one('SELECT * FROM dna WHERE id = ${id}', { id: id })
     .then((data) => {
       this.body = JSON.parse(data.dna);
     })
