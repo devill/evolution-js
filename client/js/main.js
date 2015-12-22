@@ -2,22 +2,21 @@
 
 let World = require('./world');
 let DnaFactory = require('./dna_factory');
-let OfflineStorage = require('./online_storage');
+let StorageFactory = require('./storage_factory');
 let Config = require('./config');
 
 window.config = Config.instance();
 
-let offlineStorage = new OfflineStorage();
-let world = new World(document.getElementById("main-canvas"), new DnaFactory(getParameterByName('type') || 'neat'), offlineStorage);
+let world = new World(
+    document.getElementById("main-canvas"),
+    new DnaFactory(getParameterByName('type') || 'neat'),
+    (new StorageFactory(getParameterByName('storage') || 'online')).build()
+);
 world.iteration();
 
 setInterval(() => {
     world.drawWorld();
 }, 50);
-
-//setInterval(() => {
-//    offlineStorage.reduce();
-//}, 100);
 
 let lastIterationCount = 0;
 setInterval(() => {
