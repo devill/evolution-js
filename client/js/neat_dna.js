@@ -29,6 +29,7 @@ class NeatDna extends BaseDna {
 
             return new NeatDna({
                 id: uuid.v4(),
+                nodes: mixed.nodes,
                 connections: mixed.connections,
                 egg_color: this._mixEggColor(other_dna),
                 color: this._mixColor(other_dna),
@@ -233,6 +234,7 @@ class NeatDna extends BaseDna {
         let sightResolution = 3;
         return new NeatDna({
             id: uuid.v4(),
+            nodes: NeatDna.initialNodes(sightResolution),
             connections: NeatDna.randomInitialConnections(sightResolution),
             egg_color: Math.floor(Math.random() * 360),
             color: Math.floor(Math.random() * 360),
@@ -255,6 +257,17 @@ class NeatDna extends BaseDna {
             }
         }
         return connections;
+    }
+
+    static initialNodes(sightResolution) {
+        let nodes = { 'in': [], 'out':[], 'hidden':[] };
+        for(let i = 0; i < 4+sightResolution*4; i++) {
+            nodes.in.push(`in_${i}`);
+        }
+        for(let j = 0; j < 4; j++) {
+            nodes.out.push(`out_${j}`);
+        }
+        return nodes;
     }
 
 
