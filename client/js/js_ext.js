@@ -8,6 +8,11 @@ Math.bimodal_normal = function () {
     return (Math.random() < 0.5 ? 0 : 1) + chance.normal();
 };
 
+Math.bimodial_value_mix = function(lhs, rhs) {
+    let p = Math.bimodal_normal();
+    return p*lhs+(1-p)*rhs;
+};
+
 function isInt(value) {
     var x;
     if (isNaN(value)) {

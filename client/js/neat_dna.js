@@ -4,6 +4,7 @@ let uuid = require('uuid');
 
 let NeatBrain = require('./neat_brain');
 let BaseDna = require('./base_dna');
+let NeatDnaMixer = require('./neat_dna_mixer');
 let Config = require('./config');
 
 class NeatDna extends BaseDna {
@@ -19,6 +20,23 @@ class NeatDna extends BaseDna {
     }
 
     mix(other_dna) {
+        if(getParameterByName('refactor')) {
+            let this_is_primary = Math.random() < 0.5;
+            let primary = (this_is_primary) ? this._dna.connections : other_dna._dna.connections;
+            let secondary = (!this_is_primary) ? this._dna.connections : other_dna._dna.connections;
+
+            let mixed = (new NeatDnaMixer(primary,secondary)).mix();
+
+            return new NeatDna({
+                id: uuid.v4(),
+                connections: mixed.connections,
+                egg_color: this._mixEggColor(other_dna),
+                color: this._mixColor(other_dna),
+                eye_size: this._mixEyeSize(other_dna),
+                sight_resolution: this.sightResolution()
+            });
+        }
+
         return new NeatDna({
             id: uuid.v4(),
             connections: this.evolveConnections(other_dna),
