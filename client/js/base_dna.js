@@ -38,15 +38,10 @@ class BaseDna {
         let larger = (lhs >= rhs) ? lhs : rhs;
 
         if(larger - smaller < 360 + smaller - larger) {
-            return Math.floor(this._bimodalValueMix(smaller,larger) + 360) % 360;
+            return Math.floor(Math.bimodalValueMix(smaller,larger) + 360) % 360;
         } else {
-            return Math.floor(this._bimodalValueMix(smaller+360,larger) + 360) % 360;
+            return Math.floor(Math.bimodalValueMix(smaller+360,larger) + 360) % 360;
         }
-    }
-
-    _bimodalValueMix(lhs, rhs) {
-        let p = Math.bimodal_normal();
-        return p*lhs+(1-p)*rhs;
     }
 
     static mutateValue(value, max_mutation) {

@@ -67,7 +67,7 @@ class NeatDna extends BaseDna {
                     enabled:true,
                     inNode: connection.inNode,
                     outNode: connection.outNode,
-                    weight: this._bimodalValueMix(connection.weight, innovation_hash[connection.innovation].weight) + chance.normal(),
+                    weight: Math.bimodalValueMix(connection.weight, innovation_hash[connection.innovation].weight) + chance.normal(),
                     innovation: connection.innovation
                 };
             } else {

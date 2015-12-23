@@ -26,7 +26,7 @@ class NeatDnaMixer {
                         enabled: true,
                         inNode: connection.inNode,
                         outNode: connection.outNode,
-                        weight: Math.bimodial_value_mix(connection.weight, innovation_hash[connection.innovation].weight) + chance.normal(),
+                        weight: Math.bimodalValueMix(connection.weight, innovation_hash[connection.innovation].weight) + chance.normal(),
                         innovation: connection.innovation
                     };
                 } else {
