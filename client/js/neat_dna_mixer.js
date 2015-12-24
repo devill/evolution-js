@@ -61,7 +61,7 @@ class NeatDnaMixer {
         let i = Math.floor(Math.random() * connections.length);
         let new_node_index = Math.max.apply(null, network_dna['nodes']['hidden']) + 1;
 
-        if(!connections[i].enabled) { return connections; }
+        if(!connections[i].enabled) { return network_dna; }
 
         connections[i].enabled = false;
 
