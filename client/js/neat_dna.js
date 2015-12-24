@@ -5,7 +5,6 @@ let uuid = require('uuid');
 let NeatBrain = require('./neat_brain');
 let BaseDna = require('./base_dna');
 let NeatDnaMixer = require('./neat_dna_mixer');
-let Config = require('./config');
 
 class NeatDna extends BaseDna {
     constructor(dna) {
