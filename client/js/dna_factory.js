@@ -19,6 +19,9 @@ class DnaFactory {
             case 'neat':
                 return NeatDna.generateRandomDna();
 
+            case 'neat-reduced':
+                return NeatDna.generateReducedRandomDna();
+
             default:
                 throw "Unknown dna factory mode";
         }

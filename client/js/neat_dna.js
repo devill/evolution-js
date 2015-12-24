@@ -68,13 +68,25 @@ class NeatDna extends BaseDna {
 
     static generateRandomDna() {
         let sightResolution = 3;
+        var connections = NeatDna.randomInitialConnections(sightResolution);
+        return NeatDna.buildRandomDnaWithConnections(sightResolution, connections);
+    }
+
+
+    static generateReducedRandomDna() {
+        let sightResolution = 3;
+        var connections = NeatDna.randomReducedInitialConnections(sightResolution);
+        return NeatDna.buildRandomDnaWithConnections(sightResolution, connections);
+    }
+
+    static buildRandomDnaWithConnections(sightResolution, connections) {
         return new NeatDna({
             id: uuid.v4(),
             nodes: NeatDna.initialNodes(sightResolution),
-            connections: NeatDna.randomInitialConnections(sightResolution),
+            connections: connections,
             egg_color: Math.floor(Math.random() * 360),
             color: Math.floor(Math.random() * 360),
-            eye_size: (0.17 + 0.1*Math.random())*Math.PI,
+            eye_size: (0.17 + 0.1 * Math.random()) * Math.PI,
             sight_resolution: sightResolution
         });
     }
@@ -86,6 +98,29 @@ class NeatDna extends BaseDna {
                 connections.push({
                     enabled: true,
                     inNode: `in_${i}`,
+                    outNode: `out_${j}`,
+                    weight: chance.normal(),
+                    innovation: `initial_${i}_${j}`
+                });
+            }
+        }
+        return connections;
+    }
+
+    static randomReducedInitialConnections(sightResolution) {
+        let connections = [];
+        for(let i = 4; i < 4+sightResolution*4; i+=4) {
+            for(let j = 0; j < 4; j++) {
+                connections.push({
+                    enabled: true,
+                    inNode: `in_${i+2}`,
+                    outNode: `out_${j}`,
+                    weight: chance.normal(),
+                    innovation: `initial_${i}_${j}`
+                });
+                connections.push({
+                    enabled: true,
+                    inNode: `in_${i+3}`,
                     outNode: `out_${j}`,
                     weight: chance.normal(),
                     innovation: `initial_${i}_${j}`

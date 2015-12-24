@@ -9,7 +9,7 @@ window.config = Config.instance();
 
 let world = new World(
     document.getElementById("main-canvas"),
-    new DnaFactory(getParameterByName('type') || 'neat'),
+    new DnaFactory(getParameterByName('type') || 'neat-reduced'),
     (new StorageFactory(getParameterByName('storage') || 'online')).build()
 );
 world.iteration();
