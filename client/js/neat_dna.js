@@ -107,7 +107,7 @@ class NeatDna extends BaseDna {
     static randomReducedInitialConnections(sightResolution) {
         let connections = [];
         for(let i = 4; i < 4+sightResolution*4; i+=4) {
-            for(let j = 0; j < 4; j++) {
+            for(let j = 0; j < 2; j++) {
                 connections.push({
                     enabled: true,
                     inNode: `in_${i+2}`,
