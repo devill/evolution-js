@@ -59,13 +59,13 @@ class NeatDnaMixer {
         let nodes = this.cloneNodes(network_dna['nodes']);
 
         let i = Math.floor(Math.random() * connections.length);
-        let new_node_index = Math.max.apply(null, network_dna['nodes']['hidden']) + 1;
+        let new_node_index = this._findNextHiddenNodeIndex(network_dna);
 
         if(!connections[i].enabled) { return network_dna; }
 
         connections[i].enabled = false;
 
-        nodes.hidden.push(new_node_index);
+        nodes.hidden.push({id: new_node_index});
 
         connections.push({
             enabled: true,
@@ -89,12 +89,16 @@ class NeatDnaMixer {
         };
     }
 
+    _findNextHiddenNodeIndex(network_dna) {
+        if(network_dna['nodes']['hidden'].length == 0) {
+            return 0;
+        }
+
+        return network_dna['nodes']['hidden'].reduce((max, n) => { return Math.max(parseInt(n.id) || 0, max); }, 0) + 1;
+    }
+
     cloneNodes(nodes) {
-        return {
-            'in': nodes.in.map(n => { return n; }),
-            'out': nodes.out.map(n => { return n; }),
-            'hidden': nodes.hidden.map(n => { return n; })
-        };
+        return JSON.parse(JSON.stringify(nodes));
     }
 
 }

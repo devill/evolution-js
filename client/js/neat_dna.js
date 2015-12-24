@@ -266,10 +266,10 @@ class NeatDna extends BaseDna {
     static initialNodes(sightResolution) {
         let nodes = { 'in': [], 'out':[], 'hidden':[] };
         for(let i = 0; i < 4+sightResolution*4; i++) {
-            nodes.in.push(`in_${i}`);
+            nodes.in.push({id: `in_${i}`});
         }
         for(let j = 0; j < 4; j++) {
-            nodes.out.push(`out_${j}`);
+            nodes.out.push({id: `out_${j}`});
         }
         return nodes;
     }

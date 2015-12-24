@@ -41,39 +41,8 @@ class DnaSerializer {
   }
 
   _neatDna(dna) {
-    if(!dna.nodes) {
-        dna.nodes = this._neatNodes(dna.connections);
-    }
-
     return new NeatDna(dna);
   }
-
-  _neatNodes(connections) {
-    return {
-      'in': this._inNodes(connections),
-      'out': this._outNodes(connections),
-      'hidden': this._hiddenNodes(connections)
-    };
-  }
-
-  _inNodes(connections) {
-    return connections.filter(c => {
-      return !isInt(c.inNode);
-    }).map(c => { return c.inNode; }).unique();
-  }
-
-  _hiddenNodes(connections) {
-    return connections.filter(c => {
-      return isInt(c.inNode);
-    }).map(c => { return c.inNode; }).unique();
-  }
-
-  _outNodes(connections) {
-    return connections.filter(c => {
-      return !isInt(c.outNode);
-    }).map(c => { return c.outNode; }).unique();
-  }
-
 }
 
 module.exports = DnaSerializer;
