@@ -172,7 +172,8 @@ class Creature extends Thing {
             (this._external_dna ? this._external_dna._dna.egg_color : -180) / 360
         ];
         for (let i = 0; i < this._sight_resolution; i++) {
-            status.push(this._sight[i]['r']/256, this._sight[i]['g']/256, this._sight[i]['b']/256,Creature._keepInRange(20/(this._sight[i]['d']+1),0,1));
+            let hsl = rgb2hsl(this._sight[i]['r'],this._sight[i]['g'],this._sight[i]['b']);
+            status.push(hsl['h']/360, hsl['s']/100, hsl['l']/100, Creature._keepInRange(20/(this._sight[i]['d']+1),0,1));
         }
         return status;
     }
