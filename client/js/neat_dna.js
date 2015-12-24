@@ -10,9 +10,6 @@ let Config = require('./config');
 class NeatDna extends BaseDna {
     constructor(dna) {
         super(dna);
-        Config.instance()
-            .setIfNull('node_addition_probability', 0.4)
-            .setIfNull('edge_addition_probability', 0.5);
     }
 
     buildBrain() {

@@ -7,6 +7,10 @@ class NeatDnaMixer {
     constructor(primary, secondary) {
         this.primary = primary;
         this.secondary = secondary;
+
+        Config.instance()
+            .setIfNull('node_addition_probability', 0.4)
+            .setIfNull('edge_addition_probability', 0.5);
     }
 
     mix() {
