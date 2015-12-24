@@ -51,16 +51,13 @@ class OfflineStorage {
     reduce() {
 
         if(Object.keys(this.dnas).length > this.maxPopulation) {
-            console.log('Reducing');
             let dnas_list = Object.values(this.dnas).sort((lhs, rhs) => {
                 return this._fitness(lhs) - this._fitness(rhs);
             });
             dnas_list.slice(0, Math.floor(this.maxPopulation/2)).forEach(item => {
-                console.log(`Deleted: ${item.dna._dna.id} (fittnes: ${this._fitness(item)})`);
                 delete this.dnas[item.dna._dna.id];
             });
             dnas_list.slice(Math.floor(this.maxPopulation/2)).forEach(item => {
-                console.log(`Kept: ${item.dna._dna.id} (fittnes: ${this._fitness(item)})`);
             });
         }
     }

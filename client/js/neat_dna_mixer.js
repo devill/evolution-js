@@ -15,13 +15,13 @@ class NeatDnaMixer {
 
     mixConnections() {
         let innovation_hash = {};
-        this.secondary.forEach(connection => {
+        this.secondary.connections.forEach(connection => {
             innovation_hash[connection.innovation] = connection;
         });
 
         return {
             nodes: this.primary.nodes,
-            connections: this.primary.map(connection => {
+            connections: this.primary.connections.map(connection => {
                 if (connection.enabled && innovation_hash[connection.innovation]) {
                     return {
                         enabled: true,

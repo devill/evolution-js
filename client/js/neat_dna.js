@@ -22,11 +22,15 @@ class NeatDna extends BaseDna {
     mix(other_dna) {
         if(getParameterByName('refactor')) {
             let this_is_primary = Math.random() < 0.5;
-            let primary = (this_is_primary) ? this._dna.connections : other_dna._dna.connections;
-            let secondary = (!this_is_primary) ? this._dna.connections : other_dna._dna.connections;
+            let primary = (this_is_primary) ? this._dna : other_dna._dna;
+            let secondary = (!this_is_primary) ? this._dna : other_dna._dna;
+
+            console.log("Mixing:");
+            console.log(primary, secondary);
 
             let mixed = (new NeatDnaMixer(primary,secondary)).mix();
 
+            console.log(mixed);
             return new NeatDna({
                 id: uuid.v4(),
                 nodes: mixed.nodes,
