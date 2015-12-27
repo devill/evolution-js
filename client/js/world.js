@@ -203,7 +203,7 @@ class World extends Thing {
     feedCreatures() {
         this._creatures.forEach(creature => {
             this._food.forEach(f => {
-                if (creature.distance(f) < 20) {
+                if (creature.distance(f) < 25) {
                     creature.feed(f);
                     f.remove();
                 }
