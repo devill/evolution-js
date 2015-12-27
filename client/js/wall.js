@@ -98,8 +98,8 @@ class Wall {
         return relative_vectors[0]['y'] * relative_vectors[1]['y'] < 0 && intersection_point > -20 && intersection_point < this.wallLength() + 20;
     }
 
-    pointCollides(vector, radius) {
-        let relative_vector = this._cordinatesRelativeToWall(vector);
+    pointCollides(point, radius) {
+        let relative_vector = this._cordinatesRelativeToWall(point);
         return Math.abs(relative_vector['y']) < radius && relative_vector['x'] > -radius && relative_vector['x'] < this.wallLength() + radius;
     }
 

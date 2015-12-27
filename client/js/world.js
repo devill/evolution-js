@@ -51,7 +51,7 @@ class World extends Thing {
                 });
 
                 let dna = this._dna_factory.build();
-                let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
+                let creature = new Creature(this, dna, this.randomNonColidingPosition(), this._iteration_number);
                 creature._brain = new PossessedBrain(creature._brain);
                 this._creatures.push(creature);
             }
@@ -106,16 +106,16 @@ class World extends Thing {
     }
 
     addCreature(dna) {
-        let creature = new Creature(this, dna, this.randomPositionForCreature(), this._iteration_number);
+        let creature = new Creature(this, dna, this.randomNonColidingPosition(), this._iteration_number);
         this._uploaded_creatures++;
         this._creatures.push(creature);
     }
 
-    randomPositionForCreature() {
+    randomNonColidingPosition() {
         let position = {};
         do {
             position = {x: Math.random() * 1600, y: Math.random() * 900};
-        } while(this._collidesWithWall(position, 20));
+        } while(this._collidesWithWall(position));
         return position;
     }
 
@@ -152,7 +152,7 @@ class World extends Thing {
         }
 
         if (this._creatures.length < Config.instance().get('overpopulation_limit') && this._food.length < Config.instance().get('maximum_amount_of_food') && Math.random() < Config.instance().get('food_generation_probability')) {
-            this._food.push(new Food({x:20+Math.random()*1560,y:20+Math.random()*860}, Config.instance().get('default_food_nutrition'), 5));
+            this._food.push(new Food(this.randomNonColidingPosition(), Config.instance().get('default_food_nutrition'), 5));
         }
 
         setTimeout(() => { this.iteration() }, 0);
