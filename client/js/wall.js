@@ -100,7 +100,7 @@ class Wall {
 
     pointCollides(vector, radius) {
         let relative_vector = this._cordinatesRelativeToWall(vector);
-        return Math.abs(relative_vector['y']) < radius && relative_vector['x'] > -20 && relative_vector['x'] < this.wallLength() + 20;
+        return Math.abs(relative_vector['y']) < radius && relative_vector['x'] > -radius && relative_vector['x'] < this.wallLength() + radius;
     }
 
     _cordinatesRelativeToWall(point) {
