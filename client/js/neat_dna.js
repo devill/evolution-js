@@ -37,17 +37,47 @@ class NeatDna extends BaseDna {
         return this._dna.connections;
     }
 
-    inNodes() {
-        return this._dna.nodes['in'];
+    nodes() {
+        return this._dna.nodes['in'].concat(this._dna.nodes['hidden']).concat(this._dna.nodes['out']);
     }
 
-    hiddenNodes() {
-        return this._dna.nodes['hidden'];
+    nodeLevels() {
+        let result = {};
+        let currentLevel = 0;
+        let lastLevelUsed = 0;
+        let currentLevelNodes = [];
+        let nextLevelNodes = this._dna.nodes['in'].map(n => { return n.id });
+        let connectionsHash = this.connectionsAsHash();
+
+        do {
+            currentLevelNodes = nextLevelNodes;
+            nextLevelNodes = [];
+            currentLevelNodes.forEach(nid => {
+                if(!result[nid]) {
+                    result[nid] = currentLevel;
+                    lastLevelUsed = currentLevel;
+                    if(connectionsHash[nid]) {
+                        nextLevelNodes = nextLevelNodes.concat(connectionsHash[nid].map(c => { return c.outNode; }));
+                    }
+                }
+            });
+            currentLevel += 1;
+        } while(nextLevelNodes.length > 0);
+
+        this._dna.nodes['out'].forEach(n => { result[n.id] = lastLevelUsed + 1 });
+
+        return result;
     }
 
-    outNodes() {
-        return this._dna.nodes['out'];
+    connectionsAsHash() {
+        let hash = {};
+        this._dna.connections.forEach(c => {
+            if(!hash[c.inNode]) { hash[c.inNode] = [] }
+            hash[c.inNode].push(c);
+        });
+        return hash;
     }
+
 
     static generateRandomDna() {
         let sightResolution = 3;

@@ -30,10 +30,8 @@ class NeatBrain {
         return false;
     }
 
+    nodeLevels() { return this._dna.nodeLevels(); }
     nodes() { return this._dna.nodes(); }
-    inNodes() { return this._dna.inNodes(); }
-    hiddenNodes() { return this._dna.hiddenNodes(); }
-    outNodes() { return this._dna.outNodes(); }
 
     connections() {
         return this._dna.connections();
