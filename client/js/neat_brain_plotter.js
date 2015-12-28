@@ -10,21 +10,23 @@ class NeatBrainPlotter {
     draw() {
 
         let nodes = this._brain.inNodes().map(n => {
-            return { id: n, label: n, level: 0, group: 0};
+            return { id: n.id, label: n.id, level: 0, group: 0};
         });
 
         nodes = nodes.concat(this._brain.hiddenNodes().map(n => {
-            return { id: n, label: n, level: 1, group: 1};
+            return { id: n.id, label: n.id, level: 1, group: 1};
         }));
 
         nodes = nodes.concat(this._brain.outNodes().map(n => {
-            return { id: n, label: n, level: 2, group: 2};
+            return { id: n.id, label: n.id, level: 2, group: 2};
         }));
 
-        let edges = this._brain.connections().map(c => {
-            let color = (c.weight < 0) ? '#ff0000' : '#0000ff';
-            return {from: c.inNode, to: c.outNode, value: Math.abs(c.weight), color: { highlight: color } };
-        });
+        let edges = this._brain.connections()
+            .filter(c => { return c.enabled; })
+            .map(c => {
+                let color = (c.weight < 0) ? '#ff0000' : '#0000ff';
+                return {from: c.inNode, to: c.outNode, value: Math.abs(c.weight), color: { highlight: color } };
+            });
 
         let data = {
             nodes: new vis.DataSet(nodes),

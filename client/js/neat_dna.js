@@ -37,25 +37,16 @@ class NeatDna extends BaseDna {
         return this._dna.connections;
     }
 
-    inNodes(connections) {
-        connections = connections || this.connections();
-        return connections.filter(c => {
-            return !isInt(c.inNode);
-        }).map(c => { return c.inNode; }).unique();
+    inNodes() {
+        return this._dna.nodes['in'];
     }
 
-    hiddenNodes(connections) {
-        connections = connections || this.connections();
-        return connections.filter(c => {
-            return isInt(c.inNode);
-        }).map(c => { return c.inNode; }).unique();
+    hiddenNodes() {
+        return this._dna.nodes['hidden'];
     }
 
-    outNodes(connections) {
-        connections = connections || this.connections();
-        return connections.filter(c => {
-            return !isInt(c.outNode);
-        }).map(c => { return c.outNode; }).unique();
+    outNodes() {
+        return this._dna.nodes['out'];
     }
 
     static generateRandomDna() {
