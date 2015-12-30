@@ -51,10 +51,7 @@ class DnaSerializer {
     }
 
     _neatDna(dna) {
-        console.log(dna);
-
         let newNodeId =  this._newNodeIdMap(dna.sight_resolution);
-        console.log(newNodeId);
         dna.nodes['in'] = dna.nodes['in'].map(n => {
             if(newNodeId[n.id]) { n.id = newNodeId[n.id]; }
             return n;
@@ -70,8 +67,6 @@ class DnaSerializer {
             if(innovationId) { c.innovation = innovationId; }
             return c;
         });
-
-        console.log(dna);
 
         return new NeatDna(dna);
     }
