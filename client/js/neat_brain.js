@@ -8,10 +8,8 @@ class NeatBrain {
     }
 
     think(input) {
-        let nodes = {};
-        input.forEach((neuron,index) => {
-            nodes[`in_${index}`] = neuron;
-        });
+        let nodes = JSON.parse(JSON.stringify(input));
+
         this._dna.connections().forEach(connection => {
             if(connection.enabled) {
                 let inValue = Math.sigmoid(nodes[connection.inNode]) || 0;
@@ -19,10 +17,10 @@ class NeatBrain {
                 nodes[connection.outNode] = outValue + connection.weight * inValue;
             }
         });
-        let result = [];
-        for(let i = 0; i < 4; i++) {
-            result.push(Math.sigmoid(nodes[`out_${i}`]));
-        }
+        let result = {};
+        this._dna.outNodes().forEach(n => {
+            result[n.id] = Math.sigmoid(nodes[n.id]);
+        });
         return result;
     }
 

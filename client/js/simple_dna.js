@@ -42,6 +42,10 @@ class SimpleDna extends BaseDna {
         return matrix;
     }
 
+    pixelId(i) {
+        return i;
+    }
+
     static generateRandomDna() {
         let mid_layer_size = 20;
         let sight_resolution = 7;

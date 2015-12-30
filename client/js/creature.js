@@ -153,27 +153,34 @@ class Creature extends Thing {
         let status = this.buildStatusVector();
         let thought = this._brain.think(status);
 
-        if(isNaN(thought[0])) {
+        if(isNaN(thought.acceleration_angle)) {
             console.log(status, thought, this._dna);
             throw "NaN value in thought";
         }
 
-        this._updateSpeed(thought[0], thought[1]);
+        this._updateSpeed(thought.acceleration_angle, thought.acceleration_radius);
         this._updatePosition();
-        this._shoot((thought[3] || 0) > 0.5);
-        this._reproduce(thought[2] || 1);
+        this._shoot((thought.shooting_trigger || 0) > 0.5);
+        this._reproduce(thought.sexual_desire || 1);
     }
 
     buildStatusVector() {
-        let status = [
-            this._energy / this._max_energy,
-            this._fire_power / this._max_fire_power,
-            this._speed / this._max_speed,
-            (this._external_dna ? this._external_dna._dna.egg_color : -180) / 360
-        ];
+        let status = {
+            energy: this._energy / this._max_energy,
+            fire_power: this._fire_power / this._max_fire_power,
+            speed: this._speed / this._max_speed,
+            dna_color: (this._external_dna ? this._external_dna._dna.egg_color : -180) / 360
+        };
         for (let i = 0; i < this._sight_resolution; i++) {
+            let pixelId = this._dna.pixelId(i);
+
             let hsl = rgb2hsl(this._sight[i]['r'],this._sight[i]['g'],this._sight[i]['b']);
-            status.push(hsl['h']/360, hsl['s']/100, hsl['l']/100, Creature._keepInRange(20/(this._sight[i]['d']+1),0,1));
+
+            status['sight_' + pixelId + 'h'] = hsl['h']/360;
+            status['sight_' + pixelId + 's'] = hsl['s']/100;
+            status['sight_' + pixelId + 'l'] = hsl['l']/100;
+            status['sight_' + pixelId + 'd'] = Creature._keepInRange(20/(this._sight[i]['d']+1),0,1);
+
         }
         return status;
     }

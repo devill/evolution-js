@@ -37,6 +37,10 @@ class NeatDna extends BaseDna {
         return this._dna.connections;
     }
 
+    outNodes() {
+        return this._dna.nodes['out'];
+    }
+
     nodes() {
         return this._dna.nodes['in'].concat(this._dna.nodes['hidden']).concat(this._dna.nodes['out']);
     }
@@ -78,6 +82,16 @@ class NeatDna extends BaseDna {
         return hash;
     }
 
+    pixelId(i) {
+        return NeatDna.pixelIdForResolution(i, this.sightResolution());
+    }
+
+    static pixelIdForResolution(i, resolution) {
+        let pixelIndex = i - Math.floor(resolution / 2);
+        let pixelSide = (pixelIndex < 0) ? 'l' : ((pixelIndex > 0) ? 'r' : 'c');
+        return pixelSide + Math.abs(pixelIndex);
+    }
+
 
     static generateRandomDna() {
         let sightResolution = 3;
@@ -106,55 +120,73 @@ class NeatDna extends BaseDna {
 
     static randomInitialConnections(sightResolution) {
         let connections = [];
-        for(let i = 0; i < 4+sightResolution*4; i++) {
-            for(let j = 0; j < 4; j++) {
+        let initialNodes = NeatDna.initialNodes(sightResolution);
+        initialNodes['in'].forEach(inNode => {
+            initialNodes['out'].forEach(outNode => {
                 connections.push({
                     enabled: true,
-                    inNode: `in_${i}`,
-                    outNode: `out_${j}`,
+                    inNode: inNode.id,
+                    outNode: outNode.id,
                     weight: chance.normal(),
-                    innovation: `initial_${i}_${j}`
+                    innovation: `initial_${inNode.id}_${outNode.id}`
                 });
-            }
-        }
+            });
+        });
         return connections;
     }
 
     static randomReducedInitialConnections(sightResolution) {
         let connections = [];
-        for(let i = 4; i < 4+sightResolution*4; i+=4) {
-            for(let j = 0; j < 2; j++) {
-                connections.push({
-                    enabled: true,
-                    inNode: `in_${i+2}`,
-                    outNode: `out_${j}`,
-                    weight: chance.normal(),
-                    innovation: `initial_${i}_${j}`
-                });
-                connections.push({
-                    enabled: true,
-                    inNode: `in_${i+3}`,
-                    outNode: `out_${j}`,
-                    weight: chance.normal(),
-                    innovation: `initial_${i}_${j}`
-                });
-            }
+
+        let reducedOutputs = ['acceleration_angle', 'acceleration_radius'];
+        let reducedInputs = [];
+        for(let i = 0; i < sightResolution; i++) {
+            let pixelId = NeatDna.pixelIdForResolution(i, sightResolution);
+            reducedInputs.push('sight_' + pixelId + 'l');
+            reducedInputs.push('sight_' + pixelId + 'd');
         }
+
+        reducedInputs.forEach(inNode => {
+            reducedOutputs.forEach(outNode => {
+                connections.push({
+                    enabled: true,
+                    inNode: inNode,
+                    outNode: outNode,
+                    weight: chance.normal(),
+                    innovation: `initial_${inNode}_${outNode}`
+                });
+            });
+        });
         return connections;
     }
 
-    static initialNodes(sightResolution) {
-        let nodes = { 'in': [], 'out':[], 'hidden':[] };
-        for(let i = 0; i < 4+sightResolution*4; i++) {
-            nodes.in.push({id: `in_${i}`});
+    static sightInputIds(sightResolution) {
+        let ids = [];
+        for(let i = 0; i < sightResolution; i++) {
+            let pixelId = NeatDna.pixelIdForResolution(i, sightResolution);
+            ids.push('sight_' + pixelId + 'h');
+            ids.push('sight_' + pixelId + 's');
+            ids.push('sight_' + pixelId + 'l');
+            ids.push('sight_' + pixelId + 'd');
         }
-        for(let j = 0; j < 4; j++) {
-            nodes.out.push({id: `out_${j}`});
-        }
-        return nodes;
+        return ids;
     }
 
+    static initialNodes(sightResolution) {
+        return {
+            'in': NeatDna.inputNodeIds(sightResolution).map(id => { return {id:id}; }),
+            'out': NeatDna.outputNodeIds().map(id => { return {id:id}; }),
+            'hidden':[]
+        };
+    }
 
+    static inputNodeIds(sightResolution) {
+        return ['energy', 'fire_power', 'speed', 'dna_color'].concat(NeatDna.sightInputIds(sightResolution));
+    }
+
+    static outputNodeIds() {
+        return ['acceleration_angle', 'acceleration_radius', 'shooting_trigger','sexual_desire'];
+    }
 }
 
 module.exports = NeatDna;
