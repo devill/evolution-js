@@ -111,7 +111,7 @@ class NeatDnaMixer {
         let outNode = this.findOutCandidate(network_dna);
         let inNode = this.findInCandidate(network_dna, outNode);
 
-        if(this.connected(outNode,inNode, this.connectionsAsHash(connections))) { return network_dna; }
+        if(this.connected(outNode,inNode, NeatDnaMixer.outConnectionsAsHash(connections))) { return network_dna; }
         if(connections.filter(c => { return c.inNode == inNode && c.outNode == outNode; }).length > 0) { return network_dna; }
 
         connections.push({
@@ -124,7 +124,7 @@ class NeatDnaMixer {
 
         return {
             nodes: network_dna.nodes,
-            connections: this.topologicalSortConnections(network_dna)
+            connections: NeatDnaMixer.topologicalSortConnections(network_dna)
         };
     }
 
@@ -151,7 +151,7 @@ class NeatDnaMixer {
         return false;
     }
 
-    connectionsAsHash(connections) {
+    static outConnectionsAsHash(connections) {
         let hash = {};
         connections.forEach(c => {
             if(!hash[c.inNode]) { hash[c.inNode] = [] }
@@ -160,9 +160,8 @@ class NeatDnaMixer {
         return hash;
     }
 
-    topologicalSortConnections(network_dna) {
-        let connections = network_dna.connections;
-        let hash = this.connectionsAsHash(connections);
+    static topologicalSortConnections(network_dna) {
+        let hash = NeatDnaMixer.outConnectionsAsHash(network_dna.connections);
         let inNodes = network_dna.nodes['in'];
         let visitedNodes = {};
         let sortedConnections = [];
@@ -170,18 +169,18 @@ class NeatDnaMixer {
         function exploreNode(nodeId)
         {
             if(!hash[nodeId] || visitedNodes[nodeId]) { return; }
+            visitedNodes[nodeId] = true;
             hash[nodeId].forEach(c => {
                 exploreNode(c.outNode);
                 sortedConnections.push(c);
             });
-            visitedNodes[nodeId] = true;
         }
 
         inNodes.forEach(n => {
-            exploreNode(n);
+            exploreNode(n.id);
         });
 
-        return connections;
+        return sortedConnections.reverse();
     }
 
 }

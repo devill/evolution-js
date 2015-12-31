@@ -8,6 +8,18 @@ let NeatDnaMixer = require('./neat_dna_mixer');
 
 class NeatDna extends BaseDna {
     constructor(dna) {
+        dna.connections = NeatDnaMixer.topologicalSortConnections(dna);
+        let used = {};
+        dna.connections.forEach(c => {
+            used[c.inNode] = 1;
+            if(used[c.outNode]) {
+                dna.connections.forEach(c1 => {
+                    console.log(c1.inNode, c1.outNode);
+                });
+                throw "Found sort error";
+            }
+        });
+
         super(dna);
     }
 
@@ -37,6 +49,10 @@ class NeatDna extends BaseDna {
         return this._dna.connections;
     }
 
+    inNodes() {
+        return this._dna.nodes['in'];
+    }
+
     outNodes() {
         return this._dna.nodes['out'];
     }
@@ -47,37 +63,41 @@ class NeatDna extends BaseDna {
 
     nodeLevels() {
         let result = {};
-        let currentLevel = 0;
-        let lastLevelUsed = 0;
-        let currentLevelNodes = [];
-        let nextLevelNodes = this._dna.nodes['in'].map(n => { return n.id });
-        let connectionsHash = this.connectionsAsHash();
+        let inEdges = this.inConnectionsAsHash();
+        let maxTotalDepth = 0;
 
-        do {
-            currentLevelNodes = nextLevelNodes;
-            nextLevelNodes = [];
-            currentLevelNodes.forEach(nid => {
-                if(!result[nid]) {
-                    result[nid] = currentLevel;
-                    lastLevelUsed = currentLevel;
-                    if(connectionsHash[nid]) {
-                        nextLevelNodes = nextLevelNodes.concat(connectionsHash[nid].map(c => { return c.outNode; }));
-                    }
-                }
-            });
-            currentLevel += 1;
-        } while(nextLevelNodes.length > 0);
+        this.inNodes().forEach(n => {
+            result[n.id] = 0;
+        });
 
-        this._dna.nodes['out'].forEach(n => { result[n.id] = lastLevelUsed + 1 });
+        this.connections().forEach(c => {
+            if(result[c.inNode] !== undefined) { return; }
+            if(!inEdges[c.inNode]) {
+                return;
+            }
+
+            result[c.inNode] = 1 + inEdges[c.inNode].reduce((maxDepth,inConnection) => {
+                return Math.max(maxDepth, result[inConnection.inNode]);
+            },0);
+            if(isNaN(result[c.inNode])) {
+                console.log(c.inNode, result, inEdges[c.inNode]);
+                throw "NaN value as level";
+            }
+            maxTotalDepth = Math.max(maxTotalDepth,result[c.inNode]);
+        });
+
+        this.outNodes().forEach(n => {
+            result[n.id] = maxTotalDepth +  1;
+        });
 
         return result;
     }
 
-    connectionsAsHash() {
+    inConnectionsAsHash() {
         let hash = {};
         this._dna.connections.forEach(c => {
-            if(!hash[c.inNode]) { hash[c.inNode] = [] }
-            hash[c.inNode].push(c);
+            if(!hash[c.outNode]) { hash[c.outNode] = [] }
+            hash[c.outNode].push(c);
         });
         return hash;
     }
