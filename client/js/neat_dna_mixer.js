@@ -10,7 +10,10 @@ class NeatDnaMixer {
 
         Config.instance()
             .setIfNull('node_addition_probability', 0.2)
-            .setIfNull('edge_addition_probability', 0.4);
+            .setIfNull('edge_addition_probability', 0.4)
+            .setIfNull('deviation_of_weight_mutation_distribution', 0.5)
+            .setIfNull('deviation_of_new_connection_weight_distribution', 15)
+            .setIfNull('deviation_of_weight_mutation_for_unpaired_connection_distribution', 15);
     }
 
     mix() {
@@ -31,7 +34,7 @@ class NeatDnaMixer {
                         enabled: true,
                         inNode: connection.inNode,
                         outNode: connection.outNode,
-                        weight: Math.bimodalValueMix(connection.weight, innovation_hash[connection.innovation].weight) + chance.normal(),
+                        weight: Math.bimodalValueMix(connection.weight, innovation_hash[connection.innovation].weight) + chance.normal({mean:0, dev:Config.instance().get('deviation_of_weight_mutation_distribution')}),
                         innovation: connection.innovation
                     };
                 } else {
@@ -39,7 +42,7 @@ class NeatDnaMixer {
                         enabled: connection.enabled,
                         inNode: connection.inNode,
                         outNode: connection.outNode,
-                        weight: connection.weight + chance.normal(),
+                        weight: Math.bimodalValueMix(connection.weight, chance.normal({mean:0, dev:Config.instance().get('deviation_of_weight_mutation_for_unpaired_connection_distribution')})),
                         innovation: uuid.v4()
                     };
                 }
@@ -118,7 +121,7 @@ class NeatDnaMixer {
             enabled: true,
             inNode: inNode,
             outNode: outNode,
-            weight: chance.normal(),
+            weight: chance.normal({mean: 0, dev: Config.instance().get('deviation_of_new_connection_weight_distribution')}),
             innovation: uuid.v4()
         });
 

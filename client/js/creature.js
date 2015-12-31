@@ -1,6 +1,7 @@
 "use strict";
 
 let Thing = require('./thing');
+let Config = require('./config');
 
 class Creature extends Thing {
     constructor(world, dna, positon, iteration_number) {
@@ -26,6 +27,10 @@ class Creature extends Thing {
         this._time_since_last_fire = 0;
         this._fire_power = 0;
         this._max_fire_power = 5000;
+
+        Config.instance()
+            .setIfNull('energy_lost_when_bullet_hits', 10000)
+            .setIfNull('energy_lost_when_bullet_fired', 500);
 
         this._sight_resolution = dna.sightResolution();
 
@@ -196,7 +201,7 @@ class Creature extends Thing {
             this._world.addBullet(bullet_position, this._direction);
             this._fire_power -= 300;
             this._time_since_last_fire = 0;
-            this._energy -= 100;
+            this._energy -= Config.instance().get('energy_lost_when_bullet_fired');
         }
         this._fire_power = Creature._keepInRange(this._fire_power,0, this._max_fire_power);
     }
@@ -245,7 +250,7 @@ class Creature extends Thing {
     }
 
     takeHit() {
-        this._energy -= 3000;
+        this._energy -= Config.instance().get('energy_lost_when_bullet_hits');
     }
 
     canTakeEgg(egg) {

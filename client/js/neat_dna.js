@@ -5,6 +5,7 @@ let uuid = require('uuid');
 let NeatBrain = require('./neat_brain');
 let BaseDna = require('./base_dna');
 let NeatDnaMixer = require('./neat_dna_mixer');
+let Config = require('./config');
 
 class NeatDna extends BaseDna {
     constructor(dna) {
@@ -147,7 +148,7 @@ class NeatDna extends BaseDna {
                     enabled: true,
                     inNode: inNode.id,
                     outNode: outNode.id,
-                    weight: chance.normal(),
+                    weight: chance.normal({mean: 0, dev: Config.instance().get('deviation_of_new_connection_weight_distribution')}),
                     innovation: `initial_${inNode.id}_${outNode.id}`
                 });
             });
@@ -172,7 +173,7 @@ class NeatDna extends BaseDna {
                     enabled: true,
                     inNode: inNode,
                     outNode: outNode,
-                    weight: chance.normal(),
+                    weight: chance.normal({mean: 0, dev: Config.instance().get('deviation_of_new_connection_weight_distribution')}),
                     innovation: `initial_${inNode}_${outNode}`
                 });
             });

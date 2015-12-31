@@ -61,7 +61,7 @@ FROM (
 ) parent
 ORDER BY fitness desc, r
 LIMIT 1
-OFFSET floor(random() * LEAST(50, (SELECT COUNT(*) FROM dna)))
+OFFSET floor(random() * LEAST(200, (SELECT COUNT(*) FROM dna)))
 `;
 
 function* random() {
