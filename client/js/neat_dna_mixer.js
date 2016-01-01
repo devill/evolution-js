@@ -11,6 +11,7 @@ class NeatDnaMixer {
         Config.instance()
             .setIfNull('node_addition_probability', 0.2)
             .setIfNull('edge_addition_probability', 0.4)
+            .setIfNull('edge_removal_probability', 0.05)
             .setIfNull('deviation_of_weight_mutation_distribution', 0.5)
             .setIfNull('deviation_of_new_connection_weight_distribution', 15)
             .setIfNull('deviation_of_weight_mutation_for_unpaired_connection_distribution', 15);
@@ -56,6 +57,8 @@ class NeatDnaMixer {
             return this.evolveTopologyWithNewNode(network_dna);
         } else if (p < Config.instance().get('node_addition_probability') + Config.instance().get('edge_addition_probability')) {
             return this.evolveTopologyWithNewConnection(network_dna);
+        } else if (p < Config.instance().get('node_addition_probability') + Config.instance().get('edge_addition_probability') + Config.instance().get('edge_removal_probability')) {
+            return this.evolveTopologyByRemovingConnection(network_dna)
         } else {
             return network_dna;
         }
@@ -129,6 +132,12 @@ class NeatDnaMixer {
             nodes: network_dna.nodes,
             connections: NeatDnaMixer.topologicalSortConnections(network_dna)
         };
+    }
+
+    evolveTopologyByRemovingConnection(network_dna) {
+        let index = Math.floor(network_dna.connections.length * Math.random());
+        network_dna.connections[index].enabled = false;
+        return network_dna;
     }
 
     findOutCandidate(network_dna) {
